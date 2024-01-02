@@ -1,19 +1,19 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>STLport: Configuration Manual</title>
+<meta http-equiv="Content-Type"	content="text/html; charset=UTF-8">
+<title>STLport:	Configuration Manual</title>
 <!-- <link href="doc.css" type="text/css" rel="stylesheet"> -->
 <style><!--
-BODY { margin: 0 0; background: #FFFFFF; font-family: "Tahoma", "Helvetica", "Arial", "sans-serif"; }
+BODY { margin: 0 0; background:	#FFFFFF; font-family: "Tahoma",	"Helvetica", "Arial", "sans-serif"; }
 A:link {font-size: 14px; text-decoration:none; color: #0c70b6;}
 A:visited {font-size: 14px; text-decoration:none; color: #0c70b6;}
-.copyright { font-size: 10px; font-family: "Tahoma", "Helvetica", "Arial", "sans-serif"; line-height: 12px; color: #999999; }
-.bottomNav { font-size: 11px; font-family: "Tahoma", "Helvetica", "Arial", "sans-serif"; text-decoration: none; font-weight: bold; color: #325A30; }
-.heading { font-size: 18px; font-family: "Tahoma", "Helvetica", "Arial", "sans-serif";  line-height: 14px; color: #e35a23; }
-.gray { color : #A0A0A0 }
+.copyright { font-size:	10px; font-family: "Tahoma", "Helvetica", "Arial", "sans-serif"; line-height: 12px; color: #999999; }
+.bottomNav { font-size:	11px; font-family: "Tahoma", "Helvetica", "Arial", "sans-serif"; text-decoration: none;	font-weight: bold; color: #325A30; }
+.heading { font-size: 18px; font-family: "Tahoma", "Helvetica",	"Arial", "sans-serif";	line-height: 14px; color: #e35a23; }
+.gray {	color :	#A0A0A0	}
 --></style>
 </head>
-<body leftmargin="0" topmargin="0" bgcolor="white" link="#314A30" marginheight="0" marginwidth="0" text="black" vlink="#314A30">
+<body leftmargin="0" topmargin="0" bgcolor="white" link="#314A30" marginheight="0" marginwidth="0" text="black"	vlink="#314A30">
 <table border="0" cellpadding="0" cellspacing="0">
 <tbody>
 <tr align="left" valign="top">
@@ -24,379 +24,380 @@ A:visited {font-size: 14px; text-decoration:none; color: #0c70b6;}
 </td>
 <td width="776">
 <!--
-<img src="STLportConfigurationManual/trans.gif" border="0" height="14" width="1"><br>
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="14" width="1"><br>
 <a href="http://www.stlport.org/index.html"><img src="STLportConfigurationManual/stl_logo_doc.gif" border="0" height="80" width="80"></a>
-<a href="http://www.stlport.org/doc/index.html"><img src="STLportConfigurationManual/t_doc2.gif" border="0" height="80" width="461"></a><br>
-<img src="STLportConfigurationManual/trans.gif" border="0" height="24" width="1"><br>
-<img src="STLportConfigurationManual/black.gif" border="0" height="1" width="776"><br>
-<img src="STLportConfigurationManual/trans.gif" border="0" height="24" width="1">
+<a href="http://www.stlport.org/doc/index.html"><img src="STLportConfigurationManual/t_doc2.gif" border="0" height="80"	width="461"></a><br>
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="24" width="1"><br>
+<img src="STLportConfigurationManual/black.gif"	border="0" height="1" width="776"><br>
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="24" width="1">
 -->
 </td>
 </tr>
 <tr align="left" valign="top">
 <td width="24">
 <!--
-<img src="STLportConfigurationManual/trans.gif" border="0" height="1" width="24"></td><td width="776">
-<img src="STLportConfigurationManual/trans.gif" border="0" height="10" width="776">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="1" width="24"></td><td width="776">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="10" width="776">
 -->
 </td>
 </tr>
 <tr align="left" valign="top">
 <td width="24">
 <!--
-<img src="STLportConfigurationManual/trans.gif" border="0" height="1" width="24">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="1" width="24">
 -->
 </td>
 <td width="776">
-<span>以下は STLport の Configuration Manual の適当訳(翻訳サイトの結果を適当にそれらしくしたもの).<br>
-おそらく ver3 なり ver4 なりの頃の説明で、最近(ver5) の事情は反映されておらず記述が古くなっている部分がある.
+<span>以下は <a href="http://www.stlport.org/doc/configure.html">STLport の Configuration Manual</a>
+の適当訳(翻訳サイトの結果を適当にそれらしくしたもの).<br>
+おそらく ver3 なり ver4	なりの頃の説明で、最近(ver5) の事情は反映されておらず記述が古くなっている部分がある.
 (結構、無くなったり置き換わったり追加されたりがある模様）
 </span>
 <hr>
-        <span class="heading">STLport コンフィグレーション マニュアル</span>
+	<span class="heading">STLport コンフィグレーション マニュアル</span>
 <p>
-        <font size="2"><em><strong>Boris Fomitchev 著</strong></em></font>
+	<font size="2"><em><strong>Boris Fomitchev 著</strong></em></font>
 </p>
-        <h3>パラメータ</h3>
-        <p>
-        STLport コンフィグレーション・パラメータは２つのカテゴリーに大別できる。
-        </p>
-        <ul>
-          <li>ユーザー定義可能な設定</li>
-          <li>コンパイラのバグと欠落している機能に関するパラメータ</li>
-        </ul>
-        <p>前者のパラメータは、いくつか特殊な機能をユーザーが選べぶためにある。
-        パラメータの設定は &lt;stl_use_config.h&gt;ヘッダ で行う。
-        ヘッダには設定できるパラメータの説明があるが、このマニュアルではいくつか情報を補足している。
-        </p>
-        <p>後者のパラメータは、STLport が様々なコンパイラで使えるよう予め設定するためにある。
-        STLport が自動的に認識するコンパイラについては、(別の)<a href="http://www.stlport.org/doc/platforms.html">一覧</a>を参照のこと。
-        未対応のコンパイラをSTLportに対応させる場合には、このドキュメントが役立つだろう。
+	<h3>パラメータ</h3>
+	<p>
+	STLport	コンフィグレーション・パラメータは２つのカテゴリーに大別できる。
 	</p>
-        <p>&nbsp;</p>
-        <h3>ユーザー定義可能な設定</h3>
-        <p>STLportにはいくつか特殊機能を選ぶためのユーザー定義設定がある。設定方法は２通り</p>
-        <ol>
-          <li>&lt;stl_user_config.h&gt; で対応する #define 定義を設定する。
-          推奨方法。プロジェクトごとに異なる &lt;stl_user_config.h&gt; を使用できる。
-          </li>
-          <li>コンパイラのコマンドライン引数でフラグを指定する。いくつかのオプションの抑制もできる。
-          たとえば <b>_STLP_USE_EXCEPTIONS</b> マクロを 1 に設定して例外処理を有効にしている環境において、コマンドライン引数で <b>-D_STLP_NO_EXCEPTIONS</b> を指定すれば例外処理をオフにできる。
-          </li>
-        </ol>
-        <p>以下に安定したユーザー定義オプションの説明をする。特に示されていない場合これらのオプションはデフォルトで未定義になっている。</p>
+	<ul>
+	  <li>ユーザー定義可能な設定</li>
+	  <li>コンパイラのバグと欠落している機能に関するパラメータ</li>
+	</ul>
+	<p>前者のパラメータは、いくつか特殊な機能をユーザーが選べぶためにある。
+	パラメータの設定は &lt;stl_use_config.h&gt;ヘッダ で行う。
+	ヘッダには設定できるパラメータの説明があるが、このマニュアルではいくつか情報を補足している。
+	</p>
+	<p>後者のパラメータは、STLport が様々なコンパイラで使えるよう予め設定するためにある。
+	STLport	が自動的に認識するコンパイラについては、(別の)<a href="http://www.stlport.org/doc/platforms.html">一覧</a>を参照のこと。
+	未対応のコンパイラをSTLportに対応させる場合には、このドキュメントが役立つだろう。
+	</p>
+	<p>&nbsp;</p>
+	<h3>ユーザー定義可能な設定</h3>
+	<p>STLportにはいくつか特殊機能を選ぶためのユーザー定義設定がある。設定方法は２通り</p>
+	<ol>
+	  <li>&lt;stl_user_config.h&gt;	で対応する #define 定義を設定する。
+	  推奨方法。プロジェクトごとに異なる &lt;stl_user_config.h&gt; を使用できる。
+	  </li>
+	  <li>コンパイラのコマンドライン引数でフラグを指定する。いくつかのオプションの抑制もできる。
+	  たとえば <b>_STLP_USE_EXCEPTIONS</b> マクロを	1 に設定して例外処理を有効にしている環境において、コマンドライン引数で <b>-D_STLP_NO_EXCEPTIONS</b> を指定すれば例外処理をオフにできる。
+	  </li>
+	</ol>
+	<p>以下に安定したユーザー定義オプションの説明をする。特に示されていない場合これらのオプションはデフォルトで未定義になっている。</p>
 
-        <table border="1" cellpadding="4" cellspacing="0">
-          <caption>
-            <h4> STLportのユーザー定義オプション</h4>
-          </caption>
-          <tbody><tr>
-            <td><b>制御マクロ</b></td>
-            <td><b>説明</b></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_OWN_IOSTREAMS
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-                このスイッチで STLportの２つの主要な iostream モードから 1 つを選択。
-              詳しくは <a href="http://www.stlport.org/doc/select_io.html">"はじめに"</a> を参照のこと。<br>
-              訳注: v5.2.1 ではすでに使用できない。
+	<table border="1" cellpadding="4" cellspacing="0">
+	  <caption>
+	    <h4> STLportのユーザー定義オプション</h4>
+	  </caption>
+	  <tbody><tr>
+	    <td><b>制御マクロ</b></td>
+	    <td><b>説明</b></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_OWN_IOSTREAMS
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		このスイッチで STLportの２つの主要な iostream モードから 1 つを選択。
+	      詳しくは <a href="http://www.stlport.org/doc/select_io.html">"はじめに"</a> を参照のこと。<br>
+	      訳注: v5.2.1 ではすでに使用できない。
 	       </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_NEW_IOSTREAMS
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica"> 新しい形式の iostreams が利用可能でも、利用しない。<br>
-            訳注: v5.2.1 ではすでに存在しない。
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_NEW_IOSTREAMS
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">	新しい形式の iostreams が利用可能でも、利用しない。<br>
+	    訳注: v5.2.1 ではすでに存在しない。
 	    </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_IOSTREAMS
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            実験的なスイッチ。組み込み環境での利用を想定し、
-            iostreams を全く使用できない STLport を作成する。<br>
-            訳注: .libを使わずヘッダのみでの利用を想定。(ヘッダのみにできないlocaleも使用できなくなる)
-             </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_CUSTOM_IO
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            実験的なスイッチ。
-            （大抵はそうだろうが）カスタム型の basic_xxx iostreamクラスを用いない場合に定義できる。
-            "カスタム"型とは basic_ostream&lt;my_char_type や my_traits&lt;my_char_type&gt; &gt; のように charやwchar, char_traits&lt;&gt; でない型のこと。
-            このオプションがオンの場合、iostreamsの 非インラインのテンプレート関数定義の大部分は クライアントから見えない。
-            カスタム型を使う人が困らないように、デフォルトはオフになっている。
-            オンの場合、ほとんどのコンパイラでコンパイル時間を短縮でき、さらにオブジェクトファイルや実行ファイルのサイズを縮小できる。
-            あなたのプログラムを最適化なしでコンパイルして最適化されたライブラリをリンクする場合に最適化されたスタンダードI/O が使われることを保証する。
-            このオプションは STLport ライブラリ自体のビルドには影響しない。
-            基本的にプロジェクトごとに このオプションがあろうとなかろうと 同じライブラリ・バイナリを使うことができる。
-            </font></td>
-          </tr>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_IOSTREAMS
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    実験的なスイッチ。組み込み環境での利用を想定し、
+	    iostreams を全く使用できない STLport を作成する。<br>
+	    訳注: .libを使わずヘッダのみでの利用を想定。(ヘッダのみにできないlocaleも使用できなくなる)
+	     </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_CUSTOM_IO
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    実験的なスイッチ。
+	    （大抵はそうだろうが）カスタム型の basic_xxx iostreamクラスを用いない場合に定義できる。
+	    "カスタム"型とは basic_ostream&lt;my_char_type や my_traits&lt;my_char_type&gt; &gt; のように charやwchar, char_traits&lt;&gt; でない型のこと。
+	    このオプションがオンの場合、iostreamsの 非インラインのテンプレート関数定義の大部分は クライアントから見えない。
+	    カスタム型を使う人が困らないように、デフォルトはオフになっている。
+	    オンの場合、ほとんどのコンパイラでコンパイル時間を短縮でき、さらにオブジェクトファイルや実行ファイルのサイズを縮小できる。
+	    あなたのプログラムを最適化なしでコンパイルして最適化されたライブラリをリンクする場合に最適化されたスタンダードI/O が使われることを保証する。
+	    このオプションは STLport ライブラリ自体のビルドには影響しない。
+	    基本的にプロジェクトごとに このオプションがあろうとなかろうと 同じライブラリ・バイナリを使うことができる。
+	    </font></td>
+	  </tr>
 
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_DEBUG_LIB </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            （Windows 用コンパイラのみ）
-            通常 _DEBUG を設定したプロジェクト(Debugビルド) をコンパイルする場合でも最適化されたSTLportライブラリが自動的にリンクされる。
-            Debugビルド時にDebugビルドされたSTLportライブラリを用いたいならば、このオプションを定義する。
-            （STLportライブラリを構築するとき "make all" は "release" と "stldebug" 版のライブラリを作るだけなので、
-           追加で "make debug_static debug_dynamic" を実行してデバッグフラグ有りのSTLportライブラリを作成しておく必要がある）
-            </font></td>
-          </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_DEBUG_LIB </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    （Windows 用コンパイラのみ）
+	    通常 _DEBUG	を設定したプロジェクト(Debugビルド) をコンパイルする場合でも最適化されたSTLportライブラリが自動的にリンクされる。
+	    Debugビルド時にDebugビルドされたSTLportライブラリを用いたいならば、このオプションを定義する。
+	    （STLportライブラリを構築するとき "make all" は "release" と "stldebug" 版のライブラリを作るだけなので、
+	   追加で "make debug_static debug_dynamic" を実行してデバッグフラグ有りのSTLportライブラリを作成しておく必要がある）
+	    </font></td>
+	  </tr>
 
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_STATIC_LIB, _STLP_USE_STATICX_LIB, _STLP_USE_DYNAMIC_LIB </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            （Windows 用コンパイラのみ）
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_STATIC_LIB,	_STLP_USE_STATICX_LIB, _STLP_USE_DYNAMIC_LIB </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    （Windows 用コンパイラのみ）
 	    通常、ランタイム・ライブラリの設定と一致するSTLportライブラリのバージョンが自動的にリンクされる。
-            （ダイナミック・ランタイム・ライブラリ DLL を使えば dynamic STLport DLL が使われる。逆もまた同じく）
-            STLportライブラリとして static や dynamic, あるいは "staticx"(dynamic RTL を使う static STLportライブラリ)を強制したい場合は、
-            これらのオプションを指定のこと。
-            </font></td>
-          </tr>
-
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_OWN_NAMESPACE
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              推奨動作の STLport の名前空間 <b>_STL</b>:: の使用を抑制し、強制的に STLport を <b>std</b>:: で使用する。
-              通常、STLport は <b>std</b>:: のかわりに <b>_STL</b>:: を使用することでコンパイラ付属の iostreams/strings を使用したときの衝突を防いでいる。
-               </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_OWN_NAMESPACE
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            強制的に STLport のnamespace として <b>std</b>:: でなく <b>_STL</b>:: を用いる。
-            _STLP_USE_NAMESPACES が設定されている場合、自動的にこのフラグも設定される。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_DONT_RENAME_STD</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            STLportが <b>std</b>:: を <b>_STL</b>:: に再定義(マクロ置換)しないようにする。
-            なんらかの理由でリネーミング・スキームがうまくいかない場合のみ定義のこと。<br>
-            訳注: v5.2.1ではすでに存在しない。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            <a href="http://www.stlport.org/doc/debug_mode.html">Debugモード</a> をオンにする。
-            スレッドセーフにして、iterator と範囲をチェックするようになる。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_USE_SYSTEM_ASSERT</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            stderr を使った fprintf 実装のassertの代わりにシステム定義の assert を使う。<br>
-            訳注: v5.2.1 ではすでに存在しない。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG_MESSAGE </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コメントを外すと強制的に、全ての assertion チェック失敗時にユーザー定義のグローバル関数を直接呼ぶようになる。<br>
-              void __stl_debug_message(const char * format_str, ...)<br>
-              これによりデバッグ対象のための assertion を制御できるようになる。<br>
-              注：このマクロを設定した場合、STLport利用側でどこかに __stl_debug_message 関数を定義する必要がある。
-              </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG_TERMINATE </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            コメントを外すと強制的に、全ての assertion チェック失敗時にユーザー定義のグローバル関数を実行するようになる。<br>
-            void __stl_debug_terminate(void)。<br>
-            これによりデバッグ対象の assertion でのふるまいを制御できる。
-            _STLP_NO_DEBUG_EXCEPTIONS が未定義ならデフォルトルーチンはユニークな例外を投げ、
-            定義されている場合は abort() が呼ばれる。<br>
-              注：このマクロを設定した場合、STLport利用側でどこかに __stl_debug_terminate 関数を定義する必要がある。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_DEBUG_EXCEPTIONS </b></font></td>
-            <td><font size="2" face="Arial, Helvetica"> 
-            この定義をコメントすれば、__stl_debug_terminate() は abort() を呼ぶのでなく ユニークな例外を投げるようになる。<br>
-            訳注: v5.2.1ではすでに存在しない。
-            </font></td>
-          </tr>
-
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXCEPTIONS </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            STLport内の例外コードの使用を抑止する。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_NAMESPACES </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            コンパイラが namespace をサポートしていても STLport をグローバルの名前空間に置く。<br>
-            訳注: v5 ではコンパイラが namespace をサポートしていることを前提に組まれている。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_RELOPS_NAMESPACE
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            定義されている場合、関係演算子を名前空間 std::rel_ops に入れない。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_REENTRANT </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            プロジェクトがマルチスレッドの場合に定義する。
-            STLport で マルチスレッドセーフなアロケータをサポートする。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_NOTHREADS </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            定義すると、STLport でマルチスレッディング・サポートを使用しない。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_NEW_C_HEADERS</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            定義されると、利用可能でも(C++で追加された)新しいスタイルのCヘッダを使用しない。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_USE_RAW_SGI_ALLOCATORS
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            標準仕様の <b>allocator</b>&lt;&gt; のかわりに、
-            旧来の SGIスタイルのアロケータをコンテナのデフォルトに強制使用する。<br>
-            訳注: v5.2.1ではすでに存在しない。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_MALLOC </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            定義すると平坦な <b>malloc()</b> を用いた <b>allocator</b>&lt;&gt; を使用し、
-            SGI製の最適化ノードアロケータエンジンの使用をやめる。
-              </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_NEWALLOC </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            定義すると平坦な <b>new()</b> を用いた <b>allocator</b>&lt;&gt; を使用し、
-            SGI製の最適化ノードアロケータエンジンの使用をやめる。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG_ALLOC </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            メモリーの一貫性をチェックしたりするデバッグ用の <b>allocator</b>&lt;&gt; を使用する。
-              </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG_UNINITIALIZED </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            あなたのクラスの未初期化のメンバー変数を検出したいときにこのオプションを使う。
-            これを設定時、construct() と destroy() はクラスストレージを 値 _STLP_SHRED_BYTE(後述) で埋めるようになる。<br>
-	    注: _STLP_DEBUG, _STLP_DEBUG_ALLOC マクロを定義しても このオプションは自動的には設定されない。
+	    （ダイナミック・ランタイム・ライブラリ DLL を使えば	dynamic	STLport	DLL が使われる。逆もまた同じく）
+	    STLportライブラリとして static や dynamic, あるいは	"staticx"(dynamic RTL を使う static STLportライブラリ)を強制したい場合は、
+	    これらのオプションを指定のこと。
 	    </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_SHRED_BYTE </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            _STLP_DEBUG_ALLOC または _STLP_DEBUG_UNINITIALIZED が定義されているとき、初期化前のメモリをこの定義のバイト値で埋めるようになる。
-            なるべく参照不可能なアドレスになったり問題を引き起こすような値を選ぶこと。
-            プラットフォームによっては予め適切な値が設定されているかもしれない。<b>stldebug.h</b> を参照のこと。
-              </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_DONT_THROW_RANGE_ERRORS </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            このマクロは、コンテナ(vectorとdeque)のメンバー関数at()を使えないようにする。
+	  </tr>
+
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_OWN_NAMESPACE
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      推奨動作の STLport の名前空間 <b>_STL</b>:: の使用を抑制し、強制的に STLport を <b>std</b>:: で使用する。
+	      通常、STLport は <b>std</b>:: のかわりに <b>_STL</b>:: を使用することでコンパイラ付属の iostreams/strings	を使用したときの衝突を防いでいる。
+	       </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_OWN_NAMESPACE
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    強制的に STLport のnamespace として	<b>std</b>:: でなく <b>_STL</b>:: を用いる。
+	    _STLP_USE_NAMESPACES が設定されている場合、自動的にこのフラグも設定される。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_DONT_RENAME_STD</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    STLportが <b>std</b>:: を <b>_STL</b>:: に再定義(マクロ置換)しないようにする。
+	    なんらかの理由でリネーミング・スキームがうまくいかない場合のみ定義のこと。<br>
+	    訳注: v5.2.1ではすでに存在しない。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    <a href="http://www.stlport.org/doc/debug_mode.html">Debugモード</a> をオンにする。
+	    スレッドセーフにして、iterator と範囲をチェックするようになる。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_USE_SYSTEM_ASSERT</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    stderr を使った fprintf 実装のassertの代わりにシステム定義の assert	を使う。<br>
+	    訳注: v5.2.1 ではすでに存在しない。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG_MESSAGE </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コメントを外すと強制的に、全ての assertion チェック失敗時にユーザー定義のグローバル関数を直接呼ぶようになる。<br>
+	      void __stl_debug_message(const char * format_str,	...)<br>
+	      これによりデバッグ対象のための assertion を制御できるようになる。<br>
+	      注：このマクロを設定した場合、STLport利用側でどこかに __stl_debug_message	関数を定義する必要がある。
+	      </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG_TERMINATE	</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    コメントを外すと強制的に、全ての assertion チェック失敗時にユーザー定義のグローバル関数を実行するようになる。<br>
+	    void __stl_debug_terminate(void)。<br>
+	    これによりデバッグ対象の assertion でのふるまいを制御できる。
+	    _STLP_NO_DEBUG_EXCEPTIONS が未定義ならデフォルトルーチンはユニークな例外を投げ、
+	    定義されている場合は abort() が呼ばれる。<br>
+	      注：このマクロを設定した場合、STLport利用側でどこかに __stl_debug_terminate 関数を定義する必要がある。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_DEBUG_EXCEPTIONS </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    この定義をコメントすれば、__stl_debug_terminate() は abort() を呼ぶのでなく	ユニークな例外を投げるようになる。<br>
+	    訳注: v5.2.1ではすでに存在しない。
+	    </font></td>
+	  </tr>
+
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXCEPTIONS </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    STLport内の例外コードの使用を抑止する。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_NAMESPACES </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    コンパイラが namespace をサポートしていても	STLport	をグローバルの名前空間に置く。<br>
+	    訳注: v5 ではコンパイラが namespace	をサポートしていることを前提に組まれている。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_RELOPS_NAMESPACE
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    定義されている場合、関係演算子を名前空間 std::rel_ops に入れない。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_REENTRANT </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    プロジェクトがマルチスレッドの場合に定義する。
+	    STLport で マルチスレッドセーフなアロケータをサポートする。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_NOTHREADS </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    定義すると、STLport	でマルチスレッディング・サポートを使用しない。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_NEW_C_HEADERS</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    定義されると、利用可能でも(C++で追加された)新しいスタイルのCヘッダを使用しない。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_USE_RAW_SGI_ALLOCATORS
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    標準仕様の <b>allocator</b>&lt;&gt;	のかわりに、
+	    旧来の SGIスタイルのアロケータをコンテナのデフォルトに強制使用する。<br>
+	    訳注: v5.2.1ではすでに存在しない。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_MALLOC </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    定義すると平坦な <b>malloc()</b> を用いた <b>allocator</b>&lt;&gt; を使用し、
+	    SGI製の最適化ノードアロケータエンジンの使用をやめる。
+	      </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_NEWALLOC </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    定義すると平坦な <b>new()</b> を用いた <b>allocator</b>&lt;&gt; を使用し、
+	    SGI製の最適化ノードアロケータエンジンの使用をやめる。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG_ALLOC </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    メモリーの一貫性をチェックしたりするデバッグ用の <b>allocator</b>&lt;&gt; を使用する。
+	      </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEBUG_UNINITIALIZED </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    あなたのクラスの未初期化のメンバー変数を検出したいときにこのオプションを使う。
+	    これを設定時、construct() と destroy() はクラスストレージを	値 _STLP_SHRED_BYTE(後述) で埋めるようになる。<br>
+	    注:	_STLP_DEBUG, _STLP_DEBUG_ALLOC マクロを定義しても このオプションは自動的には設定されない。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_SHRED_BYTE </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    _STLP_DEBUG_ALLOC または _STLP_DEBUG_UNINITIALIZED が定義されているとき、初期化前のメモリをこの定義のバイト値で埋めるようになる。
+	    なるべく参照不可能なアドレスになったり問題を引き起こすような値を選ぶこと。
+	    プラットフォームによっては予め適切な値が設定されているかもしれない。<b>stldebug.h</b> を参照のこと。
+	      </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_DONT_THROW_RANGE_ERRORS	</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    このマクロは、コンテナ(vectorとdeque)のメンバー関数at()を使えないようにする。
 	    範囲エラー例外を投げない at() は用意するのでなく、
-            このマクロを定義すると at()メソッドが定義されなくなる。
+	    このマクロを定義すると at()メソッドが定義されなくなる。
 	    </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_MSVC50_COMPATIBILITY
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            これを定義すると、SGI reverse_iterator をMSVCライブラリの他の部分と互換性があるようにする。（部分特殊化は効果がない）。
-            MSVC5.0 を使う場合には必須で、自動的に設定される。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_MFC </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            MFC を用いる場合はこのマクロを定義する必要がある。 
-            STLport の &lt;stl/_config.h&gt; で同期プリミティブを取得するのに &lt;windows.h&gt; の代わりに &lt;afx.h&gt; をincludeするようになる。
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_MSVC50_COMPATIBILITY
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    これを定義すると、SGI reverse_iterator をMSVCライブラリの他の部分と互換性があるようにする。（部分特殊化は効果がない）。
+	    MSVC5.0 を使う場合には必須で、自動的に設定される。
 	    </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            たとえば map&lt;&gt; や set&lt;&gt;. のように１つ以上のデフォルト・テンプレート引数を持つ場合に最小限の設定を使うようにする。
-            _STLP_LIMITED_DEFAULT_TEMPLATES がオンの場合のみ効果がある。<br>
-            訳注:v5.2.1 では若干残っている箇所もあるが実質 使えなくなっている。
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_MFC	</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    MFC	を用いる場合はこのマクロを定義する必要がある。
+	    STLport の &lt;stl/_config.h&gt; で同期プリミティブを取得するのに &lt;windows.h&gt;	の代わりに &lt;afx.h&gt; をincludeするようになる。
 	    </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_PROXY_ARROW_OPERATOR</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    たとえば map&lt;&gt; や set&lt;&gt;. のように１つ以上のデフォルト・テンプレート引数を持つ場合に最小限の設定を使うようにする。
+	    _STLP_LIMITED_DEFAULT_TEMPLATES がオンの場合のみ効果がある。<br>
+	    訳注:v5.2.1	では若干残っている箇所もあるが実質 使えなくなっている。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_PROXY_ARROW_OPERATOR</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 	   STLportではデフォルトでイテレーターのoperator-&gt; で使用されていないインスタンス化の戻り値の型をチェックするようプロクシテクニックを使っている。
 	   この機能が不具合を起こす場合は このスイッチで ->オペレータのプロクシを無効にできる。
-            <br>訳注: v5.2.1ではすでに存在しない。
+	    <br>訳注: v5.2.1ではすでに存在しない。
 	    </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_ABBREVS</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            リンカーを補助するため 内部(インターフェースには影響しない範囲)で使うクラス名を(短く)略した名前で生成するようにする。
-            このオプションはもう不要だろうが、このリリースではまだ機能するだろう。<br>
-            訳注:あまり長い名前を扱えない古いリンカー対策。dmcではまだ必要かも。
-            </font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_DECLSPEC
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-	   (廃止, Windows 専用) 
-           このスイッチは DLL からエクスポートできるSTLportのシンボルを作成する。
-           export 特性を使う場合、すべてのコンパイル単位でこのマクロを定義する必要があり、かつ、
-           STLport シンボルを使う いづれかの DLL で _STLP_DESIGNATED_DLL マクロを定義する必要がある。
-           STLport の iostream を使用せずにデフォルトのノードアロケータを使用してDLL境界を越えてオブジェクトを渡す場合、この機能を使用する必要がある。
-           STLport の iostream を使い /MDフラグでコンパイルする場合は自動的にこの定義が行われる。
- 	    </font></td>
-          </tr>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_ABBREVS</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    リンカーを補助するため 内部(インターフェースには影響しない範囲)で使うクラス名を(短く)略した名前で生成するようにする。
+	    このオプションはもう不要だろうが、このリリースではまだ機能するだろう。<br>
+	    訳注:あまり長い名前を扱えない古いリンカー対策。dmcではまだ必要かも。
+	    </font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_USE_DECLSPEC
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	   (廃止, Windows 専用)
+	   このスイッチは DLL からエクスポートできるSTLportのシンボルを作成する。
+	   export 特性を使う場合、すべてのコンパイル単位でこのマクロを定義する必要があり、かつ、
+	   STLport シンボルを使う いづれかの DLL で _STLP_DESIGNATED_DLL マクロを定義する必要がある。
+	   STLport の iostream を使用せずにデフォルトのノードアロケータを使用してDLL境界を越えてオブジェクトを渡す場合、この機能を使用する必要がある。
+	   STLport の iostream を使い /MDフラグでコンパイルする場合は自動的にこの定義が行われる。
+	    </font></td>
+	  </tr>
 
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_DESIGNATED_DLL
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-	   (廃止, Windows 専用) 
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_DESIGNATED_DLL
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	   (廃止, Windows 専用)
 	   _STLP_USE_DECLSPEC といっしょにこのスイッチを使うと、作成した DLL で他のモジュール用に STLportシンボルをエクスポートするようになる。
-           DLLシンボルをエクスポートするライブラリは、これらのスイッチの双方が定義されてコンパイルされる必要があり、
-           少なくとも1つのソースファイルには<string>にヘッダを含める必要がある。
+	   DLLシンボルをエクスポートするライブラリは、これらのスイッチの双方が定義されてコンパイルされる必要があり、
+	   少なくとも1つのソースファイルには<string>にヘッダを含める必要がある。
 	   通常これを使うべきではないが、STLport DLL を構築するときに 内部的に用いられる。
 	    </font></td>
-          </tr>
+	  </tr>
 
-        </tbody></table>
-        <p><b>注:</b></p>
-        <ul>
-          <li> Purify(c) や Codeguard(c)、BoundsChecker(c) のようなツールを使う場合、
-          <tt>_STLP_USE_MALLOC</tt> か <tt>_STLP_USE_NEWALLOC</tt> を #define するのを勧める。
-          そうでないとSTL内部構造の大部分でポインターチェックが効かず、それではそれらのツールを使う意味が無い。
-            </li>
-        </ul>
-        <p>&nbsp;</p>
+	</tbody></table>
+	<p><b>注:</b></p>
+	<ul>
+	  <li> Purify(c) や Codeguard(c)、BoundsChecker(c) のようなツールを使う場合、
+	  <tt>_STLP_USE_MALLOC</tt> か <tt>_STLP_USE_NEWALLOC</tt> を #define するのを勧める。
+	  そうでないとSTL内部構造の大部分でポインターチェックが効かず、それではそれらのツールを使う意味が無い。
+	    </li>
+	</ul>
+	<p>&nbsp;</p>
 
 	<a name="compiler_switches"></a>
-        <h3>コンパイラ特性スイッチ</h3>
+	<h3>コンパイラ特性スイッチ</h3>
 
-        <p>
-        コンパイラ特性スイッチは、コンパイラの（欠点)特性/バグ を表している STLport マクロだ。
-        下記のテーブルでそれらを記述する。
-        バグなく完璧に ANSI C++ 仕様を実装したコンパイラならば、コンフィグファイルは空になっているだろう:)
-        </p>
+	<p>
+	コンパイラ特性スイッチは、コンパイラの（欠点)特性/バグ を表している STLport マクロだ。
+	下記のテーブルでそれらを記述する。
+	バグなく完璧に ANSI C++	仕様を実装したコンパイラならば、コンフィグファイルは空になっているだろう:)
+	</p>
 	<p>
 	STLportでは、多数のスイッチの設定を助けるスクリプトを用意している。
 	<a href="http://www.stlport.org/doc/auto_configure.html">configure 実行</a> の章にツールの使い方があるので読んでください。
@@ -405,572 +406,572 @@ A:visited {font-size: 14px; text-decoration:none; color: #0c70b6;}
 	あくまで初期設定過程の支援としてのみ提供している。
 	</i>
 
-        <table border="1" cellpadding="4" cellspacing="0">
-          <caption>
-            <h4>コンパイラ特性についての STLport マクロ の説明</h4>
-          </caption>
-          <tbody><tr>
-            <td><b>制御マクロ名</b></td>
-            <td><b>説明</b></td>
-            <td><b>デフォルト</b></td>
-          </tr>
-         <!--
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_INCLUDE_PATH
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              ネイティブ(コンパイラ付属)ヘッダが置かれているパス。
-              STLport は <b>_STL</b>:: 名前空間に <b>std</b>:: の名前をインポートするのにこの情報を使う。
-              デフォルトは <b>../include</b>。<br>
-              ヒント: <b>include</b> で終わるディレクトリに STLport を絶対にインストールしないこと。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            ../include
-            </font></td>
-          </tr>
-          -->
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_UINT32_T</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            符号無 32ビット整数型。
-            </font></td>
-            <td><font size="2" face="Arial, Helvetica">unsigned long</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_LONG_LONG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-           コンパイラが標準以外の<b>long long</b> 型のみをサポートする場合に定義。
-            </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
+	<table border="1" cellpadding="4" cellspacing="0">
+	  <caption>
+	    <h4>コンパイラ特性についての STLport マクロ	の説明</h4>
+	  </caption>
+	  <tbody><tr>
+	    <td><b>制御マクロ名</b></td>
+	    <td><b>説明</b></td>
+	    <td><b>デフォルト</b></td>
+	  </tr>
+	 <!--
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_INCLUDE_PATH
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      ネイティブ(コンパイラ付属)ヘッダが置かれているパス。
+	      STLport は <b>_STL</b>:: 名前空間に <b>std</b>:: の名前をインポートするのにこの情報を使う。
+	      デフォルトは <b>../include</b>。<br>
+	      ヒント: <b>include</b> で終わるディレクトリに STLport を絶対にインストールしないこと。
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    ../include
+	    </font></td>
+	  </tr>
+	  -->
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_UINT32_T</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    符号無 32ビット整数型。
+	    </font></td>
+	    <td><font size="2" face="Arial, Helvetica">unsigned	long</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_LONG_LONG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	   コンパイラが標準以外の<b>long long</b> 型のみをサポートする場合に定義。
+	    </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
 
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_WCHAR_T</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            コンパイラが <b>wchar_t</b>型を持たない場合に定義。
-            </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_WCHAR_T_IS_USHORT
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              wchar_t がユニークな型でなく unsigned short を typedef していた場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_LONG_DOUBLE</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_WCHAR_T</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    コンパイラが <b>wchar_t</b>型を持たない場合に定義。
+	    </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_WCHAR_T_IS_USHORT
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      wchar_t がユニークな型でなく unsigned short を typedef していた場合に定義。
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_LONG_DOUBLE</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 	    コンパイラが <b>long double</b> 型をサポートしない場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_TYPENAME</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが <b>typename</b> 識別子をサポートしない場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXPLICIT</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが <b>explicit</b> 識別子をサポートしない場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_MUTABLE</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが <b>mutable</b> 識別子をサポートしない場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_NEW_STYLE_CASTS</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが新しいスタイルのキャスト(<b>const_cast&lt;&gt;</b>)をサポートしない場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_BOOL</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが <b>bool</b> をサポートしない場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_DONT_USE_BOOL_TYPEDEF</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが <b>bool</b> をサポートしないが将来のため予約語になっている(typedef出来ない)場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_YVALS_H</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            <b>true/false</b> が定義される <b>&lt;yvals.h&gt;</b> ヘッダを使う場合に定義。 (Visual C++ 4.2)
-             </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_DEFAULT_TEMPLATE_PARAM</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            コンパイラがデフォルトtemplateパラメータをサポートしない場合に定義。
-             <br>訳注:STLport 5.2.1ではすでに存在しない
-            </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEFAULT_TYPE_PARAM</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            コンパイラがデフォルトパラメータとして、完全型しかサポートしていない場合に定義。
-            </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_LIMITED_DEFAULT_TEMPLATES</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            コンパイラが非型のデフォルトテンプレートパラメータを扱えない場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NON_TYPE_TMPL_PARAM_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-             コンパイラが 非型のテンプレートパラメータを持つ関数でトラブルがある場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_STATIC_TEMPLATE_DATA</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            コンパイラが static な class データのtemplate定義をサポートしない場合に定義。
-             <br>訳注:v5.2.1ではすでに存在しない
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_STATIC_CONST_INIT_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-             コンパイラが class 内の static のclassデータtemplate なメンバーの初期化をサポートしない場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_WEAK_ATTRIBUTE</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが <b>__attribute((weak))__</b> を扱える場合に拡張してコンストラクトする。
-             (gcc 2.7.2 のように) static なテンプレートデータメンバーを扱えない場合に必要となる。<br>
-             訳注:STLport 5.2.1ではすでに存在しない
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_HAS_NO_NAMESPACES</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            コンパイラが名前空間をサポートしない場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_BROKEN_USING_DIRECTIVE
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              "<b>using</b>" キーワードが template 型で使えない場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_HAS_NO_EXCEPTIONS</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_TYPENAME</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが <b>typename</b> 識別子をサポートしない場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXPLICIT</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが <b>explicit</b> 識別子をサポートしない場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_MUTABLE</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが <b>mutable</b> 識別子をサポートしない場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_NEW_STYLE_CASTS</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが新しいスタイルのキャスト(<b>const_cast&lt;&gt;</b>)をサポートしない場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_BOOL</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが <b>bool</b> をサポートしない場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_DONT_USE_BOOL_TYPEDEF</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが <b>bool</b> をサポートしないが将来のため予約語になっている(typedef出来ない)場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_YVALS_H</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    <b>true/false</b> が定義される <b>&lt;yvals.h&gt;</b> ヘッダを使う場合に定義。 (Visual C++ 4.2)
+	     </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_DEFAULT_TEMPLATE_PARAM</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    コンパイラがデフォルトtemplateパラメータをサポートしない場合に定義。
+	     <br>訳注:STLport 5.2.1ではすでに存在しない
+	    </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_DEFAULT_TYPE_PARAM</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    コンパイラがデフォルトパラメータとして、完全型しかサポートしていない場合に定義。
+	    </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_LIMITED_DEFAULT_TEMPLATES</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    コンパイラが非型のデフォルトテンプレートパラメータを扱えない場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NON_TYPE_TMPL_PARAM_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	     コンパイラが 非型のテンプレートパラメータを持つ関数でトラブルがある場合に定義。
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_STATIC_TEMPLATE_DATA</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    コンパイラが static	な class データのtemplate定義をサポートしない場合に定義。
+	     <br>訳注:v5.2.1ではすでに存在しない
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_STATIC_CONST_INIT_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	     コンパイラが class	内の static のclassデータtemplate なメンバーの初期化をサポートしない場合に定義。
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_WEAK_ATTRIBUTE</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが <b>__attribute((weak))__</b>	を扱える場合に拡張してコンストラクトする。
+	     (gcc 2.7.2	のように) static なテンプレートデータメンバーを扱えない場合に必要となる。<br>
+	     訳注:STLport 5.2.1ではすでに存在しない
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_HAS_NO_NAMESPACES</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    コンパイラが名前空間をサポートしない場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_BROKEN_USING_DIRECTIVE
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      "<b>using</b>" キーワードが template 型で使えない場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_HAS_NO_EXCEPTIONS</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが 例外処理を扱えない場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXCEPTION_SPEC</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが例外の仕様をサポートしない場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_THROW_RETURN_BUG
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              <b>throw</b>() のあとに <b>return</b> 文が必要なコンパイラの場合に定義
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_BAD_ALLOC </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              ヘッダ &lt;<b>new</b>&gt; で <b>bad_alloc</b> 例外が定義されていないコンパイラの場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_MEMBER_TEMPLATES</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXCEPTION_SPEC</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが例外の仕様をサポートしない場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_THROW_RETURN_BUG
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      <b>throw</b>() のあとに <b>return</b> 文が必要なコンパイラの場合に定義
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_BAD_ALLOC </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      ヘッダ &lt;<b>new</b>&gt;	で <b>bad_alloc</b> 例外が定義されていないコンパイラの場合に定義。
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_MEMBER_TEMPLATES</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラがメンバー(関数)テンプレートをサポートしない場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_MEMBER_TEMPLATE_CLASSES</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-        	コンパイラがメンバー クラス テンプレートをサポートしない場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_FRIEND_TEMPLATES</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが firend テンプレートをサポートしない場合に定義。
-             <br>訳注:v5.2.1ではすでに存在しない
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_QUALIFIED_FRIENDS</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが namespace名付の frend 宣言を受け付けない場合に定義。
-             <br>訳注:v5.2.1ではすでに存在しない
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_CLASS_PARTIAL_SPECIALIZATION</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラがクラステンプレートの部分特殊化をサポートしない場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              部分的に特化しているクラスには、メソッド宣言に自身のフルネーム（テンプレートパラメータ）が必要
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_PARTIAL_SPECIALIZATION_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              部分特殊化で新しいスタイルの<b>reverse_iterator</b>を使うときにバグになる場合に定義。
-             <br>訳注:v5.2.1ではすでに存在しない
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_MEMBER_SPECIALIZATION_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_MEMBER_TEMPLATE_CLASSES</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		コンパイラがメンバー クラス テンプレートをサポートしない場合に定義。
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_FRIEND_TEMPLATES</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが firend テンプレートをサポートしない場合に定義。
+	     <br>訳注:v5.2.1ではすでに存在しない
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_QUALIFIED_FRIENDS</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが namespace名付の frend 宣言を受け付けない場合に定義。
+	     <br>訳注:v5.2.1ではすでに存在しない
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_CLASS_PARTIAL_SPECIALIZATION</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラがクラステンプレートの部分特殊化をサポートしない場合に定義。
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      部分的に特化しているクラスには、メソッド宣言に自身のフルネーム（テンプレートパラメータ）が必要
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_PARTIAL_SPECIALIZATION_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      部分特殊化で新しいスタイルの<b>reverse_iterator</b>を使うときにバグになる場合に定義。
+	     <br>訳注:v5.2.1ではすでに存在しない
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_MEMBER_SPECIALIZATION_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが部分特殊化クラスのメンバーに固有のバグを保つ場合に定義。
-             <br>訳注:v5.2.1で#defineは残っているがそれを参照しているものがない
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_METHOD_SPECIALIZATION</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが 単一のテンプレートメソッドの特殊化をサポートしていない場合に定義。
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_FUNC_PARTIAL_ORDERING</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              コンパイラが部分テンプレート関数の順序をサポートしていない場合に定義。
-             <br>訳注:v5.2.1ではすでに存在しない
-              </font></td>
-            <td><font size="2" face="Arial, Helvetica">Off
+	     <br>訳注:v5.2.1で#defineは残っているがそれを参照しているものがない
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_METHOD_SPECIALIZATION</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが 単一のテンプレートメソッドの特殊化をサポートしていない場合に定義。
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_NO_FUNC_PARTIAL_ORDERING</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      コンパイラが部分テンプレート関数の順序をサポートしていない場合に定義。
+	     <br>訳注:v5.2.1ではすでに存在しない
+	      </font></td>
+	    <td><font size="2" face="Arial, Helvetica">Off
 		</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-               コンパイラがテンプレートの特殊化の文法をサポートしない場合に定義
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	       コンパイラがテンプレートの特殊化の文法をサポートしない場合に定義
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-               コンパイラが関数の明示的なテンプレート引数をサポートしない場合に定義
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	       コンパイラが関数の明示的なテンプレート引数をサポートしない場合に定義
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_AUTOMATIC_TYPE_TRAITS</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_AUTOMATIC_TYPE_TRAITS</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが あらゆる型のために予め特殊化したクラス <b>type_traits&lt;T&gt;</b>を用意してある場合に定義。
 		これは拡張機能。
-        	<br>訳注:v5.2.1ではすでに存在しない
+		<br>訳注:v5.2.1ではすでに存在しない
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><b><font size="1" face="Arial, Helvetica">_STLP_LOOP_INLINE_PROBLEMS</font></b></td>
-            <td><font size="2" face="Arial, Helvetica">
-                コンパイラが <b>while(), for()</b> 含む処理(関数)をインライン展開出来ない場合に定義。
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><b><font size="1" face="Arial, Helvetica">_STLP_LOOP_INLINE_PROBLEMS</font></b></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		コンパイラが <b>while(), for()</b> 含むinline関数をコンパイル出来ない場合に定義。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><b><font size="1" face="Arial, Helvetica">_STLP_BASE_MATCH_BUG</font></b></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><b><font size="1" face="Arial, Helvetica">_STLP_BASE_MATCH_BUG</font></b></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが基本型のテンプレート関数引数でマッチに失敗する場合に定義
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><b><font size="1" face="Arial, Helvetica">_STLP_NONTEMPL_BASE_MATCH_BUG</font></b></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><b><font size="1" face="Arial, Helvetica">_STLP_NONTEMPL_BASE_MATCH_BUG</font></b></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが (非テンプレートの)ベース型のテンプレート関数引数のマッチに失敗する場合に定義。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><b><font size="1" face="Arial, Helvetica">_STLP_NESTED_TYPE_PARAM_BUG</font></b></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><b><font size="1" face="Arial, Helvetica">_STLP_NESTED_TYPE_PARAM_BUG</font></b></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが メソット定義の外観部(引数型や返値型)でclassをネストした型やtypedef名を明示して使うのを拒否する場合に定義。<br>
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_TYPENAME_ON_RETURN_TYPE</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_TYPENAME_ON_RETURN_TYPE</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが メソット定義の外観部(引数型や返値型)でclassをネストした型やtypedef名を明示して使うのにキーワードtypenameを必要とする場合に定義。<br>
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_BASE_TYPEDEF_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_BASE_TYPEDEF_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが typedef に深刻な問題をもつ場合に定義
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_BASE_TYPEDEF_OUTSIDE_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_BASE_TYPEDEF_OUTSIDE_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		ベースclassのtypedef名が外から見えない場合に定義
-             <br>訳注:v5.2.1で#defineは残っているがそれを参照しているものがない
+	     <br>訳注:v5.2.1で#defineは残っているがそれを参照しているものがない
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_MEMBER_POINTER_PARAM_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_MEMBER_POINTER_PARAM_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが、関数引数としてメンバーへのポインタを扱えない場合に定義。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_UNINITIALIZABLE_PRIVATE</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-         	コンパイラが、staticなpriavateデーターメンバーの初期化に問題がある場合に定義。
-        	<br>訳注:v5.2.1ではすでに存在しない
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_UNINITIALIZABLE_PRIVATE</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		コンパイラが、staticなpriavateデーターメンバーの初期化に問題がある場合に定義。
+		<br>訳注:v5.2.1ではすでに存在しない
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_STATIC_ARRAY_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_STATIC_ARRAY_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが、enumで定義された要素数でのstaticな配列メンバーの具現化にトラブルが有る場合に定義。
-        	<br>訳注:v5.2.1ではすでに存在しない
+		<br>訳注:v5.2.1ではすでに存在しない
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_DEFAULT_CONSTRUCTOR_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-                コンパイラが、組み込みの 整数型のデフォルトコンストラクタで0への初期化ができない場合に定義。
-             <br>訳注:v5.2.1ではすでに存在しない
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_DEFAULT_CONSTRUCTOR_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		コンパイラが、組み込みの 整数型のデフォルトコンストラクタで0への初期化ができない場合に定義。
+	     <br>訳注:v5.2.1ではすでに存在しない
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_CONST_CONSTRUCTOR_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_CONST_CONSTRUCTOR_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが、constオブジェクトでメンバーのデフォルトコンストラクタの呼び出しに失敗する場合に定義。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_TRIVIAL_CONSTRUCTOR_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_TRIVIAL_CONSTRUCTOR_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが、POD型のコンストラクタの呼び出しにトラブルがある場合に定義
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_TRIVIAL_DESTRUCTOR_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_TRIVIAL_DESTRUCTOR_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが、POD型のデストラクタの呼び出しにトラブルがある場合に定義
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_MULTI_CONST_TEMPLATE_ARG_BUG</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-		map/set でconstにされているキーの型に特化した問題
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_MULTI_CONST_TEMPLATE_ARG_BUG</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		map/set	でconstにされているキーの型に特化した問題
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_ARROW_OPERATOR</b><br>
-            <b class="gray">__SGI_STL_NO_ARROW_OPERATOR</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            	SGI 製 iterator の -&gt; operator の使用をやめる。
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_ARROW_OPERATOR</b><br>
+	    <b class="gray">__SGI_STL_NO_ARROW_OPERATOR</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		SGI 製 iterator	の -&gt; operator の使用をやめる。
 		プロキシ回避策として用意。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_AT_MEMBER_FUNCTION</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_AT_MEMBER_FUNCTION</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンテナのメンバー関数 <b>at</b>() を使えなくする。
 		<br>訳注:v5.2.1では、at(n)自体は存在し例外を投げなくなっている。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_HAS_NO_NEW_IOSTREAMS</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-                ネイティブ(コンパイラ付属)のC++ライブラリが template実装された新しいスタイルの <b>iostreams</b> を提供していない場合に定義。
-             <br>訳注:v5.2.1ではすでに存在しない
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b class="gray">_STLP_HAS_NO_NEW_IOSTREAMS</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		ネイティブ(コンパイラ付属)のC++ライブラリが template実装された新しいスタイルの <b>iostreams</b>	を提供していない場合に定義。
+	     <br>訳注:v5.2.1ではすでに存在しない
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXCEPTION_HEADER</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_EXCEPTION_HEADER</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		&lt;<b>exception</b>&gt; ヘッダが欠乏しているコンパイラの場合に定義
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_HAS_NO_NEW_C_HEADERS</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-                ネイティブ(コンパイラ付属)のC++ライブラリが &lt;<b>cstddef</b>&gt; のような新しいスタイルのCヘッダを持たず、
-                &lt;stddef.h&gt; のような古いスタイルのものしか持っていない場合に定義。
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_HAS_NO_NEW_C_HEADERS</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		ネイティブ(コンパイラ付属)のC++ライブラリが &lt;<b>cstddef</b>&gt; のような新しいスタイルのCヘッダを持たず、
+		&lt;stddef.h&gt; のような古いスタイルのものしか持っていない場合に定義。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_NEW_NEW_HEADER</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-                ネイティブ(コンパイラ付属)のC++ライブラリが 新しいスタイルの &lt;<b>new</b>&gt; ヘッダを持っていない場合に定義。
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NO_NEW_NEW_HEADER</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		ネイティブ(コンパイラ付属)のC++ライブラリが 新しいスタイルの &lt;<b>new</b>&gt;	ヘッダを持っていない場合に定義。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_VENDOR_GLOBAL_STD </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_VENDOR_GLOBAL_STD </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		コンパイラが提供するC++標準ライブラリが置かれる名前空間が <b>std</b>:: でなくグローバルの名前空間を使う場合に定義。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">std::</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_VENDOR_GLOBAL_CSTD </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-		コンパイラが提供するC標準ライブラリが置かれる名前空間が <b>std</b>:: でなくグローバルの名前空間を使う場合に定義。
+	    <td><font size="2" face="Arial, Helvetica">std::</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_VENDOR_GLOBAL_CSTD </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		コンパイラが提供するC標準ライブラリが置かれる名前空間が	<b>std</b>:: でなくグローバルの名前空間を使う場合に定義。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_RAND48</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_RAND48</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		Cライブラリに関数 <b>lrand48()</b> がある場合に定義。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">Off</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_INCLUDE_PATH
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              ネイティブ(コンパイラ付属)ヘッダが置かれているパス。
-              相対パスか絶対パスで指定。<br>
-              STLport は <b>_STL</b>:: 名前空間に <b>std</b>:: の名前をインポートするのにこの情報を使う。
-              デフォルトは <b>../include</b>。<br>
-              ヒント: <b>include</b> で終わるディレクトリに STLport を絶対にインストールしないこと。
+	    <td><font size="2" face="Arial, Helvetica">Off</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_INCLUDE_PATH
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      ネイティブ(コンパイラ付属)ヘッダが置かれているパス。
+	      相対パスか絶対パスで指定。<br>
+	      STLport は <b>_STL</b>:: 名前空間に <b>std</b>:: の名前をインポートするのにこの情報を使う。
+	      デフォルトは <b>../include</b>。<br>
+	      ヒント: <b>include</b> で終わるディレクトリに STLport を絶対にインストールしないこと。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica"><b>../include</b></font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_C_INCLUDE_PATH
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              ネイティブ(コンパイラ付属)の <b>stdio.h</b>のようなCヘッダが置かれているパス。
-              相対パスか絶対パスで指定。
+	    <td><font size="2" face="Arial, Helvetica"><b>../include</b></font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_C_INCLUDE_PATH
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      ネイティブ(コンパイラ付属)の <b>stdio.h</b>のようなCヘッダが置かれているパス。
+	      相対パスか絶対パスで指定。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica"><b>../include</b></font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_CPP_C_INCLUDE_PATH
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-              ネイティブ(コンパイラ付属)の <b>cstdio</b>のような新しいスタイルのCヘッダが置かれているパス。
-              相対パスか絶対パスで指定。
+	    <td><font size="2" face="Arial, Helvetica"><b>../include</b></font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_CPP_C_INCLUDE_PATH
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	      ネイティブ(コンパイラ付属)の <b>cstdio</b>のような新しいスタイルのCヘッダが置かれているパス。
+	      相対パスか絶対パスで指定。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica"><b>../include</b></font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_MAKE_HEADER </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
+	    <td><font size="2" face="Arial, Helvetica"><b>../include</b></font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_MAKE_HEADER </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
 		このマクロは ディレクトリと名前でヘッダパスを作る。
 		コンパイラが "/" を理解しない場合、マクロの変更が必要。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">&lt;<b>path/header</b>&gt;</font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_HEADER(header)
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-                このマクロは ネイティブパスから header ファイルを include ためにある。
-                プリプロセッサに問題がある場合はマクロを修正すること。
+	    <td><font size="2" face="Arial, Helvetica">&lt;<b>path/header</b>&gt;</font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_HEADER(header)
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		このマクロは ネイティブパスから	header ファイルを include ためにある。
+		プリプロセッサに問題がある場合はマクロを修正すること。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">See <b>stl_config.h</b></font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_C_HEADER(header)
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-		古いスタイルのCヘッダ用ということ以外は _STLP_NATIVE_HEADER(header)に同じ。
+	    <td><font size="2" face="Arial, Helvetica">See <b>stl_config.h</b></font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_C_HEADER(header)
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		古いスタイルのCヘッダ用ということ以外は	_STLP_NATIVE_HEADER(header)に同じ。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">See <b>stl_config.h</b></font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_CPP_C_HEADER(header)
-              </b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-		新しいいスタイルのCヘッダ用ということ以外は _STLP_NATIVE_HEADER(header) に同じ。
+	    <td><font size="2" face="Arial, Helvetica">See <b>stl_config.h</b></font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_NATIVE_CPP_C_HEADER(header)
+	      </b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+		新しいいスタイルのCヘッダ用ということ以外は _STLP_NATIVE_HEADER(header)	に同じ。
 		</font></td>
-            <td><font size="2" face="Arial, Helvetica">See <b>stl_config.h</b></font></td>
-          </tr>
-          <tr>
-            <td><font size="1" face="Arial, Helvetica"><b>_STLP_LINK_TIME_INSTANTIATION</b></font></td>
-            <td><font size="2" face="Arial, Helvetica">
-            コンパイラが、templateの分割コンパイル・モデルをサポートしていて 非inline関数やメソッドの実装を .c ファイルに置けるような場合に定義。
+	    <td><font size="2" face="Arial, Helvetica">See <b>stl_config.h</b></font></td>
+	  </tr>
+	  <tr>
+	    <td><font size="1" face="Arial, Helvetica"><b>_STLP_LINK_TIME_INSTANTIATION</b></font></td>
+	    <td><font size="2" face="Arial, Helvetica">
+	    コンパイラが、templateの分割コンパイル・モデルをサポートしていて 非inline関数やメソッドの実装を .c ファイルに置けるような場合に定義。
 	    </font></td>
-            <td><font size="2" face="Arial, Helvetica"><b>Off</b></font></td>
-          </tr>
+	    <td><font size="2" face="Arial, Helvetica"><b>Off</b></font></td>
+	  </tr>
 
-        </tbody></table>
-        <h4>&nbsp;</h4>
+	</tbody></table>
+	<h4>&nbsp;</h4>
 </td></tr>
 
 <!--
 <tr align="left" valign="top">
 <td width="24">
-<img src="STLportConfigurationManual/trans.gif" border="0" height="1" width="24">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="1" width="24">
 </td>
 <td width="776">
-<img src="STLportConfigurationManual/trans.gif" border="0" height="20" width="50">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="20" width="50">
 <br>
 <a href="http://www.stlport.org/doc/index.html">Table of Contents</a>
 <br>
@@ -978,17 +979,17 @@ A:visited {font-size: 14px; text-decoration:none; color: #0c70b6;}
 </tr>
 <tr align="left" valign="top">
 <td width="24">
-<img src="STLportConfigurationManual/trans.gif" border="0" height="1" width="24">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="1" width="24">
 </td>
 <td width="776">
-<img src="STLportConfigurationManual/trans.gif" border="0" height="40" width="80">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="40" width="80">
 <br>
-<img src="STLportConfigurationManual/black.gif" border="0" height="1" width="776">
+<img src="STLportConfigurationManual/black.gif"	border="0" height="1" width="776">
 </td>
 </tr>
 <tr align="left" valign="top">
 <td width="24">
-<img src="STLportConfigurationManual/trans.gif" border="0" height="1" width="24">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="1" width="24">
 </td>
 <td width="776">
 <a href="http://www.stlport.org/news.html">
@@ -1008,28 +1009,28 @@ A:visited {font-size: 14px; text-decoration:none; color: #0c70b6;}
 </a>&nbsp;&nbsp;<a href="http://www.stlport.org/index.html">
 <span class="bottomNav">Home</span>
 </a>&nbsp;&nbsp;<br>
-<img src="STLportConfigurationManual/trans.gif" border="0" height="5" width="50">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="5" width="50">
 <br>
 </td>
 </tr>
 <tr align="left" valign="top">
 <td width="24">
-<img src="STLportConfigurationManual/trans.gif" border="0" height="1" width="24">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="1" width="24">
 </td>
 <td width="776">
-<img src="STLportConfigurationManual/black.gif" border="0" height="1" width="776">
+<img src="STLportConfigurationManual/black.gif"	border="0" height="1" width="776">
 </td>
 </tr>
 <tr align="left" valign="top">
 <td width="24">
-<img src="STLportConfigurationManual/trans.gif" border="0" height="1" width="24">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="1" width="24">
 </td>
 <td width="776">
-<img src="STLportConfigurationManual/trans.gif" border="0" height="5" width="50">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="5" width="50">
 <br>
 <span class="copyright">Copyright 2001 by STLport</span>
 <br>
-<img src="STLportConfigurationManual/trans.gif" border="0" height="50" width="80">
+<img src="STLportConfigurationManual/trans.gif"	border="0" height="50" width="80">
 </td>
 </tr>
 -->

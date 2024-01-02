@@ -68,6 +68,9 @@ if "%TargetArch%"=="" set TargetArch=x86
   if /I "%1"=="mingw"    (set Compiler=mingw
                           set LIB_NAME_PREFIX=lib
                           set DBG_SUFFIX=g)
+  if /I "%1"=="clang"    (set Compiler=clang
+                          set LIB_NAME_PREFIX=lib
+                          set DBG_SUFFIX=g)
   if /I "%1"=="dmc"       set Compiler=dmc
   if /I "%1"=="bcc"       set Compiler=bcc
   if /I "%1"=="watcom"    set Compiler=watcom
@@ -196,6 +199,7 @@ if "%Compiler%"=="vc9"    goto L_VC_GE1400
 if "%Compiler%"=="vc8"    goto L_VC_GE1400
 if "%Compiler%"=="vc71"   goto L_VC_LT1400
 if "%Compiler%"=="mingw"  goto L_MINGW
+if "%Compiler%"=="clang"  goto L_CLANG
 if "%Compiler%"=="dmc"    goto L_DMC
 if "%Compiler%"=="ow"     goto L_OW
 if "%Compiler%"=="bcc"    goto L_BORLANDC
@@ -288,16 +292,22 @@ rem Microsoft Visual C++
 
 
 rem MinGW32
+:L_CLANG
+  set CC=clang
+  set CXX=clang++
+  set LNK=clang++ -shared
+  goto L_MINGW_CLANG
 :L_MINGW
+  set CC=gcc
+  set CXX=g++
+  set LNK=g++ -shared
+:L_MINGW_CLANG
   set LIB_NAME_BASE=lib%LIB_NAME_BASE%
   set DirSep=/
   set STLPORT_INC_DIR=%STLPORT_INC_DIR:\=/%
   set LIBEXT=a
   set DLLEXT=dll
   set OBJEXT=o
-  set CC=gcc
-  set CXX=g++
-  set LNK=g++ -shared
   set AR=ar
   set RC=windres
   set O_CC=-Wall -Wsign-promo -Wcast-qual -fexceptions -DWINVER=%WINVER% -DWIN32 -D_WINDOWS --include-directory=%STLPORT_INC_DIR%

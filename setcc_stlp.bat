@@ -29,6 +29,7 @@ if /i "%COMPILER%"=="mingw"	goto L_MINGW
 if /i "%COMPILER%"=="mingw64"	goto L_MINGW64
 if /i "%COMPILER%"=="tdm32"     goto L_TDM32
 if /i "%COMPILER%"=="tdm64"     goto L_TDM64
+if /i "%COMPILER%"=="clang"	goto L_CLANG
 if /i "%COMPILER%"=="dmc" 	goto L_DMC
 if /i "%COMPILER%"=="dm" 	goto L_DMC
 if /i "%COMPILER%"=="ow"   	goto L_OW
@@ -129,6 +130,13 @@ goto :L_END
 	set "PATH=%MINGW_DIR%\bin;%cc_base_path%"
 	goto :L_END
 
+:L_CLANG
+	set COMPILER=clang
+	set "MINGW_DIR=c:\MinGW"
+	set "MSYS_ROOT=%MINGW_DIR%\msys\1.0"
+	set "PATH=%MINGW_DIR%\bin;%MINGW_DIR%\bin;%cc_base_path%"
+	goto :L_END
+
 :L_DMC
 	set COMPILER=dmc
 	set "DMC_DIR=c:\dm"
@@ -139,7 +147,8 @@ goto :L_END
 
 :L_OW
 	set COMPILER=ow
-	set "WATCOM=C:\tools\watcom1.9"
+rem	set "WATCOM=C:\tools\watcom1.9"
+	set "WATCOM=C:\tools\ow2pre"
 	set "PATH=%WATCOM%\BINNT;%WATCOM%\BINW;%cc_base_path%"
 	set "EDPATH=%WATCOM%\EDDAT"
 	set "INCLUDE=%WATCOM%\H;%WATCOM%\H\NT;%INCLUDE%"

@@ -131,7 +131,9 @@
 #  endif
 #elif defined (__MINGW32__) || defined (__MINGW64__)
 #  define _STLP_PLATFORM "MinGW"
-#  if defined (__GNUC__)
+#  if defined (__clang__)
+#    include <stl/config/_clang.h>
+#  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
 #  include <errno.h>
