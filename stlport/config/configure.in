@@ -269,9 +269,6 @@ AC_TRY_COMPILE(
      #include <cstring>
      #include <cassert>
      #include <climits>
-     #include <new>
-     #include <iosfwd>
-     #include <iostream>
      #ifndef __STL_NO_WCHAR_T
      #include <cwchar>
      #endif
@@ -957,7 +954,9 @@ AC_MSG_RESULT($ac_cv_td_bug)
 
 AC_MSG_CHECKING(for explicit function template arguments)
 AC_TRY_LINK(
-    [template <class T> class foo {
+    [  template <class T> class foo;
+       template<class T> bool operator==(const foo<T>& lhs,const foo<T>& rhs);
+      template <class T> class foo {
 	private:
 	  T bar;
 	friend bool operator== <> (const foo<T>&,const foo<T>&);

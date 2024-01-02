@@ -24,22 +24,16 @@
 
 # include "Prefix.h"
 
-#include "nc_alloc.h"
-# if defined (EH_NEW_HEADERS)
-#  include <iterator>
-//#  if defined (EH_USE_NAMESPACES)
-//using namespace std;
-//#  endif
-# else
-#  include <iterator.h>
-# endif
+# include "nc_alloc.h"
 
 # if defined (EH_NEW_HEADERS)
 #  include <cstdio>
 #  include <cassert>
+#  include <iterator>
 # else
 #  include <stdio.h>
 #  include <assert.h>
+#  include <iterator.h>
 # endif
 
 # if defined (EH_NEW_IOSTREAMS)

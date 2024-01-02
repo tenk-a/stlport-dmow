@@ -14,17 +14,32 @@
  */
 
 #ifndef __STLPORT_CSTDIO
+# define __STLPORT_CSTDIO
 
 # ifndef __STL_CONFIG_H
 #  include <stl_config.h>
 # endif
 
-# if defined (__STL_USE_NEW_C_HEADERS) || defined (__IN_STLPORT_CSTDIO)
-#  include __STL_NATIVE_C_HEADER(cstdio)
+# if ! defined (__STL_WINCE)
+
+#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
+#    undef std
+#    define __STL_RESUME_STD_FOR_CSTDIO
+#    define __STLPORT_NATIVE_PASS
+#  endif
+
+# if defined (__STL_USE_NEW_C_HEADERS)
+#  include __STL_NATIVE_CPP_C_HEADER(cstdio)
 # else
-#  define __IN_STLPORT_CSTDIO
 #  include <stdio.h>
 # endif
+
+# if defined ( __STL_RESUME_STD_FOR_CSTDIO )
+#    undef __STL_RESUME_STD_FOR_CSTDIO
+#    define std __STLPORT_NAMESPACE
+#    undef __STLPORT_NATIVE_PASS
+# endif
+
 
 # ifdef __STL_IMPORT_VENDOR_CSTD 
 __STL_BEGIN_NAMESPACE
@@ -78,10 +93,9 @@ using __STL_VENDOR_CSTD::vsprintf;
 
 __STL_END_NAMESPACE
 
-# endif /* __STL_USE_OWN_NAMESPACE */
+# endif /* __STL_IMPORT_VENDOR_CSTD */
 
-# define __STLPORT_CSTDIO
-# undef  __IN_STLPORT_CSTDIO
+# endif /* ! defined (__STL_WINCE) */
 
 #endif
 

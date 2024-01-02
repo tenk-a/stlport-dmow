@@ -37,15 +37,6 @@
 
 __STL_BEGIN_NAMESPACE
 
-
-// malloc_alloc out-of-memory handling
-# if ( __STL_STATIC_TEMPLATE_DATA > 0 )
-template <int __inst>
-__oom_handler_type __malloc_alloc<__inst>::__oom_handler=(__oom_handler_type)0 ;
-#  else
-__DECLARE_INSTANCE(__oom_handler_type, __malloc_alloc<0>::__oom_handler, =0);
-# endif /* ( __STL_STATIC_TEMPLATE_DATA > 0 ) */
-
 template <int __inst>
 void * __malloc_alloc<__inst>::_S_oom_malloc(size_t __n)
 {
@@ -103,7 +94,7 @@ void __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
   // check integrity
   __stl_verbose_assert(__real_p->__magic != __deleted_magic, _StlMsg_DBA_DELETED_TWICE);
   __stl_verbose_assert(__real_p->__magic == __magic, _StlMsg_DBA_NEVER_ALLOCATED);
-  __stl_verbose_assert(__real_p->__type_size == sizeof(value_type), 
+  __stl_verbose_assert(__real_p->__type_size == 1,
 		       _StlMsg_DBA_TYPE_MISMATCH);
   __stl_verbose_assert(__real_p->_M_size == __n, _StlMsg_DBA_SIZE_MISMATCH);
   // check pads on both sides
@@ -111,6 +102,7 @@ void __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
   for (__tmp= (unsigned char*)(__real_p+1); __tmp < (unsigned char*)__p; __tmp++)
     __stl_verbose_assert(*__tmp==__shred_byte, _StlMsg_DBA_UNDERRUN);
   size_t __real_n= __n + __extra_before_chunk() + __extra_after_chunk();
+
   for (__tmp= ((unsigned char*)__p)+__n*sizeof(value_type); 
        __tmp < ((unsigned char*)__real_p)+__real_n ; __tmp++)
     __stl_verbose_assert(*__tmp==__shred_byte, _StlMsg_DBA_OVERRUN);
@@ -268,18 +260,26 @@ __node_alloc<threads, inst>::reallocate(void* __p,
 }
 # endif
 
-// those should have only one instance. Currently, if we not rebuild the std library,
-// they are only being instantiated in the executable.
-
-# if defined (__BUILDING_STLPORT_DLL) || ! defined (__STLPORT_DLL)
 
 # if ( __STL_STATIC_TEMPLATE_DATA > 0 )
+
+// malloc_alloc out-of-memory handling
+template <int __inst>
+__oom_handler_type __malloc_alloc<__inst>::__oom_handler=(__oom_handler_type)0 ;
 
 #ifdef __STL_THREADS
     template <bool __threads, int __inst>
     _STL_mutex_base
-    __node_alloc<__threads, __inst>::_S_node_allocator_lock __STL_MUTEX_INITIALIZER;
+    _Node_Alloc_Lock<__threads, __inst>::_S_lock __STL_MUTEX_INITIALIZER;
 #endif
+
+template <bool __threads, int __inst>
+_Node_alloc_obj * __STL_VOLATILE
+__node_alloc<__threads, __inst>::_S_free_list[_NFREELISTS]
+= {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+// The 16 zeros are necessary to make version 4.1 of the SunPro
+// compiler happy.  Otherwise it appears to allocate too little
+// space for the array.
 
 template <bool __threads, int __inst>
 char *__node_alloc<__threads, __inst>::_S_start_free = 0;
@@ -290,15 +290,11 @@ char *__node_alloc<__threads, __inst>::_S_end_free = 0;
 template <bool __threads, int __inst>
 size_t __node_alloc<__threads, __inst>::_S_heap_size = 0;
 
-template <bool __threads, int __inst>
-_Node_alloc_obj * __STL_VOLATILE
-__node_alloc<__threads, __inst>::_S_free_list[_NFREELISTS]
- = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-// The 16 zeros are necessary to make version 4.1 of the SunPro
-// compiler happy.  Otherwise it appears to allocate too little
-// space for the array.
 
 # else /* ( __STL_STATIC_TEMPLATE_DATA > 0 ) */
+
+__DECLARE_INSTANCE(__oom_handler_type, __malloc_alloc<0>::__oom_handler, =0);
+
 __DECLARE_INSTANCE(char *, __single_client_alloc::_S_start_free,=0);
 __DECLARE_INSTANCE(char *, __single_client_alloc::_S_end_free,=0);
 __DECLARE_INSTANCE(size_t, __single_client_alloc::_S_heap_size,=0);
@@ -320,7 +316,6 @@ __DECLARE_INSTANCE(_STL_mutex_base,
                    __STL_MUTEX_INITIALIZER);
 #   endif
 #  endif /* __STL_STATIC_TEMPLATE_DATA */
-# endif /* __STLPORT_INSTANTIATE */
 
 __STL_END_NAMESPACE
 

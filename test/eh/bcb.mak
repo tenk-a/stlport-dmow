@@ -49,7 +49,7 @@ PATHASM = .;
 PATHRC = .;
 DEBUGLIBPATH = $(BCB)\lib\debug
 RELEASELIBPATH = $(BCB)\lib\release
-USERDEFINES = __STL_USE_NEWALLOC;_NOTHREADS
+USERDEFINES = _NOTHREADS
 SYSDEFINES = _RTLDLL;NO_STRICT;USEPACKAGES
  # ---------------------------------------------------------------------------
 CFLAG1 = -I.;..\..\stlport;$(BCB)\include;$(BCB)\include\vcl \

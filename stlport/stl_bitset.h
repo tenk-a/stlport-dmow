@@ -39,6 +39,10 @@
 // to test(), except that it does no range checking.  The non-const version
 // returns a reference to a bit, again without doing any range checking.
 
+#ifndef __SGI_STDEXCEPT
+#  include <stdexcept>      
+#endif
+
 # ifndef __SGI_STL_INTERNAL_ALGOBASE_H
 #  include <stl_algobase.h>
 # endif
@@ -63,6 +67,7 @@
 #  include <iostream>
 # endif
 
+
 #define __BITS_PER_WORDT(__wt) (CHAR_BIT*sizeof(__wt))
 #define __BITSET_WORDS(__n,__wt) \
  ((__n) < 1 ? 1 : ((__n) + __BITS_PER_WORDT(__wt) - 1)/__BITS_PER_WORDT(__wt))
@@ -71,6 +76,11 @@ __STL_BEGIN_NAMESPACE
 
 #if defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
 #pragma set woff 1209
+#endif
+
+#if defined(__IBMCPP__)
+// supress EDC3130: A constant is being used as a conditional expression
+#pragma info(nocnd) 
 #endif
 
 // structure to aid in counting bits
@@ -342,7 +352,7 @@ private:
 
   void _M_do_sanitize() {
     _Sanitize<_WordT,_Nb%__BITS_PER_WORDT(_WordT) >
-      ::_M_do_sanitize(_Base_bitset<__BITSET_WORDS(_Nb,_WordT), _WordT>::_M_hiword());
+      ::_M_do_sanitize(this->_M_hiword());
   }
 
 public:
@@ -439,29 +449,29 @@ public:
 
   // 23.3.5.2 bitset operations:
   bitset<_Nb,_WordT>& operator&=(const bitset<_Nb,_WordT>& __rhs) {
-    _Base::_M_do_and(__rhs);
+    this->_M_do_and(__rhs);
     return *this;
   }
 
   bitset<_Nb,_WordT>& operator|=(const bitset<_Nb,_WordT>& __rhs) {
-    _Base::_M_do_or(__rhs);
+    this->_M_do_or(__rhs);
     return *this;
   }
 
   bitset<_Nb,_WordT>& operator^=(const bitset<_Nb,_WordT>& __rhs) {
-    _Base::_M_do_xor(__rhs);
+    this->_M_do_xor(__rhs);
     return *this;
   }
 
   bitset<_Nb,_WordT>& operator<<=(size_t __pos) {
-    _Base::_M_do_left_shift(__pos);
-    _M_do_sanitize();
+    this->_M_do_left_shift(__pos);
+    this->_M_do_sanitize();
     return *this;
   }
 
   bitset<_Nb,_WordT>& operator>>=(size_t __pos) {
-    _Base::_M_do_right_shift(__pos);
-    _M_do_sanitize();
+    this->_M_do_right_shift(__pos);
+    this->_M_do_sanitize();
     return *this;
   }
 
@@ -471,38 +481,38 @@ public:
   //
 
   bitset<_Nb,_WordT>& _Unchecked_set(size_t __pos) {
-    _Base::_M_getword(__pos) |= _Base::_S_maskbit(__pos);
+    this->_M_getword(__pos) |= _Base::_S_maskbit(__pos);
     return *this;
   }
 
   bitset<_Nb,_WordT>& _Unchecked_set(size_t __pos, int __val) {
     if (__val)
-      _Base::_M_getword(__pos) |= _Base::_S_maskbit(__pos);
+      this->_M_getword(__pos) |= _Base::_S_maskbit(__pos);
     else
-      _Base::_M_getword(__pos) &= ~ _Base::_S_maskbit(__pos);
+      this->_M_getword(__pos) &= ~ _Base::_S_maskbit(__pos);
 
     return *this;
   }
 
   bitset<_Nb,_WordT>& _Unchecked_reset(size_t __pos) {
-    _Base::_M_getword(__pos) &= ~ _Base::_S_maskbit(__pos);
+    this->_M_getword(__pos) &= ~ _Base::_S_maskbit(__pos);
     return *this;
   }
 
   bitset<_Nb,_WordT>& _Unchecked_flip(size_t __pos) {
-    _Base::_M_getword(__pos) ^= _Base::_S_maskbit(__pos);
+    this->_M_getword(__pos) ^= _Base::_S_maskbit(__pos);
     return *this;
   }
 
   bool _Unchecked_test(size_t __pos) const {
-    return (_Base::_M_getword(__pos) & _Base::_S_maskbit(__pos)) != __STATIC_CAST(_WordT,0);
+    return (this->_M_getword(__pos) & _Base::_S_maskbit(__pos)) != __STATIC_CAST(_WordT,0);
   }
 
   // Set, reset, and flip.
 
   bitset<_Nb,_WordT>& set() {
-    _Base::_M_do_set();
-    _M_do_sanitize();
+    this->_M_do_set();
+    this->_M_do_sanitize();
     return *this;
   }
 
@@ -521,7 +531,7 @@ public:
   }
 
   bitset<_Nb,_WordT>& reset() {
-    _Base::_M_do_reset();
+    this->_M_do_reset();
     return *this;
   }
 
@@ -533,8 +543,8 @@ public:
   }
 
   bitset<_Nb,_WordT>& flip() {
-    _Base::_M_do_flip();
-    _M_do_sanitize();
+    this->_M_do_flip();
+    this->_M_do_sanitize();
     return *this;
   }
 
@@ -554,7 +564,7 @@ public:
   reference operator[](size_t __pos) { return reference(*this,__pos); }
   bool operator[](size_t __pos) const { return _Unchecked_test(__pos); }
 
-  unsigned long to_ulong() const { return _Base::_M_do_to_ulong(); }
+  unsigned long to_ulong() const { return this->_M_do_to_ulong(); }
 
 #if defined (__STL_MEMBER_TEMPLATES) && \
     defined (__STL_EXPLICIT_FUNCTION_TMPL_ARGS)
@@ -572,15 +582,15 @@ public:
   }
 #endif /* __STL_EXPLICIT_FUNCTION_TMPL_ARGS */
 
-  size_t count() const { return _Base::_M_do_count(); }
+  size_t count() const { return this->_M_do_count(); }
 
   size_t size() const { return _Nb; }
 
   bool operator==(const bitset<_Nb,_WordT>& __rhs) const {
-    return _Base::_M_is_equal(__rhs);
+    return this->_M_is_equal(__rhs);
   }
   bool operator!=(const bitset<_Nb,_WordT>& __rhs) const {
-    return !_Base::_M_is_equal(__rhs);
+    return !this->_M_is_equal(__rhs);
   }
 
   bool test(size_t __pos) const {
@@ -590,8 +600,8 @@ public:
     return _Unchecked_test(__pos);
   }
 
-  bool any() const { return _Base::_M_is_any(); }
-  bool none() const { return !_Base::_M_is_any(); }
+  bool any() const { return this->_M_is_any(); }
+  bool none() const { return !this->_M_is_any(); }
 
   bitset<_Nb,_WordT> operator<<(size_t __pos) const { 
     bitset<_Nb,_WordT> __result(*this);
@@ -610,11 +620,11 @@ public:
 
   // find the index of the first "on" bit
   size_t _Find_first() const 
-    { return _Base::_M_do_find_first(_Nb); }
+    { return this->_M_do_find_first(_Nb); }
 
   // find the index of the next "on" bit after prev
   size_t _Find_next( size_t __prev ) const 
-    { return _Base::_M_do_find_next(__prev, _Nb); }
+    { return this->_M_do_find_next(__prev, _Nb); }
 
 //
 // Definitions of should-be non-inline member functions.
@@ -711,7 +721,7 @@ inline bitset<_Nb,_WordT> operator^(const bitset<_Nb,_WordT>& __x,
   return __result;
 }
 
-#ifdef __STL_USE_NEW_IOSTREAMS
+#if defined ( __STL_USE_NEW_IOSTREAMS )
 template <class _CharT, class _Traits, size_t _Nb, class _WordT>
 basic_istream<_CharT, _Traits>&
 operator>>(basic_istream<_CharT, _Traits>& __is, bitset<_Nb,_WordT>& __x);
@@ -721,7 +731,9 @@ template <class _CharT, class _Traits, size_t _Nb, class _WordT>
 basic_ostream<_CharT, _Traits>&
 operator<<(basic_ostream<_CharT, _Traits>& __os,
            const bitset<_Nb,_WordT>& __x);
-#else
+
+#elif ! defined ( __STL_USE_NO_IOSTREAMS )
+
 template <size_t _Nb, class _WordT>
 istream&
 operator>>(istream& __is, bitset<_Nb,_WordT>& __x);
@@ -784,7 +796,7 @@ __STL_END_NAMESPACE
 #  undef __BITSET_WORDS
 
 #if defined(__IBMCPP__)
-#pragma info(restore) 
+#pragma info(restore)
 #endif
 
 # if !defined (__STL_LINK_TIME_INSTANTIATION)

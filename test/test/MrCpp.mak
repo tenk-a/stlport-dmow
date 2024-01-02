@@ -5,14 +5,15 @@
 
 MAKEFILE     = MrCpp.make
 _MondoBuild_ = # {MAKEFILE}  # Make the definition blank to avoid rebuilding when makefile is modified
-Includes     = -i : -i "{CIncludes}" -i "{STL}" -i "{STL}old_hp:"		#*TY 05/24/1999 - added old_hp directory
+#Includes     = -i : -i "{CIncludes}" -i "{STL}" -i "{STL}old_hp:"
+Includes     = -i : -i "{STL}" -i "{STL}old_hp:" -i "{CIncludes}"
 Sym_PPC      = # -sym big # turning on sym makes link time extremely long.
 ObjDir_PPC   = :	# objects under current directory. if separate directory is desired, create it before running make
 MrCpp_Options = -align power -exceptions on -rtti on -bool on -ansi on -ansifor -j0
 
-STL_Options  = 	#-d __STL_USE_NEWALLOC=1 ¶
-				-d __STL_DEBUG=1 -d __STL_DEBUG_ALLOC=1 ¶
-				-d __STL_NO_EXCEPTION_HEADER=1		#*TY 01/19/1999 - added __STL_NO_EXCEPTION_HEADER (stdexcept.h in {CIncludes} can not be used)
+STL_Options  = 	#-d __STL_USE_NEWALLOC ¶
+				-d __STL_DEBUG -d __STL_DEBUG_ALLOC -d __STL_DEBUG_UNINITIALIZED ¶
+				-d __STL_NO_EXCEPTION_HEADER		#*TY 01/19/1999 - added __STL_NO_EXCEPTION_HEADER (stdexcept.h in {CIncludes} can not be used)
 
 PPCCPlusOptions = {Includes} {Sym_PPC} {STL_Options} {MrCpp_Options} -opt size
 
@@ -300,6 +301,7 @@ stl_test.PPC ÄÄ {_MondoBuild_} {Objects_PPC}
 		"{SharedLibraries}MrCExceptionsLib_4.1d1" ¶
 		# end
 	echo ¶# Finished Building "'{Targ}'"
+
 
 
 

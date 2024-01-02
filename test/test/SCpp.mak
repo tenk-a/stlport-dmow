@@ -5,14 +5,15 @@
 
 MAKEFILE     = SCpp.make
 _MondoBuild_ = # {MAKEFILE}  # Make blank to avoid rebuilds when makefile is modified
-Includes     = -i : -i "{CIncludes}" -i "{STL}" -i "{STL}old_hp:"		#*TY 05/24/1999 - added old_hp directory
+Includes     = -i : -i "{STL}" -i "{STL}old_hp:" -i "{CIncludes}"
 Sym_68K      = # -sym on 
 ObjDir_68K   = :	# objects under current directory. if separate directory is desired, create it before running make
 SCpp_Options = -ansi on -bool on -exceptions on  -rtti on -b2 -frames -mbg full -opt all -w 12
 
-STL_Options  = 	#-d __STL_USE_NEWALLOC=1 ¶
-				-d __STL_DEBUG=1 -d __STL_DEBUG_ALLOC=1 ¶
-				-d __STL_NO_EXCEPTION_HEADER=1		#*TY 01/19/1999 - added __STL_NO_EXCEPTION_HEADER (stdexcept.h in {CIncludes} can not be used)
+STL_Options  = 	#-d __STL_USE_NEWALLOC ¶
+				-d allocator=_Al		#*TY 08/03/1999 - to prevent type too complex error; see also config/stl_apple.h ¶
+				-d __STL_DEBUG -d __STL_DEBUG_ALLOC -d __STL_DEBUG_UNINITIALIZED ¶
+				-d __STL_NO_EXCEPTION_HEADER		#*TY 01/19/1999 - added __STL_NO_EXCEPTION_HEADER (stdexcept.h in {CIncludes} can not be used)
 				
 CPlusOptions = {Includes} {Sym_68K} {STL_Options} {SCpp_Options} -model far -mc68020 
 
@@ -265,7 +266,7 @@ Objects_68K  = ¶
 .cpp.o Ä .cpp {_MondoBuild_}
 	###########
 	echo Compiling:  file "'{default}.cpp'"
-	{CPlus} {depDir}{default}.cpp -o {targDir}{default}.cpp.o {CPlusOptions} -seg {default}
+	{SCpp} {depDir}{default}.cpp -o {targDir}{default}.cpp.o {CPlusOptions} -seg {default}
 	if "{status}"
 		set compile_status 1
 	end
@@ -298,6 +299,7 @@ stl_test.68K ÄÄ {_MondoBuild_} {Objects_68K}
 		"{Libraries}Interface.o" ¶
 		# end
 	echo ¶# Finished Building "'{Targ}'"
+
 
 
 

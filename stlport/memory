@@ -31,13 +31,28 @@
 #  include <stl_raw_storage_iter.h>
 # endif
 
-# if defined (__STL_USE_OWN_NAMESPACE)
+# if defined (__STL_IMPORT_VENDOR_STD)
+#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
+#    undef std
+#    define __STL_RESUME_STD_FOR_MEMORY
+#    define __STLPORT_NATIVE_PASS
+#  endif
+
+
 #  include __STL_NATIVE_HEADER(memory)
+
+
+# if __MSL__ >= 0x2405	/*  980401 vss  MSL 2.4  Pro 3 Release  */	
+#  include <new_mem.h>
 # endif
 
-#if __MSL__ >= 0x2405	/*  980401 vss  MSL 2.4  Pro 3 Release  */	
-# include <new_mem.h>
-#endif
+# if defined ( __STL_RESUME_STD_FOR_MEMORY )
+#    undef __STL_RESUME_STD_FOR_MEMORY
+#    define std __STLPORT_NAMESPACE
+#    undef __STLPORT_NATIVE_PASS
+# endif
+
+# endif
 
 __STL_BEGIN_NAMESPACE
 
@@ -91,7 +106,8 @@ template<class _Tp> struct auto_ptr : public __auto_ptr_base  {
   _Tp& operator*() const __STL_NOTHROW { return *get(); }
 
 # if defined (__SGI_STL_NO_ARROW_OPERATOR)
-#  if !defined (__STL_NO_PROXY_ARROW_OPERATOR)
+  // fbp : you would not instantiate auto_ptrs for builtins, would you ?
+#  if !defined (__STL_NO_AUTO_PTR_PROXY_ARROW_OPERATOR)
   __arrow_op_dispatch<_Tp&, _Tp*> operator->() const __STL_NOTHROW {
     return __arrow_op_dispatch<_Tp&, _Tp*>(*get());
   }

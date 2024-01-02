@@ -28,19 +28,6 @@
 // hardcoded. This also includes modifications
 // of STLport switches depending on compiler flags 
 
-// shared library tune-up
-
-# if defined (_WIN32) || defined (WIN32) || defined (__WIN32__) || defined (__WIN16)
-#  if ! defined (__BUILDING_STLPORT_DLL) && (defined (_MSC_VER) && defined (CRTDLL))
-#   define __BUILDING_STLPORT_DLL 1
-#  else
-#   if ! defined ( __STLPORT_DLL) && \
-   (( defined ( _WINDLL ) || defined (__DLL) ) || ( defined (__STLPORT_STD_REBUILD) && defined (_DLL)))
-#    define __STLPORT_DLL 1
-#   endif
-#  endif
-# endif /* WIN */
-
 // Microsoft Visual C++ 4.0, 4.1, 4.2, 5.0
 // distinguish real MSC
 #  if defined(_MSC_VER) && !defined(__MWERKS__) && !defined (__BORLANDC__)
@@ -48,24 +35,31 @@
 #  endif
 
 
-// sunpro 5.0
+// sunpro
 # if defined (__SUNPRO_CC)
 #  define __STL_NATIVE_INCLUDE_PATH ../CC 
+
+// #  ifndef __STL_HAS_NO_NEW_C_HEADERS
+// #   define __STL_HAS_NO_NEW_C_HEADERS
+// #  endif
+
 // bit-field problem ?
-#  undef __STL_NEED_MUTABLE
-#  define __STL_NEED_MUTABLE
-#  if (__SUNPRO_CC >=0x500) && !defined (__STLPORT_NEW_IOSTREAMS)
-#   undef  __STL_USE_OWN_NAMESPACE
-#   define __STL_USE_OWN_NAMESPACE 1
-#  if (__SUNPRO_CC > 0x500)
-#   define __STL_NATIVE_C_HEADER(header) <../CC/std/##header>
-#  else
+// #  undef __STL_NEED_MUTABLE
+// #  define __STL_NEED_MUTABLE
+#  if (__SUNPRO_CC >=0x500)
+// #   define __STL_NATIVE_HEADER(header) <../CC/##header##>
 #   define __STL_NATIVE_C_HEADER(header) <../CC/##header##.SUNWCCh>
-#  endif
+#   define __STL_NATIVE_CPP_C_HEADER(header) <../CC/##header##.SUNWCCh>
+#   if !defined (__STLPORT_NEW_IOSTREAMS)
+#    undef  __STL_USE_OWN_NAMESPACE
+#    define __STL_USE_OWN_NAMESPACE 1
+#   endif
 #  else
 #   define wint_t __wint_t 
 // famous CC 4.2 bug
 #   define __STL_INLINE_STRING_LITERAL_BUG 1
+// /usr/include
+#   define __STL_NATIVE_C_INCLUDE_PATH ../include
 #  endif
 # endif
 
@@ -76,21 +70,29 @@
 // fix possible "configure" bugs for VC++ and define things
 // not settable with "configure"
 
-#  define __STLPORT_EXPORT_KEYWORD __declspec(dllexport)
-#  define __STLPORT_IMPORT_KEYWORD __declspec(dllimport)
+#  define __STL_NATIVE_HEADER(x) <../include/##x>
+#  define __STL_NATIVE_C_HEADER(x) <../include/##x>
+#  define __STL_NATIVE_CPP_C_HEADER(x) <../include/##x>
+
+#  define __STL_EXPORT_DECLSPEC __declspec(dllexport)
+#  define __STL_IMPORT_DECLSPEC __declspec(dllimport)
+#  define __STL_IMPORT_TEMPLATE_KEYWORD  extern
 #  if (__STL_MSVC > 0x420)
-#   define __STLPORT_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
-#   define __STLPORT_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
+#   define __STL_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
+#   define __STL_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
 #  endif
 
 #  define __STL_NO_TYPENAME_IN_TEMPLATE_HEADER
 // fails to properly resolve call to sin() from within sin()
 #  define __STL_SAME_FUNCTION_NAME_RESOLUTION_BUG
+
 #if __STL_MSVC > 1000
-#pragma once				// means include this file only one time.
+
 #pragma warning ( disable : 4355)	// ignore warning "this used in base member initializer list.
-#pragma warning ( disable : 4251 )	// ignore template classes being exported in .dll's
+// #pragma warning ( disable : 4251 )	// ignore template classes being exported in .dll's
 #pragma warning ( disable : 4284 )	// ignore arrow operator warning
+#pragma warning ( disable : 4231 )      // extern before spesialization
+
 #endif
 
 # if (__STL_MSVC < 1100)
@@ -148,6 +150,13 @@
 # define __STL_NATIVE_INCLUDE_PATH ../g++
 #endif
 
+# define __STL_NATIVE_CPP_C_INCLUDE_PATH __STL_NATIVE_INCLUDE_PATH
+# define __STL_NATIVE_C_INCLUDE_PATH ../include
+
+#  ifndef __HONOR_STD
+#   define __STL_VENDOR_GLOBAL_EXCEPT_STD 1
+#  endif
+
 # endif /* __GNUC */
 
 # if defined(__MINGW32__)
@@ -167,6 +176,19 @@
 # else
 #  undef  __STL_NO_EXCEPTION_SPEC
 #  define __STL_NO_EXCEPTION_SPEC 1
+# endif
+#endif
+
+// Modena C++ library 
+
+#if defined (__MWERKS__) || defined (__KCC)
+# include <mcompile.h>
+# define __STL_USE_MSIPL 1
+# if defined (__KCC) || (defined(__MSL_CPP__) && \
+       ( (__MSL_CPP__ >= 0x5000 && defined( _MSL_NO_MESSAGE_FACET )) || \
+	 (__MSL_CPP__ < 0x5000 && defined( MSIPL_NL_TYPES )))  \
+	 )
+#  define __STL_NO_NATIVE_MESSAGE_FACET 1
 # endif
 #endif
 
@@ -194,7 +216,7 @@
 #     undef  __STL_NO_MEMBER_TEMPLATE_KEYWORD
 #     define __STL_NO_MEMBER_TEMPLATE_KEYWORD 1
 #   endif
-#   ifndef __EXCEPTIONS
+#   if !defined (__EXCEPTIONS) && ! defined (_EXCEPTIONS)
 #     undef  __STL_HAS_NO_EXCEPTIONS
 #     define __STL_HAS_NO_EXCEPTIONS
 #   endif

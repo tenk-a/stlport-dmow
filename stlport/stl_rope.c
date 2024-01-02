@@ -44,7 +44,12 @@
 __STL_BEGIN_NAMESPACE
 
 #if defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
-#pragma set woff 1174
+# pragma set woff 1174
+#elif defined(__DECCXX)
+# ifdef __PRAGMA_ENVIRONMENT
+#  pragma __environment __save
+#  pragma __environment __header_defaults
+# endif
 #endif
 
 # if defined ( __STL_NESTED_TYPE_PARAM_BUG )
@@ -776,8 +781,9 @@ class _Rope_find_char_char_consumer : public _Rope_char_consumer<_CharT> {
 	    _M_count += __n; return true;
 	}
 };
-	    
-#ifdef __STL_USE_NEW_IOSTREAMS
+
+#if !defined (__STL_USE_NO_IOSTREAMS)	    
+#if defined (__STL_USE_NEW_IOSTREAMS)
   template<class _CharT, class _Traits>
   // Here _CharT is both the stream and rope character type.
 #else
@@ -788,7 +794,7 @@ class _Rope_find_char_char_consumer : public _Rope_char_consumer<_CharT> {
 #endif
 class _Rope_insert_char_consumer : public _Rope_char_consumer<_CharT> {
     private:
-#       ifdef __STL_USE_NEW_IOSTREAMS
+#       if defined (__STL_USE_NEW_IOSTREAMS)
 	  typedef basic_ostream<_CharT,_Traits> _Insert_ostream;
 #	else
  	typedef ostream _Insert_ostream;
@@ -804,7 +810,7 @@ class _Rope_insert_char_consumer : public _Rope_char_consumer<_CharT> {
 		// Returns true to continue traversal.
 };
 	    
-#ifdef __STL_USE_NEW_IOSTREAMS
+# if defined ( __STL_USE_NEW_IOSTREAMS )
   template<class _CharT, class _Traits>
   bool _Rope_insert_char_consumer<_CharT, _Traits>::operator()
 					(const _CharT* __leaf, size_t __n)
@@ -838,6 +844,7 @@ _Rope_insert_char_consumer<char>::operator()
 
 #endif /* __STL_METHOD_SPECIALIZATION */
 #endif /* __STL_USE_NEW_IOSTREAM */
+#endif /* if !defined (__STL_USE_NO_IOSTREAMS) */
 
 template <class _CharT, class _Alloc>
 bool rope<_CharT, _Alloc>::_S_apply_to_pieces(
@@ -897,7 +904,14 @@ bool rope<_CharT, _Alloc>::_S_apply_to_pieces(
     }
 }
 
-#ifdef __STL_USE_NEW_IOSTREAMS
+template <class _CharT> inline bool _Rope_is_simple(_CharT*) { return false; }
+inline bool _Rope_is_simple(char*) { return true; }
+# ifdef __STL_HAS_WCHAR_T
+inline bool _Rope_is_simple(wchar_t*) { return true; }
+# endif
+
+#if !defined (__STL_USE_NO_IOSTREAMS)
+#if defined (__STL_USE_NEW_IOSTREAMS)
   template<class _CharT, class _Traits>
   inline void _Rope_fill(basic_ostream<_CharT, _Traits>& __o, size_t __n)
 #else
@@ -910,20 +924,12 @@ inline void _Rope_fill(ostream& __o, size_t __n)
     for (__i = 0; __i < __n; __i++) __o.put(__f);
 }
     
-
-template <class _CharT> inline bool _Rope_is_simple(_CharT*) { return false; }
-inline bool _Rope_is_simple(char*) { return true; }
-# ifdef __STL_HAS_WCHAR_T
-inline bool _Rope_is_simple(wchar_t*) { return true; }
-# endif
-
-
-#ifdef __STL_USE_NEW_IOSTREAMS
+#if defined (__STL_USE_NEW_IOSTREAMS)
   template<class _CharT, class _Traits, class _Alloc>
   basic_ostream<_CharT, _Traits>& operator<<
 					(basic_ostream<_CharT, _Traits>& __o,
 					 const rope<_CharT, _Alloc>& __r)
-#else
+# else
 template<class _CharT, class _Alloc>
 ostream& operator<< (ostream& __o, const rope<_CharT, _Alloc>& __r)
 #endif
@@ -932,7 +938,7 @@ ostream& operator<< (ostream& __o, const rope<_CharT, _Alloc>& __r)
     bool __left = bool(__o.flags() & ios::left);
     size_t __pad_len;
     size_t __rope_len = __r.size();
-#   ifdef __STL_USE_NEW_IOSTREAMS
+#   if defined (__STL_USE_NEW_IOSTREAMS)
       _Rope_insert_char_consumer<_CharT, _Traits> __c(__o);
 #   else
     _Rope_insert_char_consumer<_CharT> __c(__o);
@@ -959,6 +965,8 @@ ostream& operator<< (ostream& __o, const rope<_CharT, _Alloc>& __r)
     __STL_UNWIND(if (!__is_simple) __o.width(__w))
     return __o;
 }
+
+#endif /* NO_IOSTREAMS */
 
 template <class _CharT, class _Alloc>
 _CharT*
@@ -1530,7 +1538,11 @@ inline void rotate(
 
 __STL_END_NAMESPACE
 #if defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
-#pragma reset woff 1174
+# pragma reset woff 1174
+#elif defined(__DECCXX)
+# ifdef __PRAGMA_ENVIRONMENT
+#  pragma __environment __restore
+# endif
 #endif
 
 # endif /* ROPEIMPL_H */

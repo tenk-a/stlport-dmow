@@ -19,18 +19,22 @@
 #  define __STL_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 #  define __STL_NON_TYPE_TMPL_PARAM_BUG 1
 #  define __STL_STATIC_ARRAY_BUG 1
-#  define __STL_HAS_NO_NEW_C_HEADERS 1 
+// #  define __STL_HAS_NO_NEW_C_HEADERS 1 
 // no partial , just for explicit one
 #  define __STL_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS
-// #  define __STL_NONTEMPL_BASE_MATCH_BUG 1
 #  define __STL_STATIC_CONST_INIT_BUG 1
 #  define __STL_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 # endif
 
+// They are present actually, but have problems.
+#  if ( __SUNPRO_CC <= 0x500 )
+#   define __STL_HAS_NO_NEW_C_HEADERS 1 
+#  endif
+
 #  if ( __SUNPRO_CC < 0x500 )
 // 4.2 does not like it
 #  undef __STL_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS
-
+#  define __STL_NONTEMPL_BASE_MATCH_BUG 1
 #  define __STL_LIMITED_DEFAULT_TEMPLATES 1
 #  define __STL_HAS_NO_NEW_IOSTREAMS 1
 #  define __STL_NO_NEW_NEW_HEADER 1

@@ -50,7 +50,10 @@
 // SGI basic release
 #   define __SGI_STL                                      0x320
 // Adaptation version
-#   define __SGI_STL_PORT                                 0x320
+#   define __SGI_STL_PORT                                 0x321
+
+// include STLport config definitions
+# include <stl_self_config.h>
 
 // First, attempt to include config file produced by "configure"
 # include <config/stlconf.h>
@@ -143,7 +146,13 @@
 #  define __STLPORT_NAMESPACE stlport
 # endif
 
-# if !defined (__STL_HAS_NO_NEW_IOSTREAMS) && !defined (__STL_USE_NEW_IOSTREAMS)
+# if defined (__STL_NO_IOSTREAMS)
+#  undef __STL_USE_NO_IOSTREAMS
+# endif
+
+# if defined (__STLPORT_NEW_IOSTREAMS) || \
+   (!defined (__STL_HAS_NO_NEW_IOSTREAMS) && !defined (__STL_USE_NEW_IOSTREAMS)) \
+   && ! defined (__STL_USE_NO_IOSTREAMS)
 #  define __STL_USE_NEW_IOSTREAMS
 # endif
 
@@ -151,7 +160,31 @@
 #  undef __STL_USE_NEW_IOSTREAMS
 # endif
 
-# if defined (__STL_USE_NEW_IOSTREAMS) &&  \
+// Operating system recognition (basic)
+# if defined (__unix)
+#  define __STL_UNIX 1
+# elif defined(macintosh) || defined (_MAC)
+#  define __STL_MAC  1
+# elif defined (_WIN32) || defined (__WIN32) || defined (WIN32) || defined (__WIN32__)
+#  define __STL_WIN32 1
+# elif defined (__WIN16) || defined (WIN16) || defined (_WIN16)
+#  define __STL_WIN16
+# endif /* __unix */
+
+// shared library tune-up
+
+#  if defined (__BUILDING_STLPORT_DLL)
+//  if we are rebuilding right now as a DLL, place everything here
+#   if defined (__DLL) || defined (_DLL) || defined (_WINDLL)
+#    undef  __STL_USE_DECLSPEC
+#    define __STL_USE_DECLSPEC
+#    undef  __STL_DESIGNATED_DLL
+#    define __STL_DESIGNATED_DLL 1
+#   endif
+#  endif
+
+// Use own namespace always if possible and not explicitly instructed otherwise
+# if defined (__STL_USE_NEW_IOSTREAMS) && \
     defined (__STL_USE_NAMESPACES) && !defined (__STL_BROKEN_USING_DIRECTIVE) && \
     !defined(__STL_STD_REBUILD) && !defined(__STL_NO_OWN_NAMESPACE)
 #  undef  __STL_USE_OWN_NAMESPACE
@@ -194,6 +227,7 @@
 #   define __STL_VOLATILE volatile
 // windows.h _MUST be included before bool definition ;(
 # if defined  (__STL_WIN32THREADS) && defined (__STL_NO_BOOL)
+#   undef  NOMINMAX
 #   define NOMINMAX
 #   ifdef __STL_USE_MFC
 #    include <afx.h>
@@ -319,8 +353,12 @@
 
 // SGI compatibility
 
-#ifndef __STL_NO_WCHAR_T
-# define __STL_HAS_WCHAR_T
+#ifdef __STL_NO_WCHAR_T
+# ifndef __STL_NO_NATIVE_WIDE_STREAMS
+#  define  __STL_NO_NATIVE_WIDE_STREAMS 1
+# endif
+#else
+# define __STL_HAS_WCHAR_T 1
 #endif
 
 #if !defined (__STL_NO_AT_MEMBER_FUNCTION)
@@ -396,9 +434,46 @@
 
 // namespace stuff adjustment
 
+
+// provide a mechanism to redefine std:: namespace in a way that is transparent to the 
+// user. __STL_REDEFINE_STD is being used for wrapper files that include native headers
+// to temporary undef the std macro.
+
+#  if defined ( __STL_USE_NAMESPACES ) && defined ( __STL_USE_OWN_NAMESPACE ) &&  \
+   ! defined ( __STL_DONT_REDEFINE_STD )
+#   define __STL_REDEFINE_STD 1
+#  else
+// for safety 
+#   undef __STL_REDEFINE_STD
+#  endif
+
+#  if defined ( __STL_REDEFINE_STD )
+#   undef std
+    // make std namespace nonempty
+    namespace std { }
+    namespace __stl_native_std = std;
+#   define std __STLPORT_NAMESPACE
+#  endif
+
+// this always mean the C library is in global namespace
+# if defined (__STL_HAS_NO_NEW_C_HEADERS) && ! defined (__STL_VENDOR_GLOBAL_CSTD)
+#  define __STL_VENDOR_GLOBAL_CSTD 1
+# endif
+
 // Depending of whether compiler supports namespaces,
-// tune the parameters for vendor-supplied libraries
+// tune the parameters for vendor-supplied libraries.
+// This section is guarded by __STL_HAS_NO_NAMESPACES, not by __STL_USE_NAMESPACES,
+// since it depends only on the native features, not on user's preference whether
+// to use namespace for STLport or not.
 # if !defined (__STL_HAS_NO_NAMESPACES)
+
+// Import some vendor's headers into corresponding STLport ones if they might be needed
+// 
+#  if defined (__STL_WHOLE_NATIVE_STD) || \
+     (defined(__STL_USE_OWN_NAMESPACE) && defined (__STL_USE_NEW_IOSTREAMS) && \
+     ! defined (__STLPORT_NEW_IOSTREAMS) )
+#    define  __STL_IMPORT_VENDOR_STD 1
+#  endif
 
 // if using stlport:: namespace or if C library stuff is not in vendor's std::,
 // try importing 'em.
@@ -415,7 +490,11 @@
 #   define __STL_VENDOR_STD
 #   define __STL_USING_VENDOR_STD
 #  else
-#   define __STL_VENDOR_STD std
+#   ifdef __STL_REDEFINE_STD
+#     define __STL_VENDOR_STD __stl_native_std
+#   else
+#     define __STL_VENDOR_STD std
+#   endif
 #   define __STL_USING_VENDOR_STD __STL_USING_NAMESPACE(__STL_VENDOR_STD)
 #  endif
 
@@ -429,6 +508,12 @@
 #   define __STL_USING_VENDOR_CSTD __STL_USING_NAMESPACE(__STL_VENDOR_CSTD)
 #  endif /* __STL_VENDOR_CSTD */
 
+// exception, typeinfo, new - always come from the vendor
+#  ifdef __STL_VENDOR_GLOBAL_EXCEPT_STD
+#   define __STL_VENDOR_EXCEPT_STD
+#  else
+#   define __STL_VENDOR_EXCEPT_STD __STL_VENDOR_STD
+#  endif
 
 #  ifndef __STL_USING_BASE_MEMBER
 #   define __STL_USING_BASE_MEMBER using
@@ -442,6 +527,8 @@
 #  define __STL_USING_NAMESPACE(x)
 #  define __STL_USING_VENDOR_CSTD
 #  define __STL_USING_VENDOR_STD 
+#  define __STL_VENDOR_EXCEPT_STD
+#  define std
 # endif
 
 
@@ -454,6 +541,7 @@ namespace __STLPORT_STD { }
 #   define  __STLPORT_STD std
 // provide stlport:: as equivalent namespace for portability anyways
 namespace std { }
+// this is safe as without USE_OWN_NAMESPACE we do not redefine std
 namespace __STLPORT_NAMESPACE = __STLPORT_STD;
 #  endif /* __STL_USE_OWN_NAMESPACE */
 
@@ -495,9 +583,16 @@ namespace __STLPORT_NAMESPACE = __STLPORT_STD;
 
 # endif  /* __STL_USE_NAMESPACES */
 
-#ifndef __BORLANDC__
-# define __STD __STLPORT_STD
-#endif
+// fbp : never define __STD ! (Borland & MSVC may have contradictory ones ) 
+//#ifndef __BORLANDC__
+//# define __STD __STLPORT_STD
+//#endif
+
+# ifdef __KCC
+#  define __STL_VENDOR_MB_NAMESPACE __STL_VENDOR_STD
+# else
+#  define __STL_VENDOR_MB_NAMESPACE __STL_VENDOR_CSTD
+# endif
 
 // user level defines for STLport stuff and C-related stuff.
 # define STLPORT __STLPORT_STD
@@ -526,9 +621,10 @@ private:
 
 // if we are going to use native new iostreams, use native <string> and <stdexcept>
 
-#  if defined (__STL_USE_NEW_IOSTREAMS) && !defined (__STL_USE_SGI_STRING)
+#  if defined (__STL_USE_NEW_IOSTREAMS) &&  \
+   !defined (__STL_USE_SGI_STRING) && !defined (__STLPORT_NEW_IOSTREAMS)
 #   define __STL_USE_NATIVE_STRING      1
-#   define __STL_USE_NATIVE_STDEXCEPT
+#   define __STL_USE_NATIVE_STDEXCEPT   1
 # endif /* __STL_USE_NEW_IOSTREAMS */
 
 # if defined(__STL_MSVC) && defined (__STL_USE_NEW_IOSTREAMS) && \
@@ -712,16 +808,53 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #   define __STL_NOTHROW 
 # endif
 
+
+// inclusion of vendor's library headers tuning,
+
+# if !defined(__STL_MAKE_HEADER)
+#  define __STL_MAKE_HEADER(path, header) <path/header>
+# endif
+
+#if !defined (__STL_NATIVE_HEADER)
+# if !defined (__STL_NATIVE_INCLUDE_PATH)
+#  define __STL_NATIVE_INCLUDE_PATH ../include
+# endif
+# define __STL_NATIVE_HEADER(header) __STL_MAKE_HEADER(__STL_NATIVE_INCLUDE_PATH,header)
+#endif
+
+// For some compilers, C headers like <stdio.h> are located in separate directory
+#if !defined (__STL_NATIVE_C_HEADER)
+# if !defined (__STL_NATIVE_C_INCLUDE_PATH)
+#  define __STL_NATIVE_C_INCLUDE_PATH __STL_NATIVE_INCLUDE_PATH
+# endif
+# define __STL_NATIVE_C_HEADER(header)  __STL_MAKE_HEADER(__STL_NATIVE_C_INCLUDE_PATH,header)
+#endif
+
+// For some compilers, C-library headers like <cstdio> are located in separate directory
+#if !defined (__STL_NATIVE_CPP_C_HEADER)
+# if !defined (__STL_NATIVE_CPP_C_INCLUDE_PATH)
+#  define __STL_NATIVE_CPP_C_INCLUDE_PATH __STL_NATIVE_INCLUDE_PATH
+# endif
+# define __STL_NATIVE_CPP_C_HEADER(header)  __STL_MAKE_HEADER(__STL_NATIVE_CPP_C_INCLUDE_PATH,header)
+#endif
+
+
 # if defined (__IBMCPP__) && (__IBMCPP__ < 400)
 #  include <isynonym.hpp>
 # if defined (__OS400__) // rolandh
    typedef int bool;
-# else
+# elif !( defined (__xlC__) || defined (_AIX))
    typedef Boolean bool;
 # endif
 # else
 #  if defined(__STL_YVALS_H)
+#   if defined ( __STL_REDEFINE_STD )
+#    undef std
+#   endif
 #   include <yvals.h>
+#   if defined ( __STL_REDEFINE_STD )
+#    define std __STLPORT_NAMESPACE
+#   endif
 #  else
 #   if defined(__STL_NO_BOOL)
 #    if defined (__STL_DONT_USE_BOOL_TYPEDEF)
@@ -736,48 +869,6 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #   endif /* __STL_NO_BOOL */
 #  endif
 # endif /* __IBMCPP__ */
-
-#  ifdef __STL_MSVC
-#   ifndef _CRTIMP
-#    ifdef  _DLL
-#     define _CRTIMP __declspec(dllimport)
-#    else 
-#     define _CRTIMP
-#    endif 
-#   endif
-#  endif
-
-# ifdef _CRTIMP
-#  define __STLIMP _CRTIMP
-# else
-#  define __STLIMP
-# endif 
-
-// inclusion of vendor's library headers tuning,
-
-# if !defined (__STL_NATIVE_INCLUDE_PATH)
-#  define __STL_NATIVE_INCLUDE_PATH ../include
-# endif
-
-# if !defined (__STL_NATIVE_C_INCLUDE_PATH)
-#  define __STL_NATIVE_C_INCLUDE_PATH __STL_NATIVE_INCLUDE_PATH
-# endif
-
-# if !defined(__STL_MAKE_HEADER)
-#  define __STL_MAKE_HEADER(path, header) <path/header>
-# endif
-
-#ifndef __STL_C_HEADER
-# define __STL_C_HEADER(header) __STL_C_HEADER_AUX(header)
-#endif
-
-#ifndef __STL_NATIVE_HEADER
-# define __STL_NATIVE_HEADER(header) __STL_MAKE_HEADER(__STL_NATIVE_INCLUDE_PATH,header)
-#endif
-
-#ifndef __STL_NATIVE_C_HEADER
-# define __STL_NATIVE_C_HEADER(header)  __STL_MAKE_HEADER(__STL_NATIVE_C_INCLUDE_PATH,header)
-#endif
 
 # ifndef __STL_MPW_EXTRA_CONST
 #  define __STL_MPW_EXTRA_CONST
@@ -794,7 +885,7 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 # if defined (__STL_DEBUG_UNINITIALIZED) || defined (__STL_DEBUG_ALLOC)
 // uninitialized value filler
 # ifndef __STL_SHRED_BYTE
-#  ifdef macintosh
+#  ifdef __STL_MAC
  // This value is designed to cause problems on the Mac if an error occurs
 #   define __STL_SHRED_BYTE 0xA3
 #  else
@@ -808,30 +899,53 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 
 // shared library tune-up
 
-# ifndef __STLPORT_EXPORT_KEYWORD
-#  define __STLPORT_EXPORT_KEYWORD
-# endif
-# ifndef __STLPORT_EXPORT_TEMPLATE_KEYWORD
-#  define __STLPORT_EXPORT_TEMPLATE_KEYWORD
-# endif
-# ifndef __STLPORT_IMPORT_KEYWORD
-#  define __STLPORT_IMPORT_KEYWORD
-# endif
-# ifndef __STLPORT_IMPORT_TEMPLATE_KEYWORD
-#  define __STLPORT_IMPORT_TEMPLATE_KEYWORD
+
+// get the right keywords fron the config
+
+// import functions is all we need unless we use exports ourselves
+# ifndef __STL_IMPORT_DECLSPEC
+#  define __STL_IMPORT_DECLSPEC
 # endif
 
-# if defined (__BUILDING_STLPORT_DLL) /* STLport in a shared library, __STL_STD_REBUILD */
-#  define __STLPORT_EXPORT __STLPORT_EXPORT_KEYWORD 
-#  define __STLPORT_EXPORT_TEMPLATE __STLPORT_EXPORT_TEMPLATE_KEYWORD 
-# else
-#  if defined (__STLPORT_DLL) /* building a shared library that uses STLport, or using STLport DLL */
-#   define __STLPORT_EXPORT __STLPORT_IMPORT_KEYWORD
-#   define __STLPORT_EXPORT_TEMPLATE __STLPORT_IMPORT_TEMPLATE_KEYWORD
-#  else
-#   define __STLPORT_EXPORT
-#   define __STLPORT_EXPORT_TEMPLATE
+# if defined (__STL_USE_DECLSPEC) /* using export/import technique */
+
+# ifndef __STL_EXPORT_DECLSPEC
+#  define __STL_EXPORT_DECLSPEC
+# endif
+
+# ifndef __STL_CLASS_EXPORT_DECLSPEC
+#  define __STL_CLASS_EXPORT_DECLSPEC
+# endif
+
+# ifndef __STL_CLASS_IMPORT_DECLSPEC
+#  define __STL_CLASS_IMPORT_DECLSPEC
+# endif
+
+// a keyword used to instantiate export template
+# ifndef __STL_EXPORT_TEMPLATE_KEYWORD
+#  define __STL_EXPORT_TEMPLATE_KEYWORD
+# endif
+
+# ifndef __STL_IMPORT_TEMPLATE_KEYWORD
+#  define __STL_IMPORT_TEMPLATE_KEYWORD
+# endif
+
+#   if defined (__STL_DESIGNATED_DLL) /* This is a DLL which will contain STLport exports */
+#    define  __STL_DECLSPEC       __STL_EXPORT_DECLSPEC 
+#    define  __STL_CLASS_DECLSPEC __STL_CLASS_EXPORT_DECLSPEC 
+#    define  __STL_EXPORT         __STL_EXPORT_TEMPLATE_KEYWORD
+#   else
+#    define  __STL_DECLSPEC __STL_IMPORT_DECLSPEC   /* Other modules, importing STLport exports */
+#    define  __STL_CLASS_DECLSPEC __STL_CLASS_IMPORT_DECLSPEC
+#    define  __STL_EXPORT         __STL_IMPORT_TEMPLATE_KEYWORD
 #  endif
+
+# else /* Not using DLL export/import mechanism */
+
+#  define  __STL_DECLSPEC
+#  define  __STL_CLASS_DECLSPEC
+#  define  __STL_EXPORT
+
 # endif
 
 
@@ -841,6 +955,14 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 # else
 #  define __STL_PSPEC2(t1,t2)	/* nothing */
 #  define __STL_PSPEC3(t1,t2,t3)	/* nothing */
+# endif
+
+# if !defined (__STL_CLASS_PARTIAL_SPECIALIZATION)
+#  if !( defined (__SGI_STL_NO_ARROW_OPERATOR) &&  defined (__SGI_STL_NO_PROXY_ARROW_OPERATOR)) \
+      && !defined (__STL_NO_MSVC50_COMPATIBILITY) && !defined (__STL_MSVC50_COMPATIBILITY)
+// this one is needed for proper reverse_iterator<> operator ->() handling
+#   define __STL_MSVC50_COMPATIBILITY 1
+#  endif
 # endif
 
 // some cleanup
@@ -860,3 +982,8 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 // Local Variables:
 // mode:C++
 // End:
+
+
+
+
+

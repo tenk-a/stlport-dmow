@@ -235,43 +235,36 @@ private:
   typedef _Slist_iterator_base  _Iterator_base;
 
   _Node* _M_create_node(const value_type& __x) {
-    _Node* __node = _M_head.allocate(1);
+    _Node* __node = this->_M_head.allocate(1);
     __STL_TRY {
       construct(&__node->_M_data, __x);
       __node->_M_next = 0;
     }
-    __STL_UNWIND(_M_head.deallocate(__node, 1));
+    __STL_UNWIND(this->_M_head.deallocate(__node, 1));
     return __node;
   }
   
   _Node* _M_create_node() {
-    _Node* __node = _M_head.allocate(1);
+    _Node* __node = this->_M_head.allocate(1);
     __STL_TRY {
       construct(&__node->_M_data);
       __node->_M_next = 0;
     }
-    __STL_UNWIND(_M_head.deallocate(__node, 1));
+    __STL_UNWIND(this->_M_head.deallocate(__node, 1));
     return __node;
   }
 
-protected:
-#if defined( __STL_HAS_NAMESPACES )
-  __STL_USING_BASE_MEMBER _Slist_base<_Tp,_Alloc>::_M_erase_after;
-#endif /* __STL_USE_NAMESPACES */
-
 public:
-#if defined( __STL_HAS_NAMESPACES )
-  __STL_USING_BASE_MEMBER _Slist_base<_Tp,_Alloc>::get_allocator;
-  __STL_USING_BASE_MEMBER _Slist_base<_Tp,_Alloc>::_M_head;
-#endif
+  allocator_type get_allocator() const { return _Base::get_allocator(); }
+
   explicit slist(const allocator_type& __a = __STL_ALLOC_INSTANCE(allocator_type)) : _Slist_base<_Tp,_Alloc>(__a) {}
 
   slist(size_type __n, const value_type& __x,
         const allocator_type& __a =  __STL_ALLOC_INSTANCE(allocator_type)) : _Slist_base<_Tp,_Alloc>(__a)
-    { _M_insert_after_fill(&_M_head._M_data, __n, __x); }
+    { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
 
   explicit slist(size_type __n) : _Slist_base<_Tp,_Alloc>(allocator_type())
-    { _M_insert_after_fill(&_M_head._M_data, __n, value_type()); }
+    { _M_insert_after_fill(&this->_M_head._M_data, __n, value_type()); }
 
 #ifdef __STL_MEMBER_TEMPLATES
   // We don't need any dispatching tricks here, because _M_insert_after_range
@@ -280,24 +273,24 @@ public:
   slist(_InputIterator __first, _InputIterator __last,
         const allocator_type& __a =  __STL_ALLOC_INSTANCE(allocator_type)) : 
     _Slist_base<_Tp,_Alloc>(__a)
-    { _M_insert_after_range(&_M_head._M_data, __first, __last); }
+    { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
 
 #else /* __STL_MEMBER_TEMPLATES */
   slist(const_iterator __first, const_iterator __last):
     _Slist_base<_Tp,_Alloc>(allocator_type())
-    { _M_insert_after_range(&_M_head._M_data, __first, __last); }
+    { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
   slist(const_iterator __first, const_iterator __last,
         const allocator_type& __a ) :
     _Slist_base<_Tp,_Alloc>(__a)
-    { _M_insert_after_range(&_M_head._M_data, __first, __last); }
+    { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
   slist(const value_type* __first, const value_type* __last,
         const allocator_type& __a =  __STL_ALLOC_INSTANCE(allocator_type)) : 
     _Slist_base<_Tp,_Alloc>(__a)
-    { _M_insert_after_range(&_M_head._M_data, __first, __last); }
+    { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
 #endif /* __STL_MEMBER_TEMPLATES */
 
   slist(const _Self& __x) : _Slist_base<_Tp,_Alloc>(__x.get_allocator())
-    { _M_insert_after_range(&_M_head._M_data, __x.begin(), __x.end()); }
+    { _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end()); }
 
   _Self& operator= (const _Self& __x);
 
@@ -334,8 +327,8 @@ public:
 ;
 # else
  {
-    _Node_base* __prev = &_M_head._M_data;
-    _Node* __node = (_Node*) _M_head._M_data._M_next;
+    _Node_base* __prev = &this->_M_head._M_data;
+    _Node* __node = (_Node*) this->_M_head._M_data._M_next;
     while (__node != 0 && __first != __last) {
       __node->_M_data = *__first;
       __prev = __node;
@@ -345,7 +338,7 @@ public:
     if (__first != __last)
       _M_insert_after_range(__prev, __first, __last);
     else
-      _M_erase_after(__prev, 0);
+      this->_M_erase_after(__prev, 0);
   }
 # endif /* __STL_INLINE_MEMBER_TEMPLATES */
 #endif /* __STL_MEMBER_TEMPLATES */
@@ -368,48 +361,48 @@ public:
   // slist, before_begin() is not the same iterator as end().  It 
   // is always necessary to increment before_begin() at least once to
   // obtain end().
-  iterator before_begin() { return _Make_iterator((_Node*) &_M_head._M_data); }
+  iterator before_begin() { return _Make_iterator((_Node*) &this->_M_head._M_data); }
   const_iterator before_begin() const
-    { return _Make_const_iterator((_Node*) &_M_head._M_data); }
+    { return _Make_const_iterator((_Node*) &this->_M_head._M_data); }
 
-  iterator begin() { return _Make_iterator((_Node*)_M_head._M_data._M_next); }
+  iterator begin() { return _Make_iterator((_Node*)this->_M_head._M_data._M_next); }
   const_iterator begin() const 
-    { return _Make_const_iterator((_Node*)_M_head._M_data._M_next);}
+    { return _Make_const_iterator((_Node*)this->_M_head._M_data._M_next);}
 
   iterator end() { return _Make_iterator(0); }
   const_iterator end() const { return _Make_const_iterator(0); }
 
-  size_type size() const { return _Sl_global_inst::size(_M_head._M_data._M_next); }
+  size_type size() const { return _Sl_global_inst::size(this->_M_head._M_data._M_next); }
   
   size_type max_size() const { return size_type(-1); }
 
-  bool empty() const { return _M_head._M_data._M_next == 0; }
+  bool empty() const { return this->_M_head._M_data._M_next == 0; }
 
   void swap(_Self& __x) { 
     __stl_debug_do(_M_iter_list._Swap_owners(__x._M_iter_list));
-    __STLPORT_STD::swap(_M_head._M_data._M_next, __x._M_head._M_data._M_next); 
+    __STLPORT_STD::swap(this->_M_head._M_data._M_next, __x._M_head._M_data._M_next); 
   }
 
 public:
-  reference front() { return ((_Node*) _M_head._M_data._M_next)->_M_data; }
+  reference front() { return ((_Node*) this->_M_head._M_data._M_next)->_M_data; }
   const_reference front() const 
-    { return ((_Node*) _M_head._M_data._M_next)->_M_data; }
+    { return ((_Node*) this->_M_head._M_data._M_next)->_M_data; }
   void push_front(const value_type& __x)   {
-    __slist_make_link(&_M_head._M_data, _M_create_node(__x));
+    __slist_make_link(&this->_M_head._M_data, _M_create_node(__x));
   }
-  void push_front() { __slist_make_link(&_M_head._M_data, _M_create_node());}
+  void push_front() { __slist_make_link(&this->_M_head._M_data, _M_create_node());}
   void pop_front() {
-    _Node* __node = (_Node*) _M_head._M_data._M_next;
-    _M_head._M_data._M_next = __node->_M_next;
+    _Node* __node = (_Node*) this->_M_head._M_data._M_next;
+    this->_M_head._M_data._M_next = __node->_M_next;
     destroy(&__node->_M_data);
-    _M_head.deallocate(__node, 1);
+    this->_M_head.deallocate(__node, 1);
   }
 
   iterator previous(const_iterator __pos) {
-    return _Make_iterator((_Node*) _Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node));
+    return _Make_iterator((_Node*) _Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node));
   }
   const_iterator previous(const_iterator __pos) const {
-    return _Make_const_iterator((_Node*) _Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node));
+    return _Make_const_iterator((_Node*) _Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node));
   }
 
 private:
@@ -511,19 +504,19 @@ public:
 
   iterator insert(iterator __pos, const value_type& __x) {
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos));
-    return _Make_iterator(_M_insert_after(_Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node),
+    return _Make_iterator(_M_insert_after(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node),
                     __x));
   }
 
   iterator insert(iterator __pos) {
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos));
-    return _Make_iterator(_M_insert_after(_Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node),
+    return _Make_iterator(_M_insert_after(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node),
                                     value_type()));
   }
 
   void insert(iterator __pos, size_type __n, const value_type& __x) {
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos));
-    _M_insert_after_fill(_Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node), __n, __x);
+    _M_insert_after_fill(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node), __n, __x);
   } 
     
 #ifdef __STL_MEMBER_TEMPLATES
@@ -532,7 +525,7 @@ public:
   // already does them.
   template <class _InIter>
   void insert(iterator __pos, _InIter __first, _InIter __last) {
-    _M_insert_after_range(_Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node), 
+    _M_insert_after_range(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node), 
                           __first, __last);
   }
 
@@ -540,13 +533,13 @@ public:
 
   void insert(iterator __pos, const_iterator __first, const_iterator __last) {
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos));
-    _M_insert_after_range(_Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node), 
+    _M_insert_after_range(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node), 
                           __first, __last);
   }
   void insert(iterator __pos, const value_type* __first, 
                               const value_type* __last) {
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos));
-    _M_insert_after_range(_Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node), 
+    _M_insert_after_range(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node), 
                           __first, __last);
   }
 
@@ -556,32 +549,32 @@ public:
 public:
   iterator erase_after(iterator __pos) {
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos));
-    return _Make_iterator((_Node*) _M_erase_after(__pos._M_node));
+    return _Make_iterator((_Node*) this->_M_erase_after(__pos._M_node));
   }
   iterator erase_after(iterator __before_first, iterator __last) {
     __stl_debug_check(__check_if_owner(&_M_iter_list,__before_first));
     __stl_debug_check(__check_if_owner(&_M_iter_list,__last));
-    return _Make_iterator((_Node*) _M_erase_after(__before_first._M_node, 
+    return _Make_iterator((_Node*) this->_M_erase_after(__before_first._M_node, 
                                             __last._M_node));
   } 
 
   iterator erase(iterator __pos) {
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos));
-    return _Make_iterator((_Node*) _M_erase_after(_Sl_global_inst::__previous(&_M_head._M_data, 
+    return _Make_iterator((_Node*) this->_M_erase_after(_Sl_global_inst::__previous(&this->_M_head._M_data, 
                                                     __pos._M_node)));
   }
   iterator erase(iterator __first, iterator __last) {
     __stl_debug_check(__check_if_owner(&_M_iter_list,__first));
     __stl_debug_check(__check_if_owner(&_M_iter_list,__last));
-    return _Make_iterator((_Node*) _M_erase_after(
-      _Sl_global_inst::__previous(&_M_head._M_data, __first._M_node), __last._M_node));
+    return _Make_iterator((_Node*) this->_M_erase_after(
+      _Sl_global_inst::__previous(&this->_M_head._M_data, __first._M_node), __last._M_node));
   }
 
   void resize(size_type new_size, const _Tp& __x);
   void resize(size_type new_size) { resize(new_size, _Tp()); }
   void clear() {
     __stl_debug_do(_Invalidate_all());      
-    _M_erase_after(&_M_head._M_data, 0); 
+    this->_M_erase_after(&this->_M_head._M_data, 0); 
   }
 
 public:
@@ -623,7 +616,7 @@ public:
     __stl_verbose_assert(!(&__x==this), _StlMsg_INVALID_ARGUMENT);
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos));
     if (__x._M_head._M_data._M_next)
-      _Sl_global_inst::__splice_after(_Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node),
+      _Sl_global_inst::__splice_after(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node),
                            &__x._M_head._M_data, _Sl_global_inst::__previous(&__x._M_head._M_data, 0));
     __stl_debug_do(__x._Invalidate_all());
   }
@@ -633,7 +626,7 @@ public:
     __stl_verbose_assert(&__x!=this, _StlMsg_INVALID_ARGUMENT);
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos) && 
 		      __check_if_owner(&__x._M_iter_list ,__i));
-    _Sl_global_inst::__splice_after(_Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node),
+    _Sl_global_inst::__splice_after(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node),
                          _Sl_global_inst::__previous(&__x._M_head._M_data, __i._M_node),
                          __i._M_node);
     __stl_debug_do(__x._Invalidate_iterator(__i));
@@ -646,7 +639,7 @@ public:
     __stl_verbose_assert(&__x!=this, _StlMsg_INVALID_ARGUMENT);
     __stl_debug_check(__check_if_owner(&_M_iter_list,__pos));
     if (__first != __last)
-      _Sl_global_inst::__splice_after(_Sl_global_inst::__previous(&_M_head._M_data, __pos._M_node),
+      _Sl_global_inst::__splice_after(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node),
                            _Sl_global_inst::__previous(&__x._M_head._M_data, __first._M_node),
                            _Sl_global_inst::__previous(__first._M_node, __last._M_node));
     __stl_debug_do(__invalidate_range(&__x._M_iter_list, __first, __last));
@@ -654,8 +647,8 @@ public:
 
 public:
   void reverse() { 
-    if (_M_head._M_data._M_next)
-      _M_head._M_data._M_next = _Sl_global_inst::__reverse(_M_head._M_data._M_next);
+    if (this->_M_head._M_data._M_next)
+      this->_M_head._M_data._M_next = _Sl_global_inst::__reverse(this->_M_head._M_data._M_next);
   }
 
   void remove(const _Tp& __val); 
@@ -680,10 +673,10 @@ public:
 # else
   template <class _Predicate>
   void remove_if(_Predicate __pred) {
-    _Node_base* __cur = &_M_head._M_data;
+    _Node_base* __cur = &this->_M_head._M_data;
     while (__cur->_M_next) {
       if (__pred(((_Node*) __cur->_M_next)->_M_data))
-	_M_erase_after(__cur);
+	this->_M_erase_after(__cur);
       else
 	__cur = __cur->_M_next;
     }
@@ -691,12 +684,12 @@ public:
 
   template <class _BinaryPredicate> 
   void unique(_BinaryPredicate __pred) {
-    _Node* __cur = (_Node*) _M_head._M_data._M_next;
+    _Node* __cur = (_Node*) this->_M_head._M_data._M_next;
     if (__cur) {
       while (__cur->_M_next) {
 	if (__pred(((_Node*)__cur)->_M_data, 
 		   ((_Node*)(__cur->_M_next))->_M_data))
-	  _M_erase_after(__cur);
+	  this->_M_erase_after(__cur);
 	else
 	  __cur = (_Node*) __cur->_M_next;
       }
@@ -706,7 +699,7 @@ public:
   template <class _StrictWeakOrdering>
   void merge(slist<_Tp,_Alloc>& __x,
 	     _StrictWeakOrdering __comp) {
-    _Node_base* __n1 = &_M_head._M_data;
+    _Node_base* __n1 = &this->_M_head._M_data;
     while (__n1->_M_next && __x._M_head._M_data._M_next) {
       if (__comp(((_Node*) __x._M_head._M_data._M_next)->_M_data,
 		 ((_Node*)       __n1->_M_next)->_M_data))
@@ -721,12 +714,12 @@ public:
 
   template <class _StrictWeakOrdering> 
   void sort(_StrictWeakOrdering __comp) {
-    if (_M_head._M_data._M_next && _M_head._M_data._M_next->_M_next) {
+    if (this->_M_head._M_data._M_next && this->_M_head._M_data._M_next->_M_next) {
       slist __carry;
       slist __counter[64];
       int __fill = 0;
       while (!empty()) {
-	_Sl_global_inst::__splice_after(&__carry._M_head._M_data, &_M_head._M_data, _M_head._M_data._M_next);
+	_Sl_global_inst::__splice_after(&__carry._M_head._M_data, &this->_M_head._M_data, this->_M_head._M_data._M_next);
 	int __i = 0;
 	while (__i < __fill && !__counter[__i].empty()) {
 	  __counter[__i].merge(__carry, __comp);

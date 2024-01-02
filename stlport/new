@@ -14,33 +14,52 @@
  */
 
 #ifndef __STLPORT_NEW
+# define __STLPORT_NEW
 
 # ifndef __STL_CONFIG_H
 #  include <stl_config.h>
 # endif
 
-# if defined (__IN_STLPORT_NEW) || !defined (__STL_NO_NEW_NEW_HEADER)
+#ifndef __STL_WINCE
+
+#if defined (__BORLANDC__) && (__BORLANDC__ > 0x520)
+// new.h uses ::malloc ;(
+# include <cstdlib>
+using __stl_native_std::malloc;
+#endif
+
+#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
+#    undef std
+#    define __STL_RESUME_STD_FOR_NEW
+#    define __STLPORT_NATIVE_PASS
+#  endif
+
+# if !defined (__STL_NO_NEW_NEW_HEADER)
 #   if defined (__GNUC__) && (__GNUC_MINOR__ >= 8 )
 #    include <../include/new>
 #   else
 #    include __STL_NATIVE_HEADER(new)
 #   endif
 #  else
-#   define __IN_STLPORT_NEW
-#   include <new.h>
-#   undef  __IN_STLPORT_NEW
+#    include __STL_NATIVE_HEADER(new.h)
 # endif
 
-#ifndef __IN_STLPORT_NEW
+# if defined ( __STL_RESUME_STD_FOR_NEW )
+#    undef __STL_RESUME_STD_FOR_NEW
+#    define std __STLPORT_NAMESPACE
+#    undef __STLPORT_NATIVE_PASS
+# endif
 
 # ifndef __STL_NO_BAD_ALLOC
 #  ifdef __STL_USE_OWN_NAMESPACE
 __STL_BEGIN_NAMESPACE
-using __STL_VENDOR_STD::bad_alloc;
+using __STL_VENDOR_EXCEPT_STD::bad_alloc;
 __STL_END_NAMESPACE
 #  endif /* __STL_OWN_NAMESPACE */
-#   else /* __STL_NO_BAD_ALLOC */
-#    include <stl_exception.h>
+# else /* __STL_NO_BAD_ALLOC */
+
+#  include <exception>
+
 __STL_BEGIN_NAMESPACE
 class bad_alloc : public __STL_EXCEPTION_BASE { 
 public:
@@ -55,7 +74,7 @@ __STL_END_NAMESPACE
 
 __STL_BEGIN_NAMESPACE
 inline void* __stl_new(size_t __n) {
-#if (( defined(__IBMCPP__)|| defined(__OS400__) || defined (qTidyHeap)) && defined(__DEBUG_ALLOC__) )
+#if (( defined(__IBMCPP__)|| defined(__OS400__) || defined (__xlC__) || defined (qTidyHeap)) && defined(__DEBUG_ALLOC__) )
   return ::operator __STL_NEW(__n, __FILE__, __LINE__);
 #else
   return ::operator __STL_NEW(__n);
@@ -63,16 +82,15 @@ inline void* __stl_new(size_t __n) {
 }
 
 inline void __stl_delete(void* __p) {
-#if (( defined(__IBMCPP__) || defined(__OS400__))  && defined(__DEBUG_ALLOC__) ) // Added
+#if (( defined(__IBMCPP__) || defined(__OS400__)|| defined (__xlC__) || defined (qTidyHeap))  && defined(__DEBUG_ALLOC__) )
   ::operator delete(__p, __FILE__, __LINE__);
 #else
   ::operator delete(__p);
 #endif
 }
 __STL_END_NAMESPACE
-#endif
 
-#define __STLPORT_NEW
+#endif /* WINCE */
 
 #endif /* __STLPORT_NEW */
 

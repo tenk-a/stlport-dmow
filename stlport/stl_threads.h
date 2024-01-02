@@ -39,23 +39,73 @@
 # endif
 
 #if defined(__STL_SGI_THREADS)
+
 #include <mutex.h>
 #include <time.h>
+
 #elif defined(__STL_PTHREADS)
+
 #include <pthread.h>
+
 #elif defined(__STL_WIN32THREADS)
-# ifndef __STLPORT_WINDOWS_H_INCLUDED
+
+# if !defined (__STLPORT_WINDOWS_H_INCLUDED) && ! defined (_WINDOWS_)
+
+#  ifndef __STL_MSVC
 #   define NOMINMAX
 #   ifdef __STL_USE_MFC
 #    include <afx.h>
 #   else
 #    include <windows.h>
 #   endif
-#   undef min
-#   undef max
-#   define __STLPORT_WINDOWS_H_INCLUDED
-# endif
+
+#  else 
+
+// This section serves as a replacement for windows.h header for Visual C++
+
+extern "C" {
+
+#   if (defined(_M_MRX000) || defined(_M_ALPHA) \
+       || (defined(_M_PPC) && (_MSC_VER >= 1000))) && !defined(RC_INVOKED)
+#    define InterlockedIncrement       _InterlockedIncrement
+#    define InterlockedDecrement       _InterlockedDecrement
+#    define InterlockedExchange        _InterlockedExchange
+#    define __STL_STDCALL
+#   else
+#    ifdef _MAC
+#     define __STL_STDCALL _cdecl
+#    else
+#     define __STL_STDCALL __stdcall
+#    endif
+#   endif
+
+__STL_IMPORT_DECLSPEC long __STL_STDCALL InterlockedIncrement(long*);
+__STL_IMPORT_DECLSPEC long __STL_STDCALL InterlockedDecrement(long*);
+__STL_IMPORT_DECLSPEC long __STL_STDCALL InterlockedExchange(long*, long);
+
+__STL_IMPORT_DECLSPEC void __STL_STDCALL Sleep(unsigned long);
+
+#   if defined (InterlockedIncrement)
+#    pragma intrinsic(_InterlockedIncrement)
+#    pragma intrinsic(_InterlockedDecrement)
+#    pragma intrinsic(_InterlockedExchange)
+#   endif
+} /* extern "C" */
+
+#  endif /* STL_MSVC */
+
+#  undef min
+#  undef max
+#  define __STLPORT_WINDOWS_H_INCLUDED
+# endif /* _WINDOWS_ */
+
 #elif defined (__STL_UITHREADS)
+// this inclusion is potential hazard to bring up all sorts
+// of old-style headers. Let's assume vendor already know how
+// to deal with that.
+#include <ctime>
+#include <cstdio>
+#include <cwchar>
 #include <synch.h>
 #endif
 
@@ -74,7 +124,7 @@ __STL_BEGIN_NAMESPACE
 #  define __test_and_set(__l,__v)  test_and_set(__l,__v)
 #endif /* o32 */
 
-struct _Refcount_Base
+struct __STL_CLASS_DECLSPEC _Refcount_Base
 {
   // The type _RC_t
 # ifdef __STL_WIN32THREADS
@@ -150,7 +200,7 @@ inline unsigned long _Atomic_swap(unsigned long * __p, unsigned long __q) {
 }
 # elif defined(__STL_WIN32THREADS)
 inline unsigned long _Atomic_swap(unsigned long * __p, unsigned long __q) {
-  return (unsigned long) InterlockedExchange((LPLONG)__p, (LONG)__q);
+  return (unsigned long) InterlockedExchange((long*)__p, (long)__q);
 }
 # elif defined(__STL_PTHREADS)
 // We use a template here only to get a unique initialized instance.
@@ -205,14 +255,15 @@ static inline unsigned long _Atomic_swap(unsigned long * __p, unsigned long __q)
 // make this base class just for it. It exports _Init and _Destroy functions to
 // _STL_mutex_lock. For non-static cases, clients should use  _STL_mutex_lock.
 
-struct _STL_mutex_base
+struct __STL_CLASS_DECLSPEC _STL_mutex_base
 {
 #if defined(__STL_SGI_THREADS) || defined(__STL_WIN32THREADS)
   // It should be relatively easy to get this to work on any modern Unix.
   volatile unsigned long _M_lock;
-  void _M_initialize() { _M_lock=0; }
-  void _M_destroy() {}
-  static void _S_nsec_sleep(int __log_nsec) {
+  inline void _M_initialize() { _M_lock=0; }
+  inline void _M_destroy() {}
+
+  static inline void _S_nsec_sleep(int __log_nsec) {
 #     ifdef __STL_SGI_THREADS
           struct timespec __ts;
           /* Max sleep is 2**27nsec ~ 60msec      */
@@ -229,53 +280,63 @@ struct _STL_mutex_base
 #	error unimplemented
 #     endif
   }
+
   void _M_acquire_lock() {
-    const unsigned __low_spin_max = 30;  // spins if we suspect uniprocessor
-    const unsigned __high_spin_max = 1000; // spins for multiprocessor
+    // spins if we suspect uniprocessor
+# define __low_spin_max 30
+    // spins for multiprocessor
+# define __high_spin_max 1000
+
     static unsigned __spin_max = __low_spin_max;
-    unsigned __my_spin_max;
     static unsigned __last_spins = 0;
-    unsigned __my_last_spins;
-    volatile unsigned __junk;
-    unsigned  __i;
+
     volatile unsigned long* __lock = &this->_M_lock;
 
-    if (!_Atomic_swap((unsigned long*)__lock, 1)) {
-      return;
-    }
-    __my_spin_max = __spin_max;
-    __my_last_spins = __last_spins;
-    __junk = 17;	// Value doesn't matter.
+    if (_Atomic_swap((unsigned long*)__lock, 1)) {
+      unsigned __my_spin_max;
+      unsigned __my_last_spins;
+      volatile unsigned __junk = 17; 	// Value doesn't matter.
+      unsigned  __i;
 
-    for (__i = 0; __i < __my_spin_max; ++__i) {
-      if (__i < __my_last_spins/2 || *__lock) {
-        __junk *= __junk; __junk *= __junk;
-        __junk *= __junk; __junk *= __junk;
-        continue;
+      __my_spin_max = __spin_max;
+      __my_last_spins = __last_spins;
+      __junk = 17;
+      
+      for (__i = 0; __i < __my_spin_max; ++__i) {
+	if (__i < __my_last_spins/2 || *__lock) {
+	  __junk *= __junk; __junk *= __junk;
+	  __junk *= __junk; __junk *= __junk;
+	} else {
+	  if (!_Atomic_swap((unsigned long*)__lock, 1)) {
+	    // got it!
+	    // Spinning worked.  Thus we're probably not being scheduled
+	    // against the other process with which we were contending.
+	    // Thus it makes sense to spin longer the next time.
+	    __last_spins = __i;
+	    __spin_max = __high_spin_max;
+	    return;
+	  }
+	}
       }
-      if (!_Atomic_swap((unsigned long*)__lock, 1)) {
-        // got it!
-        // Spinning worked.  Thus we're probably not being scheduled
-        // against the other process with which we were contending.
-        // Thus it makes sense to spin longer the next time.
-        __last_spins = __i;
-        __spin_max = __high_spin_max;
-        return;
-      }
-    }
-    // We are probably being scheduled against the other process.  Sleep.
-    __spin_max = __low_spin_max;
-    for (__i = 0 ;; ++__i) {
-      int __log_nsec = __i + 6;
 
-      if (__log_nsec > 27) __log_nsec = 27;
-      if (!_Atomic_swap((unsigned long *)__lock, 1)) {
-        return;
+      // We are probably being scheduled against the other process.  Sleep.
+      __spin_max = __low_spin_max;
+
+      for (__i = 0 ;; ++__i) {
+	int __log_nsec = __i + 6;
+	
+	if (__log_nsec > 27) __log_nsec = 27;
+	if (!_Atomic_swap((unsigned long *)__lock, 1)) {
+	  break;
+	}
+	_S_nsec_sleep(__log_nsec);
       }
-      _S_nsec_sleep(__log_nsec);
-    }
+
+    } /* first _Atomic_swap */
+
   }
-  void _M_release_lock() {
+
+  inline void _M_release_lock() {
     volatile unsigned long* __lock = &_M_lock;
 #   if defined(__STL_SGI_THREADS) && defined(__GNUC__) && __mips >= 3
         asm("sync");
@@ -296,41 +357,41 @@ struct _STL_mutex_base
 
 #elif defined(__STL_PTHREADS)
   pthread_mutex_t _M_lock;
-  void _M_initialize() {
+  inline void _M_initialize() {
 	pthread_mutex_init(&_M_lock, NULL);	
   }
-  void _M_destroy() {
+  inline void _M_destroy() {
         pthread_mutex_destroy(&_M_lock);
   }
-  void _M_acquire_lock() { pthread_mutex_lock(&_M_lock); }
-  void _M_release_lock() { pthread_mutex_unlock(&_M_lock); }
+  inline void _M_acquire_lock() { pthread_mutex_lock(&_M_lock); }
+  inline void _M_release_lock() { pthread_mutex_unlock(&_M_lock); }
 
 #elif defined (__STL_UITHREADS)
   mutex_t _M_lock;
-  void _M_initialize() {
+  inline void _M_initialize() {
     mutex_init(&_M_lock,0,NULL);	
   }
-  void _M_destroy() {
+  inline void _M_destroy() {
     mutex_destroy(&_M_lock);
   }
-  void _M_acquire_lock() { mutex_lock(&_M_lock); }
-  void _M_release_lock() { mutex_unlock(&_M_lock); }
+  inline void _M_acquire_lock() { mutex_lock(&_M_lock); }
+  inline void _M_release_lock() { mutex_unlock(&_M_lock); }
 
 #else /* No threads */
-  void _M_initialize() {}
-  void _M_destroy() {}
-  void _M_acquire_lock() {}
-  void _M_release_lock() {}
+  inline void _M_initialize() {}
+  inline void _M_destroy() {}
+  inline void _M_acquire_lock() {}
+  inline void _M_release_lock() {}
 #endif
 };
 
 // Well - behaving class, does not need static initializer
-struct _STL_mutex_lock : public _STL_mutex_base {
-  _STL_mutex_lock() {
+struct __STL_CLASS_DECLSPEC _STL_mutex_lock : public _STL_mutex_base {
+  inline _STL_mutex_lock() {
     _M_initialize();
   }
 
-  ~_STL_mutex_lock() {
+  inline ~_STL_mutex_lock() {
     _M_destroy();
   }
 private:
@@ -357,7 +418,7 @@ private:
 // It's not clear that this is exactly the right functionality.
 // It will probably change in the future.
 
-struct _STL_auto_lock
+struct __STL_CLASS_DECLSPEC _STL_auto_lock
 {
   _STL_mutex_base& _M_lock;
   

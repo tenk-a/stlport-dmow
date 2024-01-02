@@ -104,19 +104,21 @@ size_t CountUniqueItems_Aux( const C& original, Iter firstNew,
     return cnt;
 }
 
-#if !__SGI_STL
+#if ! defined (__SGI_STL)
 EH_BEGIN_NAMESPACE
 template <class T>
 struct identity
 {
 	const T& operator()( const T& x ) const { return x; }
 };
+# if ! defined (__KCC)
 template <class _Pair>
 struct select1st : public unary_function<_Pair, typename _Pair::first_type> {
   const typename _Pair::first_type& operator()(const _Pair& __x) const {
     return __x.first;
   }
 };
+# endif
 EH_END_NAMESPACE
 #endif
 

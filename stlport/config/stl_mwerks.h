@@ -84,6 +84,8 @@
 #  define __STL_NATIVE_INCLUDE_PATH  Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C++:MSL_Common:Include
 #  define __STL_NATIVE_C_INCLUDE_PATH  Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C:MSL_Common:Include
 #  define __STL_NATIVE_HEADER(header)     <Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C++:MSL_Common:Include:##header>
+     // fbp
+#  define __STL_NATIVE_CPP_C_HEADER(header)     <Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C:MSL_Common:Include:##header>
 #  define __STL_NATIVE_C_HEADER(header)     <Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C:MSL_Common:Include:##header>
 
 # else
@@ -91,8 +93,14 @@
 #  define __STL_NATIVE_INCLUDE_PATH  Macintosh HD:Codewarrior Pro 4:Metrowerks CodeWarrior:Metrowerks Standard Library:MSL C++:Include
 #  define __STL_NATIVE_C_INCLUDE_PATH  Macintosh HD:Codewarrior Pro 4:Metrowerks CodeWarrior:Metrowerks Standard Library:MSL C:MSL Common:Public Includes
 #  define __STL_NATIVE_HEADER(header)     <Macintosh HD:Codewarrior Pro 4:Metrowerks CodeWarrior:Metrowerks Standard Library:MSL C++:Include:##header>
+#  define __STL_NATIVE_CPP_C_HEADER(header)     <Macintosh HD:Codewarrior Pro 4:Metrowerks CodeWarrior:Metrowerks Standard Library:MSL C++:Include:##header>
 #  define __STL_NATIVE_C_HEADER(header)     <Macintosh HD:Codewarrior Pro 4:Metrowerks CodeWarrior:Metrowerks Standard Library:MSL C:MSL Common:Public Includes:##header>
 
 # endif
 
 # define __STL_MAKE_HEADER(path, header) <path:header>
+
+     // fbp
+# if !defined( __MSL_CPP__ ) || __MSL_CPP__ <= 0x4105
+#   define __STL_NO_NATIVE_WIDE_STREAMS 1
+#  endif

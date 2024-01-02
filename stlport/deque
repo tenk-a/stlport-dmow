@@ -31,7 +31,19 @@
 #endif
 
 #if defined (__STL_WHOLE_NATIVE_STD)
+#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
+#    undef std
+#    define __STL_RESUME_STD_FOR_DEQUE
+#    define __STLPORT_NATIVE_PASS
+#  endif
+
 # include __STL_NATIVE_HEADER(deque)
+
+# if defined ( __STL_RESUME_STD_FOR_DEQUE )
+#    undef __STL_RESUME_STD_FOR_DEQUE
+#    define std __STLPORT_NAMESPACE
+#    undef __STLPORT_NATIVE_PASS
+# endif
 #endif
 
 #endif /* __SGI_STL_DEQUE */

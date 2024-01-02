@@ -20,7 +20,19 @@
 #  include <stl_config.h>
 # endif
 
+#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
+#    undef std
+#    define __STL_RESUME_STD_FOR_SSTREAM
+#    define __STLPORT_NATIVE_PASS
+#  endif
+
 # include __STL_NATIVE_HEADER(sstream)
+
+# if defined ( __STL_RESUME_STD_FOR_SSTREAM )
+#    undef __STL_RESUME_STD_FOR_SSTREAM
+#    define std __STLPORT_NAMESPACE
+#    undef __STLPORT_NATIVE_PASS
+# endif
 
 # ifdef __STL_USE_OWN_NAMESPACE
 __STL_BEGIN_NAMESPACE
@@ -35,7 +47,7 @@ using __STL_VENDOR_STD::istringstream;
 using __STL_VENDOR_STD::ostringstream;
 using __STL_VENDOR_STD::stringstream;
 
-#ifdef __STL_HAS_WCHAR_T
+#ifndef __STL_NO_NATIVE_WIDE_STREAMS
 using __STL_VENDOR_STD::wstringbuf;
 using __STL_VENDOR_STD::wistringstream;
 using __STL_VENDOR_STD::wostringstream;

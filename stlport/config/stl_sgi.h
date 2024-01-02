@@ -12,12 +12,9 @@
 
 #  define __STL_HAS_NO_NEW_C_HEADERS 1
 
-// #  define __STL_NEED_EXPLICIT 1
-// #  define __STL_NO_NEW_STYLE_CASTS 1
-// #  define __STL_NEED_MUTABLE 1
-// #  define __STL_NO_PARTIAL_SPECIALIZATION_SYNTAX 1
-// #  define __STL_NO_DEFAULT_NON_TYPE_PARAM 1
-// #  define __STL_STATIC_CONST_INIT_BUG 1
+// #  if !(_COMPILER_VERSION >= 700)
+#   define __STL_NO_NEW_NEW_HEADER 1
+// #  endif
 
 #   if !defined(_BOOL)
 #     define __STL_NO_BOOL
@@ -53,7 +50,8 @@
 #   if !(_COMPILER_VERSION >= 730 && defined(_STANDARD_C_PLUS_PLUS))
 #     define __STL_NO_AT_MEMBER_FUNCTION
 #   endif
-#   if !(_COMPILER_VERSION >= 730 && defined(_STANDARD_C_PLUS_PLUS))
+// #   if !(_COMPILER_VERSION >= 730 && defined(_STANDARD_C_PLUS_PLUS))
+#   if !(_COMPILER_VERSION >= 721 && defined(_STANDARD_C_PLUS_PLUS))
 #     define __STL_NO_TEMPLATE_CONVERSIONS
 #   endif
 #   if !((_COMPILER_VERSION >= 730) && defined(_MIPS_SIM) && _MIPS_SIM != _ABIO32)

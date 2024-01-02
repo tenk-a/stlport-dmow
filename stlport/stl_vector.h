@@ -162,8 +162,11 @@ protected:
 
 
 protected:
-  void _M_insert_aux(pointer __position, const _Tp& __x);
-  void _M_insert_aux(pointer __position);
+  // handles both single and fill insertion on overflow
+  void _M_insert_overflow(pointer __position, const _Tp& __x, size_type __n = 1);
+
+  //  void _M_insert_aux(pointer __position, const _Tp& __x);
+  //  void _M_insert_aux(pointer __position);
 
 public:
 # if defined (__STL_DEBUG)
@@ -216,24 +219,18 @@ public:
         __stl_debug_do(_M_iter_list._Safe_init(&_M_start));
   }
 
-  vector(size_type __n, const _Tp& __value) 
-    : _Vector_base<_Tp, _Alloc>(__n, allocator_type()) { 
-      _M_finish = uninitialized_fill_n(_M_start, __n, __value); 
-      __stl_debug_do(_M_iter_list._Safe_init(&_M_start));
-    }
-
   vector(size_type __n, const _Tp& __value,
-         const allocator_type& __a) 
+         const allocator_type& __a = __STL_ALLOC_INSTANCE(allocator_type)) 
     : _Vector_base<_Tp, _Alloc>(__n, __a) { 
       _M_finish = uninitialized_fill_n(_M_start, __n, __value); 
       __stl_debug_do(_M_iter_list._Safe_init(&_M_start));
   }
 
   explicit vector(size_type __n)
-    : _Vector_base<_Tp, _Alloc>(__n, allocator_type()) { 
-      _M_finish = uninitialized_fill_n(_M_start, __n, _Tp()); 
-      __stl_debug_do(_M_iter_list._Safe_init(&_M_start));
-    }
+    : _Vector_base<_Tp, _Alloc>(__n, __STL_ALLOC_INSTANCE(allocator_type) ) {
+    _M_finish = uninitialized_fill_n(_M_start, __n, _Tp()); 
+    __stl_debug_do(_M_iter_list._Safe_init(&_M_start));
+  }
 
   vector(const vector<_Tp, _Alloc>& __x) 
     : _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) { 
@@ -373,7 +370,7 @@ public:
       ++_M_finish;
     }
     else
-      _M_insert_aux(_M_finish, __x);
+      _M_insert_overflow(_M_finish, __x);
   }
 
   void push_back() {
@@ -382,7 +379,7 @@ public:
       ++_M_finish;
     }
     else
-      _M_insert_aux(_M_finish);
+      _M_insert_overflow(_M_finish, _Tp());
   }
 
   void swap(vector<_Tp, _Alloc>& __x) {
@@ -395,24 +392,40 @@ public:
   iterator insert(iterator __position, const _Tp& __x) {
     __stl_debug_check(__check_if_owner(&_M_iter_list, __position));
     size_type __n = __position - begin();
-    if (_M_finish != _M_end_of_storage._M_data && __position == end()) {
-      __STLPORT_STD::construct(_M_finish, __x);
-      ++_M_finish;
+
+    if (_M_finish != _M_end_of_storage._M_data) {
+      if (__position == end()) {
+	__STLPORT_STD::construct(_M_finish, __x);
+	++_M_finish;
+      } else {
+	__STLPORT_STD::construct(_M_finish, *(_M_finish - 1));
+	++_M_finish;
+	_Tp __x_copy = __x;
+	copy_backward(_Make_ptr(__position), _M_finish - 2, _M_finish - 1);
+	*__position = __x_copy;
+      }
     }
     else
-      _M_insert_aux(_Make_ptr(__position), __x);
+      _M_insert_overflow(_Make_ptr(__position), __x);
     return begin() + __n;
   }
 
   iterator insert(iterator __position) {
     __stl_debug_check(__check_if_owner(&_M_iter_list, __position));
     size_type __n = __position - begin();
-    if (_M_finish != _M_end_of_storage._M_data && __position == end()) {
-      __STLPORT_STD::construct(_M_finish);
-      ++_M_finish;
+    if (_M_finish != _M_end_of_storage._M_data) {
+      if (__position == end()) {
+	__STLPORT_STD::construct(_M_finish);
+	++_M_finish;
+      } else {
+	__STLPORT_STD::construct(_M_finish, *(_M_finish - 1));
+	++_M_finish;
+	copy_backward(_Make_ptr(__position), _M_finish - 2, _M_finish - 1);
+	*__position = _Tp();	
+      }
     }
     else
-      _M_insert_aux(_Make_ptr(__position));
+      _M_insert_overflow(_Make_ptr(__position), _Tp());
     return begin() + __n;
   }
 
@@ -740,7 +753,9 @@ __STL_END_NAMESPACE
 # undef _Make_iterator
 # undef _Make_const_iterator
 // fbp : weird !
-// # undef _Make_ptr 
+# if !(defined (__IBMCPP__) || defined (__xlC__))
+#  undef _Make_ptr 
+# endif
 
 # if !defined (__STL_LINK_TIME_INSTANTIATION)
 #  include <stl_vector.c>

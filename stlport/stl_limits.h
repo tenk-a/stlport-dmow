@@ -41,6 +41,14 @@
 # include <cfloat>
 #endif
 
+#ifndef __STL_NO_WCHAR_T
+# include <cwchar>
+# ifndef WCHAR_MIN
+#  define WCHAR_MIN 0
+#  define WCHAR_MAX ((wchar_t)~0)
+# endif
+#endif
+
 __STL_BEGIN_NAMESPACE
 
 enum float_round_style {
@@ -154,7 +162,7 @@ template <class __number,
          int __MinExp, int __MaxExp,
          int __MinExp10, int __MaxExp10,
          __STL_UINT32_T __InfinityWord,
-         __STL_UINT32_T __QNaNWord, unsigned long __SNaNWord,
+         __STL_UINT32_T __QNaNWord, __STL_UINT32_T __SNaNWord,
          bool __IsIEC559,
          float_round_style __RoundStyle>
 class _Floating_limits : public _Numeric_limits_base<__number>
@@ -239,11 +247,11 @@ class numeric_limits<unsigned char>
   : public _Integer_limits<unsigned char, 0, UCHAR_MAX, -1>
 {};
 
-#if defined ( __STL_HAS_WCHAR_T ) && ! defined (__STL_WCHAR_T_IS_USHORT)
+#if !(defined ( __STL_NO_WCHAR_T ) || defined (__STL_WCHAR_T_IS_USHORT))
 
 __STL_TEMPLATE_NULL
 class numeric_limits<wchar_t>
-  : public _Integer_limits<wchar_t, INT_MIN, INT_MAX, -1>
+  : public _Integer_limits<wchar_t, WCHAR_MIN, WCHAR_MAX, -1>
 {};
 
 #endif

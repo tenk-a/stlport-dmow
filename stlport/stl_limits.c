@@ -167,8 +167,8 @@ template <class __number,  \
          int __Digits, int __Digits10,    \
          int __MinExp, int __MaxExp,      \
          int __MinExp10, int __MaxExp10,  \
-         unsigned long __InfinityWord,    \
-         unsigned long __QNaNWord, unsigned long __SNaNWord, \
+         __STL_UINT32_T __InfinityWord,    \
+         __STL_UINT32_T __QNaNWord, __STL_UINT32_T __SNaNWord, \
          bool __IsIEC559, \
          float_round_style __RoundStyle> \
 const __type _Floating_limits< __number, __Digits, __Digits10,    \
@@ -235,9 +235,9 @@ __declare_float_members(float, FLT_MANT_DIG,FLT_DIG,
                             FLT_MAX_EXP,
                             FLT_MIN_10_EXP,
                             FLT_MAX_10_EXP,
-                            0x7f800000ul,
-                            0x7f810000ul,
-                            0x7fc10000ul,
+                            0x7f800000u,
+                            0x7f810000u,
+                            0x7fc10000u,
                             true,
                             round_to_nearest)
 
@@ -248,9 +248,9 @@ __declare_float_members(double,
                             DBL_MAX_EXP,
                             DBL_MIN_10_EXP,
                             DBL_MAX_10_EXP,
-                            0x7ff00000ul,
-                            0x7ff10000ul,
-                            0x7ff90000ul,
+                            0x7ff00000u,
+                            0x7ff10000u,
+                            0x7ff90000u,
                             true,
                             round_to_nearest)
 
@@ -262,9 +262,9 @@ __declare_float_members(long double,
                             LDBL_MAX_EXP,
                             LDBL_MIN_10_EXP,
                             LDBL_MAX_10_EXP,
-                            0x7ff00000ul,
-                            0x7ff10000ul,
-                            0x7ff90000ul,
+                            0x7ff00000u,
+                            0x7ff10000u,
+                            0x7ff90000u,
                             false,
                             round_to_nearest)
 # endif

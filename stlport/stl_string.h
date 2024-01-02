@@ -51,16 +51,16 @@
 
 # include <stl_ctraits_fns.h>
 
-#ifndef __SGI_STDEXCEPT
-# include <stdexcept>      
-#endif
+//#ifndef __SGI_STDEXCEPT
+//# include <stdexcept>      
+//#endif
 
 #ifndef __SGI_STL_MEMORY
 # include <memory>
 #endif
 
-#ifndef __SGI_STL_ALGORITHM
-# include <algorithm>
+#ifndef __SGI_STL_INTERNAL_ALGO_H
+# include <stl_algo.h>
 #endif
 
 # ifndef __STLPORT_IOSFWD
@@ -77,7 +77,6 @@
 // MSL implementation classes expect to see the definition of streampos
 // when this header is included. We expect this to be fixed in later MSL
 // implementations
-# include <mcompile.h>
 # if !defined( __MSL_CPP__ ) || __MSL_CPP__ < 0x4105
 #  include <msl_string.h>
 # endif
@@ -262,7 +261,7 @@ public:
 
   static const size_type npos;
   typedef _String_reserve_t _Reserve_t;
-# ifdef __STL_USE_OWN_NAMESPACE
+# ifdef __STL_USE_NATIVE_STRING
   // this typedef is being used for conversions
   typedef __STL_VENDOR_STD::basic_string<_CharT,_Traits, 
     __STL_VENDOR_STD::allocator<_CharT> >  __std_string;
@@ -369,16 +368,16 @@ public:                         // Constructor, destructor, assignment.
 
 #endif
 
-# ifdef __STL_USE_OWN_NAMESPACE
+# ifdef __STL_USE_NATIVE_STRING
   // these conversion operations still needed for
   // strstream, etc.
   basic_string (const __std_string& __x): _String_base<_CharT,_Alloc>(allocator_type())
     {
-      const char* __s = __x.c_str();
-      _M_range_initialize(__s, __s + _Traits::length(__s)); 
+      const _CharT* __s = __x.data();
+      _M_range_initialize(__s, __s + __x.size()); 
     }
   
-  operator __std_string() const { return __std_string(this->c_str()); }
+  operator __std_string() const { return __std_string(this->data()); }
 # endif
 
   ~basic_string() { destroy(_M_start, _M_finish + 1); }
@@ -1107,7 +1106,7 @@ private:                        // Helper functions for replace.
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                                     _InputIter __f, _InputIter __l,
                                     __false_type) {
-    __stl_debug_do(__check_if_owner(__first) && __check_range(__first, __last) 
+    __stl_debug_do(__check_if_owner(&_M_iter_list, __first) && __check_range(__first, __last) 
 		   && __check_range(__f, __l));
 # ifdef __STL_CLASS_PARTIAL_SPECIALIZATION
     typedef typename iterator_traits<_InputIter>::iterator_category _Category;
@@ -1138,13 +1137,13 @@ private:                        // Helper functions for replace.
 	  distance(__f, __l, __n);
 	  const difference_type __len = __last - __first;
 	  if (__len >= __n) {
-	    _M_copy(__f, __l, __first);
+	    _M_copy(__f, __l, _Make_ptr(__first));
 	    erase(__first + __n, __last);
 	  }
 	  else {
 	    _ForwardIter __m = __f;
 	    advance(__m, __len);
-	    _M_copy(__f, __m, __first);
+	    _M_copy(__f, __m, _Make_ptr(__first));
 	    insert(__last, __m, __l);
 	  }
 	  return *this;
@@ -1323,6 +1322,19 @@ public:                        // Helper functions for compare.
     return cmp != 0 ? cmp : (__n1 < __n2 ? -1 : (__n1 > __n2 ? 1 : 0));
   }
 };
+
+
+// This is a hook to instantiate STLport exports in a designated DLL
+# if defined (__STL_USE_DECLSPEC)
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _STL_alloc_proxy<char *,char,allocator<char> >;
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _String_base<char, allocator<char> >;
+__STL_EXPORT template class __STL_CLASS_DECLSPEC basic_string<char, char_traits<char>, allocator<char> >;
+#  if defined (__STL_HAS_WCHAR_T)
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _STL_alloc_proxy<wchar_t *,wchar_t,allocator<wchar_t> >;
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _String_base<wchar_t, allocator<wchar_t> >;
+__STL_EXPORT template class __STL_CLASS_DECLSPEC basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
+#  endif
+# endif /* __STL_USE_DECLSPEC */
 
 // ------------------------------------------------------------
 // Non-member functions.
@@ -1583,7 +1595,7 @@ inline void swap(basic_string<_CharT,_Traits,_Alloc>& __x,
 
 // I/O.  
 
-#ifdef __STL_USE_NEW_IOSTREAMS
+#if defined (__STL_USE_NEW_IOSTREAMS)
 
 template <class _CharT, class _Traits, class _Alloc>
 basic_ostream<_CharT, _Traits>&
@@ -1612,7 +1624,7 @@ getline(basic_istream<_CharT, _Traits>& __is,
 }
 # endif
 
-#else /* __STL_USE_NEW_IOSTREAMS */
+#elif ! defined ( __STL_USE_NO_IOSTREAMS )
 
 template <class _CharT, class _Traits, class _Alloc>
 ostream& operator<<(ostream& __os, 
@@ -1644,10 +1656,12 @@ void _S_string_copy(const basic_string<_CharT,_Traits,_Alloc>& __s,
 __STL_END_NAMESPACE
 
 // cleanup
-
+# if !(defined (__IBMCPP__) || defined (__xlC__))
 #  undef _Make_ptr
+# endif
 #  undef _Make_iterator
 #  undef _Make_const_iterator
+
 
 #if defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
 #pragma reset woff 1174

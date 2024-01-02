@@ -86,6 +86,13 @@
 
 #  define __STLPORT_NAMESPACE stlport
 
+/*
+ * If __STL_USE_OWN_NAMESPACE is in effect, STLport will try to rename std:: for the user
+ * to stlport::. If you don't want this feature, or if it does not quite work for your
+ * compiler, please define the following switch :
+ */
+// # define __STL_DONT_REDEFINE_STD 1
+
 
 /*
  * __STL_WHOLE_NATIVE_STD : only meaningful in __STL_USE_OWN_NAMESPACE mode.
@@ -120,7 +127,14 @@
  * compiler vendor's headers included. Default is "../include"
  * Hint : never install STLport in the directory that ends with "include"
  */
+// #  undef __STL_NATIVE_INCLUDE_PATH
 // #  define __STL_NATIVE_INCLUDE_PATH ../include
+// same for C library headers like <cstring>
+// #  undef __STL_NATIVE_CPP_C_INCLUDE_PATH
+// #  define __STL_NATIVE_CPP_C_INCLUDE_PATH ../include
+// same for C headers like <string.h>
+// #  undef __STL_NATIVE_C_INCLUDE_PATH
+// #  define __STL_NATIVE_C_INCLUDE_PATH ../include
 
 /* 
  * Set __STL_DEBUG to turn the "Debug Mode" on.
@@ -265,13 +279,12 @@
 // #define   __STL_USE_SGI_ALLOCATORS 1
 
 /* 
- * This definition makes SGI reverse_iterator to be compatible with
+ * This definition precludes SGI reverse_iterator to be compatible with
  * other parts of MSVC library. (With partial specialization, it just
  * has no effect).
- * Its use is strongly discouraged - for MSVC5.0 configuration, it is being
- * set automatically. 
+ * Use it _ONLY_ if you use SGI-style reverse_iterator<> template explicitly
  */
-// #    define __STL_MSVC50_COMPATIBILITY 1
+// #    define __STL_NO_MSVC50_COMPATIBILITY 1
 
 
 /* 
@@ -306,10 +319,41 @@
  * By default, STLport uses proxy technique to enable operator -> for
  * iterators even for those compilers that check the return type of
  * unused instantiations. If this causes problems for you, turn the following
- * switch on to disable proxy ->() operators.
+ * switch on to disable proxy ->() operators. This actually should be done
+ * in compiler-dependant section, not here. 
+ * auto_ptr implements proxy operator even if they are disabled in general,
+ * as it is very unlikely that you instantiate auto_ptr<> on pointers and other builtins.
+ * However, if this is the case, uncomment second line.
  */
 
 // # define __STL_NO_PROXY_ARROW_OPERATOR 1
+// # define __STL_NO_AUTO_PTR_PROXY_ARROW_OPERATOR 1
+
+
+
+/*
+ * Turn __STL_USE_DECLSPEC on if your project includes multiple DLLs and you want to
+ * configure one of them to instantiate STLport exports. 
+ * Note : you should definitely do that if you use STLport default node allocator
+ * and pass STL objects across DLL boundaries.
+ *
+ * To do so : you should define __STL_USE_DECLSPEC in all compilation units;
+ *                       define __STL_DESIGNATED_DLL when compiling DLL which is designated
+ *                       to instantiate STLport exports (other components will import symbols
+ *                       from there). This designated DLL should include at least <string> header.
+ *  
+ * Note : that far, it was only tested with Microsoft Visual C++ compiler.
+ */
+// # define __STL_USE_DECLSPEC   1
+// # define __STL_DESIGNATED_DLL 1
+
+
+/*
+ * Experimental switch for embedded systems where no iostreams are available
+ * at all
+ */
+
+// # define __STL_NO_IOSTREAMS 1
 
 //==========================================================
 

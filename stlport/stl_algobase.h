@@ -73,20 +73,8 @@
 
 __STL_BEGIN_NAMESPACE
 
+
 // swap and iter_swap
-
-template <class _ForwardIter1, class _ForwardIter2, class _Tp>
-inline void __iter_swap(_ForwardIter1 __a, _ForwardIter2 __b, _Tp*) {
-  _Tp __tmp = *__a;
-  *__a = *__b;
-  *__b = __tmp;
-}
-
-template <class _ForwardIter1, class _ForwardIter2>
-inline void iter_swap(_ForwardIter1 __a, _ForwardIter2 __b) {
-  __iter_swap(__a, __b, __VALUE_TYPE(__a));
-}
-
 template <class _Tp>
 inline void swap(_Tp& __a, _Tp& __b) {
   _Tp __tmp = __a;
@@ -94,14 +82,51 @@ inline void swap(_Tp& __a, _Tp& __b) {
   __b = __tmp;
 }
 
+# if defined (__STL_CLASS_PARTIAL_SPECIALIZATION)
+
+template <class _ForwardIter1, class _ForwardIter2>
+inline void iter_swap(_ForwardIter1 __a, _ForwardIter2 __b) {
+  typedef typename iterator_traits<_ForwardIter1>::value_type value_type;
+   swap((value_type&)*__a, (value_type&)*__b);
+}
+
+# else
+
+template <class _ForwardIter1, class _ForwardIter2, class _Tp>
+inline void __iter_swap(_ForwardIter1 __a, _ForwardIter2 __b, _Tp*) {
+  _Tp __tmp = *__a;
+# if 0
+  *__a = *__b;
+  *__b = __tmp;
+# else
+  swap((_Tp&)*__a, (_Tp&)*__b);
+# endif
+}
+
+template <class _ForwardIter1, class _ForwardIter2>
+inline void iter_swap(_ForwardIter1 __a, _ForwardIter2 __b) {
+  __iter_swap(__a, __b, __VALUE_TYPE(__a));
+}
+
+# endif
+
+
 //--------------------------------------------------
 // min and max
 
 #undef min
 #undef max
 
-# if !defined ( __MINMAX_DEFINED ) || defined (__STL_USE_OWN_NAMESPACE)
-# define __MINMAX_DEFINED
+# if defined (__BORLANDC__) && (__BORLANDC__ < 0x530)
+
+# ifdef __STL_USE_NAMESPACES
+using ::min;
+using ::max;
+# endif
+
+# endif
+
+# if !defined (__BORLANDC__) || defined (__STL_USE_OWN_NAMESPACE)
 
 template <class _Tp>
 inline const _Tp& min(const _Tp& __a, const _Tp& __b) {
@@ -113,7 +138,10 @@ inline const _Tp& max(const _Tp& __a, const _Tp& __b) {
   return  __a < __b ? __b : __a;
 }
 
-# ifdef __BORLANDC__
+#endif /* __BORLANDC__ */
+
+# if defined (__BORLANDC__) && ( __BORLANDC__ < 0x530 || defined (__STL_USE_OWN_NAMESPACE))
+
 inline unsigned long min (unsigned long __a, unsigned long __b)
 {
   return __b < __a ? __b : __a;
@@ -123,8 +151,8 @@ inline unsigned long max (unsigned long __a, unsigned long __b)
 {
   return  __a < __b ? __b : __a;
 }
+
 # endif
-#endif /* __MINMAX_DEFINED */
 
 template <class _Tp, class _Compare>
 inline const _Tp& min(const _Tp& __a, const _Tp& __b, _Compare __comp) {
@@ -190,7 +218,7 @@ __copy(_RandomAccessIter __first, _RandomAccessIter __last,
 template <class _Tp>
 inline _Tp*
 __copy_trivial(const _Tp* __first, const _Tp* __last, _Tp* __result) {
-  memmove((void*)__result, (void*)__first, sizeof(_Tp) * (__last - __first));
+  memmove((void*)__result, (const void*)__first, sizeof(_Tp) * (__last - __first));
   return __result + (__last - __first);
 }
 
@@ -514,7 +542,7 @@ bool equal(_InputIter1 __first1, _InputIter1 __last1,
                   _InputIter2 __first2) {
   __STL_FIX_LITERAL_BUG(__first1) __STL_FIX_LITERAL_BUG(__last1)  __STL_FIX_LITERAL_BUG(__first2)
   for ( ; __first1 != __last1; ++__first1, ++__first2)
-    if (*__first1 != *__first2)
+    if (!(*__first1 == *__first2))
       return false;
   return true;
 }
@@ -552,7 +580,7 @@ lexicographical_compare(const unsigned char* __first1,
   const size_t __len1 = __last1 - __first1;
   const size_t __len2 = __last2 - __first2;
   const int __result = memcmp(__first1, __first2, min(__len1, __len2));
-  return __result != 0 ? __result < 0 : __len1 < __len2;
+  return __result != 0 ? (__result < 0) : (__len1 < __len2);
 }
 
 inline bool lexicographical_compare(const char* __first1, const char* __last1,

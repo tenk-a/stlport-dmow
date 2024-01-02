@@ -27,7 +27,12 @@
 # define __STL_ALGO_C
 
 #if defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
-#pragma set woff 1209
+# pragma set woff 1209
+#elif defined(__DECCXX)
+# ifdef __PRAGMA_ENVIRONMENT
+#  pragma __environment __save
+#  pragma __environment __header_defaults
+# endif
 #endif
 
 __STL_BEGIN_NAMESPACE
@@ -477,7 +482,7 @@ template <class _InputIter, class _OutputIter, class _Tp>
 _OutputIter remove_copy(_InputIter __first, _InputIter __last,
                         _OutputIter __result, const _Tp& __value) {
   for ( ; __first != __last; ++__first)
-    if (*__first != __value) {
+    if (!(*__first == __value)) {
       *__result = *__first;
       ++__result;
     }
@@ -529,7 +534,7 @@ _OutputIter __unique_copy(_InputIter __first, _InputIter __last,
   _Tp __value = *__first;
   *__result = __value;
   while (++__first != __last)
-    if (__value != *__first) {
+    if (!(__value == *__first)) {
       __value = *__first;
       *++__result = __value;
     }
@@ -541,7 +546,7 @@ _ForwardIter __unique_copy(_InputIter __first, _InputIter __last,
                            _ForwardIter __result, forward_iterator_tag) {
   *__result = *__first;
   while (++__first != __last)
-    if (*__result != *__first) *++__result = *__first;
+    if (!(*__result == *__first)) *++__result = *__first;
   return ++__result;
 }
 
@@ -2639,7 +2644,11 @@ __STL_END_NAMESPACE
 # undef __stl_threshold
 
 #if defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
-#pragma reset woff 1209
+# pragma reset woff 1209
+#elif defined(__DECCXX)
+# ifdef __PRAGMA_ENVIRONMENT
+#  pragma __environment __restore
+# endif
 #endif
 
 #endif /* __STL_ALGO_C */

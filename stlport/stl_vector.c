@@ -111,6 +111,25 @@ vector<_Tp, _Alloc>::_M_assign_aux(_ForwardIter __first, _ForwardIter __last,
   }
 }
 
+#endif /* __STL_MEMBER_TEMPLATES */
+
+#ifndef __STL_INLINE_MEMBER_TEMPLATES
+#ifndef __STL_MEMBER_TEMPLATES
+template <class _Tp, class _Alloc>
+void 
+vector<_Tp, _Alloc>::insert(
+# if defined ( __STL_DEBUG )
+			    __iterator__ __pos, 
+			    __const_pointer__ __first, 
+			    __const_pointer__ __last
+# else
+			    __iterator__ __position, 
+			    __const_iterator__ __first, 
+			    __const_iterator__ __last
+# endif
+			    )
+#else /* MEMBER_TEMPLATES */
+
 template <class _Tp, class _Alloc> template <class _ForwardIterator>
 void  vector<_Tp, _Alloc>::_M_range_insert(
 # ifdef __STL_DEBUG
@@ -120,8 +139,11 @@ void  vector<_Tp, _Alloc>::_M_range_insert(
 # endif
 					   _ForwardIterator __first,
 					   _ForwardIterator __last,
-					   forward_iterator_tag) {
-      
+					   forward_iterator_tag)
+# endif /* MEMBER_TEMPLATES */
+
+{
+
 #ifdef __STL_DEBUG
   __stl_debug_check(__check_if_owner(&_M_iter_list, __pos));
   pointer __position(_Make_ptr(__pos));
@@ -140,8 +162,12 @@ void  vector<_Tp, _Alloc>::_M_range_insert(
 	copy(__first, __last, __position);
       }
       else {
+# ifdef __STL_MEMBER_TEMPLATES
 	_ForwardIterator __mid = __first;
 	advance(__mid, __elems_after);
+# else
+	__const_pointer__ __mid = __first + __elems_after;
+# endif
 	uninitialized_copy(__mid, __last, _M_finish);
 	_M_finish += __n - __elems_after;
 	uninitialized_copy(__position, __old_finish, _M_finish);
@@ -172,7 +198,7 @@ void  vector<_Tp, _Alloc>::_M_range_insert(
   }
 }
 
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* __STL_INLINE_MEMBER_TEMPLATES */
 
 
 template <class _Tp, class _Alloc>
@@ -218,65 +244,32 @@ void vector<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
 
 template <class _Tp, class _Alloc>
 void 
-vector<_Tp, _Alloc>::_M_insert_aux(_Tp* __position, const _Tp& __x)
+vector<_Tp, _Alloc>::_M_insert_overflow(_Tp* __position, const _Tp& __x, size_type __fill_len)
 {
-  if (_M_finish != _M_end_of_storage._M_data) {
-    __STLPORT_STD::construct(_M_finish, *(_M_finish - 1));
-    ++_M_finish;
-    _Tp __x_copy = __x;
-    copy_backward(__position, _M_finish - 2, _M_finish - 1);
-    *__position = __x_copy;
-  }
-  else {
-    const size_type __old_size = size();
-    const size_type __len = __old_size != 0 ? 2 * __old_size : 1;
-    pointer __new_start = _M_end_of_storage.allocate(__len);
-    pointer __new_finish = __new_start;
-    __STL_TRY {
-      __new_finish = uninitialized_copy(_M_start, __position, __new_start);
+  const size_type __old_size = size();
+  const size_type __len = __old_size + max(__old_size, __fill_len);
+
+  pointer __new_start = _M_end_of_storage.allocate(__len);
+  pointer __new_finish = __new_start;
+  __STL_TRY {
+    __new_finish = uninitialized_copy(_M_start, __position, __new_start);
+    // handle insertion
+    if (__fill_len==1) {
       __STLPORT_STD::construct(__new_finish, __x);
       ++__new_finish;
-      __new_finish = uninitialized_copy(__position, _M_finish, __new_finish);
     }
-    __STL_UNWIND((__STLPORT_STD::destroy(__new_start,__new_finish), 
-		  _M_end_of_storage.deallocate(__new_start,__len)));
-    __STLPORT_STD::destroy(_M_start, _M_finish);
-    _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start);
-    _M_start = __new_start;
-    _M_finish = __new_finish;
-    _M_end_of_storage._M_data = __new_start + __len;
+    else
+      __new_finish = uninitialized_fill_n(__new_finish, __fill_len, __x);
+    // copy remainder
+    __new_finish = uninitialized_copy(__position, _M_finish, __new_finish);
   }
-}
-
-template <class _Tp, class _Alloc>
-void 
-vector<_Tp, _Alloc>::_M_insert_aux(_Tp* __position)
-{
-  if (_M_finish != _M_end_of_storage._M_data) {
-    __STLPORT_STD::construct(_M_finish, *(_M_finish - 1));
-    ++_M_finish;
-    copy_backward(__position, _M_finish - 2, _M_finish - 1);
-    *__position = _Tp();
-  }
-  else {
-    const size_type __old_size = size();
-    const size_type __len = __old_size != 0 ? 2 * __old_size : 1;
-    pointer __new_start = _M_end_of_storage.allocate(__len);
-    pointer __new_finish = __new_start;
-    __STL_TRY {
-      __new_finish = uninitialized_copy(_M_start, __position, __new_start);
-      __STLPORT_STD::construct(__new_finish);
-      ++__new_finish;
-      __new_finish = uninitialized_copy(__position, _M_finish, __new_finish);
-    }
-    __STL_UNWIND((__STLPORT_STD::destroy(__new_start,__new_finish), 
-		  _M_end_of_storage.deallocate(__new_start,__len)));
-    __STLPORT_STD::destroy(begin(), end());
-    _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start);
-    _M_start = __new_start;
-    _M_finish = __new_finish;
-    _M_end_of_storage._M_data = __new_start + __len;
-  }
+  __STL_UNWIND((__STLPORT_STD::destroy(__new_start,__new_finish), 
+		_M_end_of_storage.deallocate(__new_start,__len)));
+  __STLPORT_STD::destroy(_M_start, _M_finish);
+  _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start);
+  _M_start = __new_start;
+  _M_finish = __new_finish;
+  _M_end_of_storage._M_data = __new_start + __len;
 }
 
 template <class _Tp, class _Alloc>
@@ -312,90 +305,11 @@ vector<_Tp, _Alloc>::_M_fill_insert(
       }
       __stl_debug_do(__invalidate_range(&_M_iter_list, __pos, end()));
     }
-    else {
-      const size_type __old_size = size();        
-      const size_type __len = __old_size + max(__old_size, __n);
-      pointer __new_start = _M_end_of_storage.allocate(__len);
-      pointer __new_finish = __new_start;
-      __STL_TRY {
-	__new_finish = uninitialized_copy(_M_start, __position, __new_start);
-	__new_finish = uninitialized_fill_n(__new_finish, __n, __x);
-	__new_finish
-	  = uninitialized_copy(__position, _M_finish, __new_finish);
-      }
-      __STL_UNWIND((__STLPORT_STD::destroy(__new_start,__new_finish), 
-		    _M_end_of_storage.deallocate(__new_start,__len)));
-      __STLPORT_STD::destroy(_M_start, _M_finish);
-      _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start);
-      _M_start = __new_start;
-      _M_finish = __new_finish;
-      _M_end_of_storage._M_data = __new_start + __len;
-    }
+    else 
+      _M_insert_overflow(__position, __x, __n);
   }
 }
 
-#ifndef __STL_MEMBER_TEMPLATES
-
-template <class _Tp, class _Alloc>
-void 
-vector<_Tp, _Alloc>::insert(
-# if defined ( __STL_DEBUG )
-			    __iterator__ __pos, 
-			    __const_pointer__ __first, 
-			    __const_pointer__ __last
-# else
-			    __iterator__ __position, 
-			    __const_iterator__ __first, 
-			    __const_iterator__ __last
-# endif
-			    ) {
-# if defined ( __STL_DEBUG )
-  __stl_debug_check(__check_if_owner(&_M_iter_list, __pos));
-  pointer __position=_Make_ptr(__pos);
-# endif
-  if (__first != __last) {
-    size_type __n = 0;
-    distance(__first, __last, __n);
-    if (size_type(_M_end_of_storage._M_data - _M_finish) >= __n) {
-      const size_type __elems_after = _M_finish - __position;
-      pointer __old_finish = _M_finish;
-      if (__elems_after > __n) {
-	uninitialized_copy(_M_finish - __n, _M_finish, _M_finish);
-	_M_finish += __n;
-	copy_backward(__position, __old_finish - __n, __old_finish);
-	copy(__first, __last, __position);
-      }
-      else {
-	uninitialized_copy(__first + __elems_after, __last, _M_finish);
-	_M_finish += __n - __elems_after;
-	uninitialized_copy(__position, __old_finish, _M_finish);
-	_M_finish += __elems_after;
-	copy(__first, __first + __elems_after, __position);
-      }
-      __stl_debug_do(__invalidate_range(&_M_iter_list, __pos, end()));
-    }
-    else {
-      const size_type __old_size = size();
-      const size_type __len = __old_size + max(__old_size, __n);
-      pointer __new_start = _M_end_of_storage.allocate(__len);
-      pointer __new_finish = __new_start;
-      __STL_TRY {
-	__new_finish = uninitialized_copy(_M_start, __position, __new_start);
-	__new_finish = uninitialized_copy(__first, __last, __new_finish);
-	__new_finish = uninitialized_copy(__position, _M_finish, __new_finish);
-      }
-      __STL_UNWIND((__STLPORT_STD::destroy(__new_start,__new_finish),
-		    _M_end_of_storage.deallocate(__new_start,__len)));
-      __STLPORT_STD::destroy(_M_start, _M_finish);
-      _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start);
-      _M_start = __new_start;
-      _M_finish = __new_finish;
-      _M_end_of_storage._M_data = __new_start + __len;
-    }
-  }
-}
-
-#endif /* __STL_MEMBER_TEMPLATES */
 
 __STL_END_NAMESPACE
 

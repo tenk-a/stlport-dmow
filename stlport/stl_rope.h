@@ -1883,12 +1883,12 @@ protected:
               _S_substring(__old, __pos2, __old->_M_size._M_data));
             _RopeRep* __result;
 
-	    __stl_assert(__old->get_allocator() == __r->get_allocator());
             if (0 == __r) {
-                __result = _S_concat_rep(__left, __right);
+	      __result = _S_concat_rep(__left, __right);
             } else {
-                _Self_destruct_ptr __left_result(_S_concat_rep(__left, __r));
-                __result = _S_concat_rep(__left_result, __right);
+	      __stl_assert(__old->get_allocator() == __r->get_allocator());
+	      _Self_destruct_ptr __left_result(_S_concat_rep(__left, __r));
+	      __result = _S_concat_rep(__left_result, __right);
             }
             return __result;
         }

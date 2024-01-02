@@ -49,9 +49,7 @@
 # define EH_BEGIN_NAMESPACE __STL_BEGIN_NAMESPACE
 # define EH_END_NAMESPACE __STL_END_NAMESPACE
 
-# if 1 // defined (__STL_USE_NEW_STYLE_HEADERS) 
 #  define EH_NEW_HEADERS 1
-# endif
 
 # if defined (__STL_USE_NEW_IOSTREAMS)
 #  define EH_NEW_IOSTREAMS 1
@@ -70,11 +68,16 @@
 # endif
 
 # if defined (__STLPORT_STD)
-#  define EH_STD __STLPORT_STD
+#  ifdef __STL_REDEFINE_STD
+#   define EH_STD std /* __STLPORT_STD */
+#  else
+#   define EH_STD __STLPORT_STD
+#  endif
 # elif defined(__STD)
 #  define EH_STD __STD
 # endif
 
+// we want to be portable here, so std:: won't work.
 # if defined(__STL_VENDOR_CSTD)
 #  define EH_CSTD __STL_VENDOR_CSTD
 # else
@@ -99,7 +102,10 @@
 # define EH_HASH_CONTAINERS_SUPPORT_ITERATOR_CONSTRUCTION 1
 # define EH_SLIST_IMPLEMENTED 1
 # define EH_SELECT1ST_HINT __select1st_hint
-# define EH_ROPE_IMPLEMENTED 1
+// fbp : DEC cxx is unable to compile it for some reason
+# ifndef __DECCXX
+#  define EH_ROPE_IMPLEMENTED 1
+# endif
 # define EH_STRING_IMPLEMENTED 1
 // # define EH_BITSET_IMPLEMENTED 1
 //# define EH_VALARRAY_IMPLEMENTED 1	- we have no tests yet for valarray
@@ -152,7 +158,7 @@
 #  define EH_USE_NOTHROW 1
 # endif // Metrowerks configuration
 
-#ifdef __SUNPRO_CC
+#if defined (__SUNPRO_CC)
 # define stl_destroy __RWSTD::__destroy
 # define EH_DISTANCE( a, b, result ) distance( a, b, result )
 # define EH_BIT_VECTOR EH_STD::vector<bool>
@@ -160,6 +166,19 @@
 # define EH_USE_NAMESPACES 1
 # define EH_NEW_IOSTREAMS 1
 # define EH_ASSERT assert
+# define EH_STRING_IMPLEMENTED 1
+# elif defined (__KCC)
+# define stl_destroy EH_STD::destroy
+# define EH_DISTANCE( a, b, result ) do { result = distance( a, b ); } while (0)
+# define EH_BIT_VECTOR EH_STD::vector<bool>
+# define EH_NEW_HEADERS 1
+# define EH_USE_NAMESPACES 1
+# define EH_NEW_IOSTREAMS 1
+# define EH_ASSERT assert
+# define EH_CSTD
+# define EH_STRING_IMPLEMENTED 1
+# define EH_MULTI_CONST_TEMPLATE_ARG_BUG 1
+# define EH_SELECT1ST_HINT select1st
 # else
 # define stl_destroy destroy
 #endif
@@ -168,8 +187,13 @@
 // Compiler-independent configuration
 //
 # ifdef EH_USE_NAMESPACES
-# ifdef __STD
-#  define EH_STD __STD
+# ifdef __STLPORT_STD
+#  define EH_STD __STLPORT_STD
+# else
+#  define EH_STD std
+# endif
+# ifdef __STLPORT_CSTD
+#  define EH_STD __STLPORT_CSTD
 # else
 #  define EH_STD std
 # endif

@@ -8,7 +8,8 @@
 
 
 # point this to proper location
-STL_INCL= -I../../stlport/SC5 -I../../stlport 
+STL_INCL= -I${PWD}/../../stlport/SC5
+
 # STL_INCL= -DEH_NO_SGI_STL
 
 AUX_LIST=TestClass.cpp main.cpp nc_alloc.cpp random_number.cpp
@@ -19,9 +20,6 @@ test_bit_vector.cpp   test_vector.cpp \
 test_deque.cpp test_set.cpp test_map.cpp \
 test_hash_map.cpp  test_hash_set.cpp test_rope.cpp \
 test_string.cpp test_bitset.cpp test_valarray.cpp
-
-# TEST_LIST=test_deque.cpp
-
 
 LIST=${AUX_LIST} ${TEST_LIST}
 
@@ -34,11 +32,7 @@ TEST  = eh_test.out
 CC = CC
 CXX = $(CC)
 
-# < 5.x only
-# CXXFLAGS = +w2 ${STL_INCL} -D__STL_USE_NEWALLOC
-
-# >= 5.x only
-CXXFLAGS = +w2 ${STL_INCL} -D__STL_USE_NEWALLOC -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
+CXXFLAGS = -g ${STL_INCL} -D__STL_USE_NEWALLOC -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
 
 # This is to test with native STL
 # CXXFLAGS = +w2 -xildoff -D__STL_USE_NEWALLOC -DEH_NO_SGI_STL -DEH_NEW_HEADERS -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC

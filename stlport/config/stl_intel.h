@@ -4,6 +4,7 @@
 // two levels of macros do not work good with icl.
 #   define __STL_NATIVE_HEADER(header)    <../include/##header> 
 #   define __STL_NATIVE_C_HEADER(header)    <../include/##header> 
+#   define __STL_NATIVE_CPP_C_HEADER(header)    <../include/##header> 
 
 // Intel compiler 4.0
 #if (__ICL >= 400)

@@ -30,24 +30,6 @@
 #   define __STL_FILE__ __FILE__
 # endif
  
-# ifdef __STL_ASSERTIONS 
-#   define __stl_assert(expr) \
-     do { if (!(expr)) { \
-             __STLPORT_STD::__stl_debug_engine<bool>::_Assert( # expr, __STL_FILE__, __LINE__); \
-             } \
-        } while (0)
-# endif /* __STL_ASSERTIONS */
-
-# ifdef __STL_DEBUG
-#  define __stl_verbose_assert(expr,__diag_num) \
-    do { if (!(expr)) { __STLPORT_STD::__stl_debug_engine<bool>::_VerboseAssert\
-                                 ( # expr,  __diag_num, __STL_FILE__, __LINE__ ); \
-         } \
-       } while(0)
-#  define __stl_debug_check           __stl_assert
-#  define __stl_debug_do(expr)        expr
-# endif
-
 enum {
   _StlFormat_ERROR_RETURN,
   _StlFormat_ASSERTION_FAILURE,
@@ -90,6 +72,9 @@ struct __stl_debug_exception {
   // no members
 };
 
+class __owned_link;
+class __owned_list;
+
 template <class _Dummy>
 struct __stl_debug_engine {
 
@@ -113,11 +98,42 @@ struct __stl_debug_engine {
   // Use __STL_DEBUG_TERMINATE to override
   static void _Terminate();
 
+  // owned_list/link delegate non-inline functions here
+
+  static bool _Check_same_owner( const __owned_link& __i1, 
+				 const __owned_link& __i2);
+  static bool _Check_same_owner_or_null( const __owned_link& __i1, 
+					 const __owned_link& __i2);
+  static bool _Check_if_owner( const __owned_list*, const __owned_link&);
+
+  static void _Verify(const __owned_list*);
+  
+  static void _Swap_owners(__owned_list&, __owned_list& , bool __swap_roots);
+ 
+  static void _Invalidate_all(__owned_list*);
+  
+  static void _M_detach(__owned_list*, __owned_link*);
+
+  static void _M_attach(__owned_list*, __owned_link*);
+
   // debug messages and formats
   static const char* _Message_table[_StlMsg_MAX];
 };
 
+// This is a hook to instantiate STLport exports in a designated DLL
+# if defined (__STL_USE_DECLSPEC)
+__STL_EXPORT template struct __STL_CLASS_DECLSPEC __stl_debug_engine<bool>;
+# endif /* __STL_USE_DECLSPEC */
+
+typedef __stl_debug_engine<bool> __stl_debugger;
+
 __STL_END_NAMESPACE
+
+#   define __stl_assert(expr) \
+     do { if (!(expr)) { \
+             __STLPORT_STD::__stl_debugger::_Assert( # expr, __STL_FILE__, __LINE__); \
+             } \
+        } while (0)
 
 # endif /* __STL_ASSERTIONS || __STL_DEBUG */
 
@@ -125,10 +141,17 @@ __STL_END_NAMESPACE
 // this section is for __STL_DEBUG only 
 #if defined ( __STL_DEBUG )
 
+#  define __stl_verbose_assert(expr,__diag_num) \
+    do { if (!(expr)) { __STLPORT_STD::__stl_debug_engine<bool>::_VerboseAssert\
+                                 ( # expr,  __diag_num, __STL_FILE__, __LINE__ ); \
+         } \
+       } while(0)
+#  define __stl_debug_check           __stl_assert
+#  define __stl_debug_do(expr)        expr
+
 #if defined(__MRC__)		//*TY 01/15/1999 - MrCpp optimizer confuses on this debugging code
 #pragma options opt none
 #endif
-
 
 #  define __stl_verbose_return(__expr,__diag_num) if (!(__expr)) { \
        __STLPORT_STD::__stl_debug_engine<bool>::_IndexedError(__diag_num, __FILE__ , __LINE__); \
@@ -200,15 +223,8 @@ inline bool __in_range(const __Iterator& __first, const __Iterator& __last,
 
 //==========================================================
 
-class __owned_link;
-template <class _Dummy> class __owned_list_tmpl;
 
-// this evil is because of some compilers
-// are unable to recognize base class which is typedef
-# define __owned_list __owned_list_tmpl<bool>
-
-
-class __owned_link {
+class __STL_CLASS_DECLSPEC __owned_link {
 private:
   typedef __owned_link  _Self;
   typedef _Self* _Self_ptr;
@@ -239,77 +255,83 @@ public:
   const _Owner_type* _M_owner;
 };
 
-template <class _Dummy>
-class __owned_list_tmpl {
+
+class __STL_CLASS_DECLSPEC __owned_list {
 private:
-    typedef __owned_list_tmpl<_Dummy> _Self;
-    typedef _Self* _Self_ptr;
-    typedef __owned_link  _Node;
-    typedef _Node* _Node_ptr;
-    typedef void* _Owner_ptr;
-    typedef const void* _Owner_const_ptr;
-    // should never be called, should be left undefined,
-    // but some compilers complain about it ;(
-    __owned_list_tmpl(const _Self&){}
-    void operator=(const _Self&) {}
+  typedef __owned_list _Self;
+  typedef _Self* _Self_ptr;
+  typedef __owned_link  _Node;
+  typedef _Node* _Node_ptr;
+  typedef void* _Owner_ptr;
+  typedef const void* _Owner_const_ptr;
+  // should never be called, should be left undefined,
+  // but some compilers complain about it ;(
+  __owned_list(const _Self&){}
+  void operator=(const _Self&) {}
 public:
-    __owned_list_tmpl() {
+  __owned_list() {
+  }
+  ~__owned_list() {
+    _Invalidate_all();
+    // that prevents detach
+    _M_node._Invalidate();
+  }
+  _Owner_const_ptr _Owner() const { 
+    return (_Owner_const_ptr)_M_node._M_owner; 
+  }
+  _Owner_ptr _Owner() { 
+    return (_Owner_ptr)_M_node._M_owner; 
+  }
+  bool  _Valid() const { 
+    return _M_node._M_owner!=0; 
+  }
+  void _Invalidate() { _M_node._M_owner=0; }
+  void _Safe_init(const void* __c) { 
+    _M_node._M_owner = (_Self_ptr)__c; 
+    _M_node._M_next=0;
+  }
+  void _Orphan(_Node& __it) {
+    if ( __it._M_owner && __it._M_next != &__it ) {
+      __stl_debugger::_M_detach(this, &__it);
     }
-    ~__owned_list_tmpl() {
-      _Invalidate_all();
-      // that prevents detach
-      _M_node._Invalidate();
-    }
-    _Owner_const_ptr _Owner() const { 
-      return (_Owner_const_ptr)_M_node._M_owner; 
-    }
-    _Owner_ptr _Owner() { 
-      return (_Owner_ptr)_M_node._M_owner; 
-    }
-    bool  _Valid() const { 
-      return _M_node._M_owner!=0; 
-    }
-    void _Invalidate() { _M_node._M_owner=0; }
-    void _Safe_init(const void* __c) { 
-        _M_node._M_owner = (_Self_ptr)__c; 
-        _M_node._M_next=0;
-    }
-    void _Orphan(_Node& __it) {
-      if ( __it._M_owner && __it._M_next != &__it ) {
-	_M_detach(&__it);
-      }
-      __it._M_next = &__it;
-      __it._M_owner = this;
-    }
-
-    _Node* _First() { return _M_node._Next(); }
-    _Node* _Last() { return 0 ; /* &_M_node; */ }
-    const _Node* _First() const { return (_Node*)_M_node._M_next; }
-    const _Node* _Last() const { return 0 ; /* &_M_node; */ }
-
-    void _Verify();
-    void _Swap_owners(_Self&, bool =false);
-    void _Invalidate_all();
-    inline void _M_detach_nosync(const _Node*) const;
-    void _M_detach(const _Node*) const;
-    // code bloat reduction
-    static bool _Check_same_owner( const __owned_link& __i1, 
-				   const __owned_link& __i2);
-    static bool _Check_same_owner_or_null( const __owned_link& __i1, 
-					   const __owned_link& __i2);
-    bool _Check_if_owner( const __owned_link& __it) const;
-
-
-    mutable _Node                     _M_node; 
+    __it._M_next = &__it;
+    __it._M_owner = this;
+  }
+  
+  _Node* _First() { return _M_node._Next(); }
+  _Node* _Last() { return 0 ; }
+  const _Node* _First() const { return (_Node*)_M_node._M_next; }
+  const _Node* _Last() const { return 0 ;}
+  
+  void _Verify() const {
+    __stl_debugger::_Verify(this); 
+  }
+  
+  void _Swap_owners(_Self& __y, bool __swap_roots =false) { 
+    __stl_debugger::_Swap_owners(*this, __y, __swap_roots); 
+  }
+ 
+  void _Invalidate_all() { 
+    __stl_debugger::_Invalidate_all(this);
+  }
+  
+  void _M_detach(const _Node* __node) const { 
+    __stl_debugger::_M_detach(__CONST_CAST(__owned_list*, this), __CONST_CAST(__owned_link*, __node));
+  }
+  
+  mutable _Node                     _M_node; 
 # ifdef __STL_THREADS
-    mutable _STL_mutex_lock           _M_lock;
+  mutable _STL_mutex_lock           _M_lock;
 # endif
-
+  
 private:
-    void _M_attach(const _Node*) const;
-    //    _Owner_ptr                        _M_owner;
-    friend class __owned_link;
+  void _M_attach(const _Node* __n) const { 
+    __stl_debugger::_M_attach(__CONST_CAST(__owned_list*, this), __CONST_CAST(__owned_link*,__n)); 
+  }
+  friend class __owned_link;
+  friend struct __stl_debug_engine<bool>;
 };
+
 
 //==========================================================
 
@@ -349,30 +371,30 @@ template <class _Iterator>
 bool __check_range(const _Iterator&, const _Iterator& , 
                    const _Iterator&, const _Iterator& );
 
-template <class _Dummy, class _Iterator>
-void __invalidate_range(const __owned_list_tmpl<_Dummy>* __base, 
+template <class _Iterator>
+void __invalidate_range(const __owned_list* __base, 
                         const _Iterator& __first,
                         const _Iterator& __last);
 
-template <class _Dummy, class _Iterator>
-void __invalidate_iterator(const __owned_list_tmpl<_Dummy>* __base, 
+template <class _Iterator>
+void __invalidate_iterator(const __owned_list* __base, 
                            const _Iterator& __it);
 
 //============================================================
 
 inline bool 
 __check_same_owner( const __owned_link& __i1, const __owned_link& __i2) {
-  return __owned_list::_Check_same_owner(__i1,__i2);
+  return __stl_debugger::_Check_same_owner(__i1,__i2);
 }
 inline bool 
 __check_same_owner_or_null( const __owned_link& __i1, const __owned_link& __i2) {
-  return __owned_list::_Check_same_owner_or_null(__i1,__i2);
+  return __stl_debugger::_Check_same_owner_or_null(__i1,__i2);
 }
 
-template <class _Dummy, class Iterator>
-inline bool __check_if_owner( const __owned_list_tmpl<_Dummy>* __owner, 
+template <class Iterator>
+inline bool __check_if_owner( const __owned_list* __owner, 
 		       const Iterator& __it) {
-  return __owner->_Check_if_owner((const __owned_link&)__it);
+  return __stl_debugger::_Check_if_owner(__owner, (const __owned_link&)__it);
 }
 
 __STL_END_NAMESPACE

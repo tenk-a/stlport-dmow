@@ -34,7 +34,7 @@ __STL_BEGIN_NAMESPACE
     pthread_mutex_t
     _Swap_lock_struct<__dummy>::_S_swap_lock = PTHREAD_MUTEX_INITIALIZER;
 #  else
-    __DECLARE_INSTANCE(pthread_mutex_t, _Swap_lock_struct<__dummy>::_S_swap_lock, 
+    __DECLARE_INSTANCE(pthread_mutex_t, _Swap_lock_struct<0>::_S_swap_lock, 
 		       =PTHREAD_MUTEX_INITIALIZER);
 # endif /* ( __STL_STATIC_TEMPLATE_DATA > 0 ) */
 # elif defined (__STL_UITHREADS)

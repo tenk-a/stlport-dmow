@@ -36,19 +36,17 @@
 // If we import new iostreams from vendor library, just do it
 
 #if defined (__STL_USE_NEW_IOSTREAMS) && (defined (__STLPORT_NEW_IOSTREAMS) || !defined(__STL_STD_REBUILD))
-// # ifndef __STLPORT_IOSFWD
 #  include <iosfwd>
-#   if defined (__STL_USE_OWN_NAMESPACE) && !defined (__STL_BROKEN_USING_DIRECTIVE)
+#   if defined (__STL_IMPORT_VENDOR_STD) && !defined (__STL_BROKEN_USING_DIRECTIVE)
      __STL_BEGIN_NAMESPACE
      using __STL_VENDOR_STD::char_traits;
      __STL_END_NAMESPACE
-#   endif /* __STL_USE_OWN_NAMESPACE */
-     // #  endif /* __STLPORT_IOSFWD */
+#   endif /* __STL_IMPORT_VENDOR_STD */
 #endif
 
      // used to be "else"
 
-# if defined (__STL_STD_REBUILD) || ! defined (__STL_USE_NEW_IOSTREAMS)
+# if defined (__STLPORT_NEW_IOSTREAMS) || defined (__STL_STD_REBUILD) || ! defined (__STL_USE_NEW_IOSTREAMS)
 
 #if ! defined (__STLPORT_CSTRING)
 # include <cstring>
@@ -155,7 +153,7 @@ template <class _CharT> struct char_traits
 
 // Specialization for char.
 
-__STL_TEMPLATE_NULL struct char_traits<char> 
+__STL_TEMPLATE_NULL struct __STL_CLASS_DECLSPEC char_traits<char> 
   : public __char_traits_base<char, int>
 {
   typedef char char_type;
@@ -167,6 +165,10 @@ __STL_TEMPLATE_NULL struct char_traits<char>
   typedef mbstate_t state_type;
 # endif
 #endif /* __STL_USE_NEW_IOSTREAMS */
+
+  static int to_int_type(const char& __c) {
+    return (unsigned char)__c;
+  }
 
   static int compare(const char* __s1, const char* __s2, size_t __n) 
     { return memcmp(__s1, __s2, __n); }
@@ -182,7 +184,7 @@ __STL_TEMPLATE_NULL struct char_traits<char>
 # if defined (__STL_HAS_WCHAR_T)
 // Specialization for wchar_t.
 
-__STL_TEMPLATE_NULL struct char_traits<wchar_t>
+__STL_TEMPLATE_NULL struct __STL_CLASS_DECLSPEC char_traits<wchar_t>
   : public __char_traits_base<wchar_t, wint_t>
 {};
 # endif

@@ -197,7 +197,7 @@ operator!=(const _Ht_iterator<_Val, _Nonconst_traits<_Val>,_Key,_HF,_ExK,_EqK,_A
 #ifndef __STL_CLASS_PARTIAL_SPECIALIZATION
 
 template <class _Val, class _Traits, class _Key, class _HF, class _ExK, class _EqK, class _All>
-inline 
+inline _Val*
 value_type(const _Ht_iterator<_Val, _Traits,_Key,_HF,_ExK,_EqK,_All>&)
 {
   return (_Val*) 0;
@@ -276,22 +276,22 @@ private:
 
 # define __HASH_ALLOC_PARAM   allocator_type
 
+private:
+  typedef typename _Alloc_traits<_Node, _All>::allocator_type _M_node_allocator_type;
+  typedef typename _Alloc_traits<void*, _All>::allocator_type _M_node_ptr_allocator_type;
+  typedef __vector__<void*, _M_node_ptr_allocator_type> _BucketVector;
 public:
   typedef typename _Alloc_traits<_Val,_All>::allocator_type allocator_type;
   allocator_type get_allocator() const { 
     return __STL_CONVERT_ALLOCATOR((const _M_node_allocator_type&)_M_num_elements, _Val); 
   }
 private:
-  typedef typename _Alloc_traits<_Node, _All>::allocator_type _M_node_allocator_type;
-  typedef typename _Alloc_traits<_Node*, _All>::allocator_type _M_node_ptr_allocator_type;
-  typedef __vector__<_Hashtable_node<_Val>*, _M_node_ptr_allocator_type> _BucketVector;
-private:
   hasher                _M_hash;
   key_equal             _M_equals;
   _ExK                  _M_get_key;
   _BucketVector         _M_buckets;
   _STL_alloc_proxy<size_type, _Node, _M_node_allocator_type>  _M_num_elements;
-  const _Node* _M_get_bucket(size_t __n) const { return _M_buckets[__n]; }
+  const _Node* _M_get_bucket(size_t __n) const { return (_Node*)_M_buckets[__n]; }
 
 public:
   typedef _Const_traits<_Val> __const_val_traits;
@@ -312,7 +312,7 @@ public:
       _M_hash(__hf),
       _M_equals(__eql),
       _M_get_key(__ext),
-      _M_buckets(__STL_CONVERT_ALLOCATOR(__a,_Node*)),
+      _M_buckets(__STL_CONVERT_ALLOCATOR(__a,void*)),
       _M_num_elements(__STL_CONVERT_ALLOCATOR(__a,_Node), (size_type)0)
   {
     _M_initialize_buckets(__n);
@@ -326,7 +326,7 @@ public:
       _M_hash(__hf),
       _M_equals(__eql),
       _M_get_key(_ExK()),
-      _M_buckets(__STL_CONVERT_ALLOCATOR(__a,_Node*)),
+      _M_buckets(__STL_CONVERT_ALLOCATOR(__a,void*)),
       _M_num_elements(__STL_CONVERT_ALLOCATOR(__a,_Node), (size_type)0)
   {
     _M_initialize_buckets(__n);
@@ -337,7 +337,7 @@ public:
       _M_hash(__ht._M_hash),
       _M_equals(__ht._M_equals),
       _M_get_key(__ht._M_get_key),
-      _M_buckets(__STL_CONVERT_ALLOCATOR(__ht.get_allocator(),_Node*)),
+      _M_buckets(__STL_CONVERT_ALLOCATOR(__ht.get_allocator(),void*)),
       _M_num_elements((const _M_node_allocator_type&)__ht._M_num_elements, (size_type)0)
   {
     __stl_debug_do(_Safe_init(this));
@@ -376,7 +376,7 @@ public:
   { 
     for (size_type __n = 0; __n < _M_buckets.size(); ++__n)
       if (_M_buckets[__n])
-        return iterator(_M_buckets[__n], this);
+        return iterator((_Node*)_M_buckets[__n], this);
     return end();
   }
 
@@ -386,7 +386,7 @@ public:
   {
     for (size_type __n = 0; __n < _M_buckets.size(); ++__n)
       if (_M_buckets[__n])
-        return const_iterator(_M_buckets[__n], this);
+        return const_iterator((_Node*)_M_buckets[__n], this);
     return end();
   }
 
@@ -405,7 +405,7 @@ public:
   size_type elems_in_bucket(size_type __bucket) const
   {
     size_type __result = 0;
-    for (_Node* __cur = _M_buckets[__bucket]; __cur; __cur = __cur->_M_next)
+    for (_Node* __cur = (_Node*)_M_buckets[__bucket]; __cur; __cur = __cur->_M_next)
       __result += 1;
     return __result;
   }
@@ -518,7 +518,7 @@ public:
   {
     size_type __n = _M_bkt_num_key(__key);
     _Node* __first;
-    for ( __first = _M_buckets[__n];
+    for ( __first = (_Node*)_M_buckets[__n];
           __first && !_M_equals(_M_get_key(__first->_M_val), __key);
           __first = __first->_M_next)
       {}
@@ -529,7 +529,7 @@ public:
   {
     size_type __n = _M_bkt_num_key(__key);
     const _Node* __first;
-    for ( __first = _M_buckets[__n];
+    for ( __first = (_Node*)_M_buckets[__n];
           __first && !_M_equals(_M_get_key(__first->_M_val), __key);
           __first = __first->_M_next)
       {}
@@ -541,7 +541,7 @@ public:
     const size_type __n = _M_bkt_num_key(__key);
     size_type __result = 0;
 
-    for (const _Node* __cur = _M_buckets[__n]; __cur; __cur = __cur->_M_next)
+    for (const _Node* __cur = (_Node*)_M_buckets[__n]; __cur; __cur = __cur->_M_next)
       if (_M_equals(_M_get_key(__cur->_M_val), __key))
         ++__result;
     return __result;
@@ -583,7 +583,7 @@ private:
   {
     const size_type __n_buckets = _M_next_size(__n);
     _M_buckets.reserve(__n_buckets);
-    _M_buckets.insert(_M_buckets.end(), __n_buckets, (_Node*) 0);
+    _M_buckets.insert(_M_buckets.end(), __n_buckets, (void*) 0);
     _M_num_elements._M_data = 0;
     __stl_debug_do(_Safe_init(this));
   }

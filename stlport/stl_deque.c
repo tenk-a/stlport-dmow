@@ -448,12 +448,12 @@ deque<_Tp,_Alloc,__bufsiz>::_M_pop_front_aux()
   _M_start._M_cur = _M_start._M_first;
 }      
 
+
+
 template <class _Tp, class _Alloc, size_t __bufsiz>
 __iterator__
-deque<_Tp,_Alloc,__bufsiz>::_M_insert_aux(__iterator__ __pos,
-                                           const value_type& __x) {
+deque<_Tp,_Alloc,__bufsiz>::_M_insert_aux_prepare(__iterator__ __pos) {
   difference_type __index = __pos - _M_start;
-  value_type __x_copy = __x;
   if (__index < difference_type(size() / 2)) {
     push_front(front());
     iterator __front1 = _M_start;
@@ -474,6 +474,15 @@ deque<_Tp,_Alloc,__bufsiz>::_M_insert_aux(__iterator__ __pos,
     __pos = _M_start + __index;
     copy_backward(__pos, __back2, __back1);
   }
+  return __pos;
+}
+
+template <class _Tp, class _Alloc, size_t __bufsiz>
+__iterator__
+deque<_Tp,_Alloc,__bufsiz>::_M_insert_aux(__iterator__ __pos,
+                                           const value_type& __x) {
+  value_type __x_copy = __x;
+  __pos = _M_insert_aux_prepare(__pos);
   *__pos = __x_copy;
   return __pos;
 }
@@ -482,27 +491,7 @@ template <class _Tp, class _Alloc, size_t __bufsiz>
 __iterator__
 deque<_Tp,_Alloc,__bufsiz>::_M_insert_aux(__iterator__ __pos)
 {
-  difference_type __index = __pos - _M_start;
-  if (__index < difference_type(size() / 2)) {
-    push_front(front());
-    iterator __front1 = _M_start;
-    ++__front1;
-    iterator __front2 = __front1;
-    ++__front2;
-    __pos = _M_start + __index;
-    iterator __pos1 = __pos;
-    ++__pos1;
-    copy(__front2, __pos1, __front1);
-  }
-  else {
-    push_back(back());
-    iterator __back1 = _M_finish;
-    --__back1;
-    iterator __back2 = __back1;
-    --__back2;
-    __pos = _M_start + __index;
-    copy_backward(__pos, __back2, __back1);
-  }
+  __pos = _M_insert_aux_prepare(__pos);
   *__pos = value_type();
   return __pos;
 }

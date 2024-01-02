@@ -63,19 +63,11 @@ __STL_END_NAMESPACE
 __STL_BEGIN_NAMESPACE
 
 inline void __stl_throw_range_error(const char* __msg) { 
-# if defined (__STL_USE_NATIVE_STDEXCEPT)
-  throw range_error(__STL_VENDOR_STD::string(__msg)); 
-# else
   throw range_error(string(__msg)); 
-# endif
 }
 
 inline void __stl_throw_length_error(const char* __msg) { 
-# if defined (__STL_USE_NATIVE_STDEXCEPT)
-  throw length_error(__STL_VENDOR_STD::string(__msg)); 
-# else
   throw length_error(string(__msg)); 
-# endif
 }
 __STL_END_NAMESPACE
 

@@ -16,16 +16,16 @@
 
 #include "Tests.h"
 # if defined (EH_NEW_HEADERS)
-# ifdef __SUNPRO_CC
-# include <stdio.h>
+#  ifdef __SUNPRO_CC
+#   include <stdio.h>
+#  else
+#   include <cstdio>
+#  endif
+#  include <deque>
 # else
-#include <cstdio>
+#  include <stdio.h>
+#  include <deque.h>
 # endif
-#include <deque>
-#else
-#include <stdio.h>
-#include <deque.h>
-#endif
 #include "TestClass.h"
 #include "LeakCheck.h"
 #include "test_construct.h"

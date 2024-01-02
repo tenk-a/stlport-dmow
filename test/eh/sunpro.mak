@@ -21,9 +21,6 @@ test_deque.cpp test_set.cpp test_map.cpp \
 test_hash_map.cpp  test_hash_set.cpp test_rope.cpp \
 test_string.cpp test_bitset.cpp test_valarray.cpp
 
-# TEST_LIST=test_deque.cpp
-
-
 LIST=${AUX_LIST} ${TEST_LIST}
 
 OBJECTS = $(LIST:%.cpp=%.o) $(STAT_MODULE)

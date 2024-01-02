@@ -12,14 +12,7 @@
 #endif
 #endif
 
-#if defined(__IBMCPP__) // hputman: Add for IBM VisualAge
-#define CXXRAND_SCOPE static
-#else
-#define CXXRAND_SCOPE
-#endif  
-
-
-CXXRAND_SCOPE  int cxxrand() { return rand();}
+static  int cxxrand() { return rand();}
 
 int gener1_test(int, char**)
 {

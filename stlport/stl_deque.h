@@ -312,6 +312,14 @@ struct _Deque_iterator : public _Deque_iterator_base< _Tp, __bufsiz> {
   reference operator[](difference_type __n) const { return *(*this + __n); }
 };
 
+template <class _Tp, class _Traits, class __bufsiz>
+inline _Deque_iterator<_Tp, _Traits, __bufsiz>
+operator+(ptrdiff_t __n, const _Deque_iterator<_Tp, _Traits, __bufsiz>& __x)
+{
+   return __x + __n;
+}
+
+
 #ifdef __STL_USE_SEPARATE_RELOPS_NAMESPACE
 
 template <class _Tp, class __bufsiz>
@@ -1026,6 +1034,8 @@ void  insert(iterator __pos,
 
   iterator _M_insert_aux(iterator __pos, const value_type& __x);
   iterator _M_insert_aux(iterator __pos);
+  iterator _M_insert_aux_prepare(iterator __pos);
+
   void _M_insert_aux(iterator __pos, size_type __n, const value_type& __x);
 
 #ifdef __STL_MEMBER_TEMPLATES  

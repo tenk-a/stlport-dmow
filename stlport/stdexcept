@@ -17,26 +17,33 @@
  */
 
 #ifndef __SGI_STDEXCEPT
-#define __SGI_STDEXCEPT
+
+# ifndef __BORLANDC__
+#  define __SGI_STDEXCEPT 1
+# endif
 
 #ifndef __STL_CONFIG_H
 #include <stl_config.h>
 #endif
 
+/* recursive */
+# ifdef __SGI_STDEXCEPT_SEEN
+#  define __DONT_RESUME_STD_FOR_STDEXCEPT
+# endif
+
+
+# if !defined(__SGI_STDEXCEPT_SEEN) && \
+   (!defined (__STL_USE_NATIVE_STDEXCEPT) || defined (__STL_USE_OWN_NAMESPACE))
+
+# ifdef __BORLANDC__
+#  define __SGI_STDEXCEPT_SEEN 1
+# endif
+
 #if !defined (__STLPORT_DEBUG_H) && (defined  (__STL_DEBUG) || defined (__STL_ASSERTIONS))
 # include <stldebug.h>
 #endif
 
-
-#if defined (__STL_USE_NATIVE_STDEXCEPT) || defined (__STL_USE_OWN_NAMESPACE)
-
-#  include __STL_NATIVE_HEADER(stdexcept)
-
-# endif
-
-# if !defined (__STL_USE_NATIVE_STDEXCEPT) || defined (__STL_USE_OWN_NAMESPACE)
-
-#  include <stl_exception.h>
+#  include <exception>
 
 #if defined(__STL_USE_EXCEPTIONS) || \
     !(defined(_MIPS_SIM) && defined(_ABIO32) && _MIPS_SIM == _ABIO32)
@@ -112,12 +119,37 @@ public:
 
 __STL_END_NAMESPACE
 
-#ifndef __SGI_STL_STRING
-# include <string>
-#endif
-
 #endif /* Not o32, and no exceptions */
 #endif /* __STL_USE_NATIVE_STDEXCEPT */
+
+#if defined (__STL_USE_NATIVE_STDEXCEPT)
+
+#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
+#    undef std
+#    define __STL_RESUME_STD_FOR_STDEXCEPT
+#    define __STLPORT_NATIVE_PASS
+#  endif
+
+#  include __STL_NATIVE_HEADER(stdexcept)
+
+# if defined ( __STL_RESUME_STD_FOR_STDEXCEPT ) && ! defined (__DONT_RESUME_STD_FOR_STDEXCEPT)
+#    undef __STL_RESUME_STD_FOR_STDEXCEPT
+#    define std __STLPORT_NAMESPACE
+#    undef __STLPORT_NATIVE_PASS
+# endif
+
+# endif /* __STL_USE_NATIVE_STDEXCEPT */
+
+# ifdef __BORLANDC__
+#  undef  __SGI_STDEXCEPT_SEEN
+#  define __SGI_STDEXCEPT 1
+#  undef __DONT_RESUME_STD_FOR_STDEXCEPT
+# else
+// this inclusion is apparently needed for MSVC
+# ifndef __SGI_STL_STRING
+#  include <string>
+# endif
+# endif
 
 #endif /* __SGI_STDEXCEPT */
 

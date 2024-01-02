@@ -14,15 +14,16 @@
 
 ************************************************************************************************/
 
-#include <assert.h>
-#include <stdlib.h>
-
 #include "nc_alloc.h"
 #include <string>
 
 #if defined (EH_NEW_HEADERS)
 # include <new>
+# include <cassert>
+# include <cstdlib>
 #else
+# include <assert.h>
+# include <stdlib.h>
 # include <new.h>
 #endif
 

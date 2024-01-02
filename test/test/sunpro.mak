@@ -7,7 +7,9 @@ VPATH = .
 
 # point this to proper location
 
-STL_INCL=-I../../stlport -I../../stlport/old_hp
+
+# PWD is here because SC5 wants absolute path ;(
+STL_INCL=-I${PWD}/../../stlport/SC5 -I${PWD}/../../stlport/old_hp
 
 
 LIST  = stl_test.cpp accum1.cpp accum2.cpp \

@@ -6,10 +6,9 @@
 
 #  define __STL_RAND48 1
 #  define __STL_LONG_LONG 1
-// #  define __STL_LONG_DOUBLE 1
 #  define __STL_NO_BAD_ALLOC 1
 #  define __STL_NO_MEMBER_TEMPLATE_KEYWORD 1
 #  define __STL_NON_TYPE_TMPL_PARAM_BUG 1
-#  define __STL_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
+// #  define __STL_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 #  define __STL_NO_EXCEPTION_HEADER 1
 

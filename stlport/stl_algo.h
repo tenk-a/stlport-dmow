@@ -65,7 +65,7 @@ inline _InputIter find(_InputIter __first, _InputIter __last,
                        input_iterator_tag)
 {
   __stl_debug_check(__check_range(__first, __last));
-  while (__first != __last && *__first != __val)
+  while (__first != __last && !(*__first == __val))
     ++__first;
   return __first;
 }
@@ -363,9 +363,6 @@ template <class _RandomAccessIter>
 __STL_INLINE_LOOP
 void __reverse(_RandomAccessIter __first, _RandomAccessIter __last,
                random_access_iterator_tag) {
-#if defined(__MRC__)		//*TY 01/11/1999 - MrCpp generates erraneous code with optimization truned on
-#pragma options opt none
-#endif						//*TY 01/11/1999 - 
   for (; __first < __last; ++__first) iter_swap(__first, --__last);
 }
 

@@ -14,14 +14,6 @@
 
 ***********************************************************************************/
 #include "Tests.h"
-
-#if defined (EH_NEW_IOSTREAMS)
-# include <iosfwd>
-# include <iostream>
-#else
-# include <iostream.h>
-#endif
-
 #include "LeakCheck.h"
 #include "SortClass.h"
 
@@ -31,6 +23,12 @@
 #else
 # include <algo.h>
 # include <assert.h>
+#endif
+
+#if defined (EH_NEW_IOSTREAMS)
+# include <iostream>
+#else
+# include <iostream.h>
 #endif
 
 

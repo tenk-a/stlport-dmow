@@ -48,7 +48,7 @@
    { upgrade_the_compiler_to_use_STL;}
 
 // distinguish real MSC from Metrowerks and Intel
-# if defined(_MSC_VER) && !defined(__MWERKS__) && !defined (__ICL)
+# if defined(_MSC_VER) && !defined(__MWERKS__) && !defined (__ICL) && !defined (__COMO__)
 #  define __STL_MSVC _MSC_VER
 # endif
 
@@ -102,7 +102,7 @@
 // Watcom C++
 #  include <config/stl_watcom.h>
 
-# elif defined(__COMO__)
+# elif defined(__COMO__) || defined (__COMO_VERSION_)
 
 #  include <config/stl_como.h>
 
@@ -142,7 +142,15 @@
 
 #  include <config/stl_apcc.h>
 
-# else
+#elif defined (__KCC)
+
+#  include <config/stl_kai.h>
+
+#elif defined (__DECCXX)
+
+#  include <config/stl_dec.h>
+ 
+#else
 
 // Unable to identify the compiler, issue error diagnostic.
 // Edit <config/stl_mycomp.h> to set STLport up for your compiler.

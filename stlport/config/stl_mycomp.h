@@ -248,6 +248,7 @@
 // Hint : never install STLport in the directory that ends with "include"
 // # define __STL_NATIVE_INCLUDE_PATH ../include
 // # define __STL_NATIVE_C_INCLUDE_PATH ../include
+// # define __STL_NATIVE_CPP_C_INCLUDE_PATH ../include
 
 // This macro constructs header path from directory and name.
 // You may change it if your compiler does not understand "/". 

@@ -24,13 +24,27 @@
 #  include <cstdlib>
 # endif
 
+#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
+#    undef std
+#    define __STL_RESUME_STD_FOR_LOCALE
+#    define __STLPORT_NATIVE_PASS
+#  endif
+
 # include __STL_NATIVE_HEADER(locale)
+
+# if defined ( __STL_RESUME_STD_FOR_LOCALE )
+#    undef __STL_RESUME_STD_FOR_LOCALE
+#    define std __STLPORT_NAMESPACE
+#    undef __STLPORT_NATIVE_PASS
+# endif
 
 # ifdef __STL_USE_OWN_NAMESPACE
 __STL_BEGIN_NAMESPACE
 
 // from <cwchar>
-using __STL_VENDOR_CSTD::mbstate_t;
+#if !defined (__STL_NO_MBSTATE_T)
+using __STL_VENDOR_MB_NAMESPACE::mbstate_t;
+#endif
 
 // _lib.locale_, locale:
 using __STL_VENDOR_STD::locale;
@@ -84,10 +98,7 @@ using __STL_VENDOR_STD::money_put;
 using __STL_VENDOR_STD::moneypunct;
 using __STL_VENDOR_STD::moneypunct_byname;
 
-#if !( defined(__MSL_CPP__) && \
-       ( (__MSL_CPP__ >= 0x5000 && defined( _MSL_NO_MESSAGE_FACET )) || \
-	 (__MSL_CPP__ < 0x5000 && defined( MSIPL_NL_TYPES ))  \
-	 ) )
+#if !defined (__STL_NO_NATIVE_MESSAGE_FACET)
 using __STL_VENDOR_STD::messages_base;
 using __STL_VENDOR_STD::messages;
 using __STL_VENDOR_STD::messages_byname;

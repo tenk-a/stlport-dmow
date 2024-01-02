@@ -54,9 +54,6 @@ bool __Vec_nonsingular(const __owned_link& __that, const  _Tp* __ptr) {
 }
 
 template <class _Tp, class _Traits>
-struct _Vec_iter;
-
-template <class _Tp, class _Traits>
 struct _Vec_iter : public __owned_link {
 public:
   typedef _Tp value_type;
@@ -210,7 +207,7 @@ inline bool
 operator!=(const _Vec_iter<_Tp, _Const_traits<_Tp> >& __x, 
 	   const _Vec_iter<_Tp, _Nonconst_traits<_Tp> >& __y) {
   __stl_debug_check(__check_same_owner_or_null(__x, __y));
-  return __x._M_iterator==__y._M_iterator;
+  return __x._M_iterator!=__y._M_iterator;
 }
 
 template <class _Tp>
@@ -218,7 +215,7 @@ inline bool
 operator!=(const _Vec_iter<_Tp, _Nonconst_traits<_Tp> >& __x, 
 	   const _Vec_iter<_Tp, _Const_traits<_Tp> >& __y) {
   __stl_debug_check(__check_same_owner_or_null(__x, __y));
-  return __x._M_iterator==__y._M_iterator;
+  return __x._M_iterator!=__y._M_iterator;
 }
 #endif
 
@@ -245,6 +242,17 @@ inline random_access_iterator_tag iterator_category(const _Vec_iter<_Tp, _Traits
     return random_access_iterator_tag();
 }
 #  endif /* __STL_CLASS_PARTIAL_SPECIALIZATION */
+
+// these exports are for basic_string
+# if 0 // defined (__STL_USE_DECLSPEC)
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _Vec_iter<char, _Nonconst_traits<char> >;
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _Vec_iter<char, _Const_traits<char> >;
+#  if defined (__STL_HAS_WCHAR_T)
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _Vec_iter<wchar_t, _Nonconst_traits<wchar_t> >;
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _Vec_iter<wchar_t, _Const_traits<wchar_t> >;
+#  endif
+# endif /* __STL_USE_DECLSPEC */
+
 
 __STL_END_NAMESPACE
 

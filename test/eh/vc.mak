@@ -37,12 +37,12 @@ CPP_PROJ=/nologo /W3 /GX /Zd /D "WIN32" \
 
 CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D "_CONSOLE"  /I$(STL_INCL) /I. -Zi
 
-# CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D_NOTHREADS /D "_CONSOLE"   /I$(STL_INCL) /I.
+# CPP_LIBS = dll.lib
 
 check: eh_test.out
 
 eh_test.out : $(Dep_stl)
-	$(CPP) $(CPP_PROJ) $(Dep_stl) -o eh_test.exe
+	$(CPP) $(CPP_PROJ) $(Dep_stl) $(CPP_LIBS) -o eh_test.exe
 	eh_test
 	echo done
 

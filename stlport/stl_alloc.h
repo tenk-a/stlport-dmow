@@ -38,6 +38,11 @@
 # ifndef __STLPORT_CSTDDEF
 #  include <cstddef>
 # endif
+
+#if !defined (__STLPORT_DEBUG_H) && (defined  (__STL_DEBUG) || defined (__STL_ASSERTIONS))
+# include <stldebug.h>
+#endif
+
 # ifndef __STLPORT_CSTDLIB
 #  include <cstdlib>
 # endif
@@ -47,12 +52,12 @@
 
 # ifndef __THROW_BAD_ALLOC
 #  if !defined(__STL_USE_EXCEPTIONS)
-# if !defined (__STLPORT_CSTDIO)
-#  include <cstdio>
-# endif
-# if !defined (__STLPORT_CSTDLIB)
-#  include <cstdlib>
-# endif
+#   if !defined (__STLPORT_CSTDIO)
+#    include <cstdio>
+#   endif
+#   if !defined (__STLPORT_CSTDLIB)
+#    include <cstdlib>
+#   endif
 #   define __THROW_BAD_ALLOC fprintf(stderr, "out of memory\n"); exit(1)
 #  else /* !defined(__STL_USE_EXCEPTIONS) */
 #   define __THROW_BAD_ALLOC throw bad_alloc()
@@ -101,18 +106,9 @@
     extern "C" {
       extern int __us_rsthread_malloc;
     }
-	// The above is copied from malloc.h.  Including <malloc.h>
-	// would be cleaner but fails with certain levels of standard
-	// conformance.
-#   define __NODE_ALLOCATOR_LOCK if (__threads && __us_rsthread_malloc) \
-                { _S_node_allocator_lock._M_acquire_lock(); }
-#   define __NODE_ALLOCATOR_UNLOCK if (__threads && __us_rsthread_malloc) \
-                { _S_node_allocator_lock._M_release_lock(); }
-# else /* !__STL_SGI_THREADS */
-#   define __NODE_ALLOCATOR_LOCK \
-        { if (__threads) _S_node_allocator_lock._M_acquire_lock(); }
-#   define __NODE_ALLOCATOR_UNLOCK \
-        { if (__threads) _S_node_allocator_lock._M_release_lock(); }
+// The above is copied from malloc.h.  Including <malloc.h>
+// would be cleaner but fails with certain levels of standard
+// conformance.
 # endif
 #else
 //  Thread-unsafe
@@ -132,7 +128,7 @@
 __STL_BEGIN_NAMESPACE
 
 template <class _Tp, class _Alloc>
-struct __STLPORT_EXPORT_TEMPLATE __allocator;
+struct __allocator;
 
 // Malloc-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.
@@ -140,10 +136,7 @@ struct __STLPORT_EXPORT_TEMPLATE __allocator;
 typedef void (* __oom_handler_type)();
 
 template <int __inst>
-class __STLPORT_EXPORT_TEMPLATE __malloc_alloc;
-
-template <int __inst>
-class __STLPORT_EXPORT_TEMPLATE __malloc_alloc {
+class __malloc_alloc {
 private:
 
   static void* _S_oom_malloc(size_t);
@@ -192,7 +185,7 @@ public:
 
 // New-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.
-class __new_alloc {
+class __STL_CLASS_DECLSPEC __new_alloc {
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
@@ -223,6 +216,7 @@ public:
 
 
 # ifdef __STL_DEBUG_ALLOC
+
 // Allocator adaptor to check size arguments for debugging.
 // Reports errors using assert.  Checking can be disabled with
 // NDEBUG, but it's far better to just use the underlying allocator
@@ -316,23 +310,52 @@ enum {_ALIGN = 8, _ALIGN_SHIFT=3, _MAX_BYTES = 128};
 
 #define _S_FREELIST_INDEX(__bytes) ((__bytes-size_t(1))>>(int)_ALIGN_SHIFT)
 
-union _Node_alloc_obj;
-
-union _Node_alloc_obj {
-  union _Node_alloc_obj * _M_free_list_link;
-  char __M_client_data[1];    /* The client sees this.        */
+class __STL_CLASS_DECLSPEC _Node_alloc_obj {
+public:
+    _Node_alloc_obj * _M_free_list_link;
 };
 
+# ifdef __STL_THREADS
+
 template <bool __threads, int __inst>
-class __STLPORT_EXPORT_TEMPLATE __node_alloc {
+class __STL_CLASS_DECLSPEC _Node_Alloc_Lock {
+
+    static _STL_mutex_base _S_lock;
+  
+public:
+  inline _Node_Alloc_Lock() __STL_NOTHROW  { 
+
+#  ifdef __STL_SGI_THREADS
+    if (__threads && __us_rsthread_malloc)
+#  else /* !__STL_SGI_THREADS */
+      if (__threads) 
+#  endif
+	_S_lock._M_acquire_lock(); 
+  }
+  
+  inline ~_Node_Alloc_Lock() __STL_NOTHROW {
+#  ifdef __STL_SGI_THREADS
+    if (__threads && __us_rsthread_malloc)
+#  else /* !__STL_SGI_THREADS */
+    if (__threads)
+#  endif
+      _S_lock._M_release_lock(); 
+  }
+};
+
+# endif  /* __STL_THREADS */
+
+template <bool __threads, int __inst>
+class __node_alloc {
   __PRIVATE:
-  static size_t
+  static inline size_t
   _S_round_up(size_t __bytes) 
     { return (((__bytes) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
 
   typedef _Node_alloc_obj _Obj;
+
 private:
-  static _Obj * __STL_VOLATILE _S_free_list[_NFREELISTS]; 
+
   static  inline size_t _S_freelist_index(size_t __bytes) {
       return _S_FREELIST_INDEX(__bytes);
  }
@@ -343,32 +366,26 @@ private:
   // if it is inconvenient to allocate the requested number.
   static char* _S_chunk_alloc(size_t __p_size, int& __nobjs);
 
+
   // Chunk allocation state.
+  static _Node_alloc_obj * __STL_VOLATILE _S_free_list[_NFREELISTS]; 
   static char* _S_start_free;
   static char* _S_end_free;
   static size_t _S_heap_size;
 
-# ifdef __STL_THREADS
-    static _STL_mutex_base _S_node_allocator_lock;
-# endif
 
+# ifdef __STL_THREADS
   // It would be nice to use _STL_auto_lock here.  But we
   // don't need the NULL check.  And we do need a test whether
   // threads have actually been started.
-  class _Lock;
-  friend class _Lock;
-
-  class _Lock {
-  public:
-    _Lock() __STL_NOTHROW  { __NODE_ALLOCATOR_LOCK;   }
-    ~_Lock() __STL_NOTHROW { __NODE_ALLOCATOR_UNLOCK; }
-  };
+  typedef _Node_Alloc_Lock<__threads, __inst> _Lock;
+# endif
 
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
 
-# if defined (__STL_MEMBER_TEMPLATE_CLASSES)
+# if defined (__STL_MEMBER_TEMPLATE_CLASSES) && ! defined (__STL_USE_DECLSPEC)
   template <class _Tp1> struct rebind {
     typedef __allocator<_Tp1, __node_alloc<__threads, __inst> > other;
   };
@@ -386,7 +403,7 @@ public:
 
     } else {
       _Obj * __STL_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
-#       ifndef _NOTHREADS
+#       ifdef __STL_THREADS
       /*REFERENCED*/
       _Lock __lock_instance;
 #       endif
@@ -413,10 +430,10 @@ public:
 # endif
     } else {
       _Obj * __STL_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
-#       ifndef _NOTHREADS
+#       ifdef __STL_THREADS
       /*REFERENCED*/
       _Lock __lock_instance;
-#       endif /* _NOTHREADS */
+#       endif /* __STL_THREADS */
       // acquire lock
       ((_Obj *)__p) -> _M_free_list_link = *__my_free_list;
       *__my_free_list = (_Obj *)__p;
@@ -427,6 +444,24 @@ public:
   static void * reallocate(void *__p, size_t __old_sz, size_t __new_sz);
 # endif
 } ;
+
+
+# if defined (__STL_USE_DECLSPEC)
+
+#ifdef __STL_THREADS
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _Node_Alloc_Lock<true, 0>;
+__STL_EXPORT template class __STL_CLASS_DECLSPEC _Node_Alloc_Lock<false, 0>;
+#endif
+
+__STL_EXPORT template class __STL_CLASS_DECLSPEC __malloc_alloc<0>;
+
+__STL_EXPORT template class __STL_CLASS_DECLSPEC __node_alloc<false, 0>;
+
+#ifdef __STL_THREADS
+__STL_EXPORT template class __STL_CLASS_DECLSPEC __node_alloc<true, 0>;
+#endif
+
+# endif /* __STL_USE_DECLSPEC */
 
 typedef __node_alloc<__NODE_ALLOCATOR_THREADS, 0> _Node_alloc;
 
@@ -531,7 +566,7 @@ public:
 };
 
 __STL_TEMPLATE_NULL
-class allocator<void> {
+class __STL_CLASS_DECLSPEC allocator<void> {
 public:
   typedef size_t      size_type;
   typedef ptrdiff_t   difference_type;
@@ -559,6 +594,15 @@ inline bool operator!=(const allocator<_T1>&, const allocator<_T2>&)
 {
   return false;
 }
+
+# if defined (__STL_USE_DECLSPEC)
+
+__STL_EXPORT template class __STL_CLASS_DECLSPEC allocator<char>;
+#  if defined (__STL_HAS_WCHAR_T)
+__STL_EXPORT template class __STL_CLASS_DECLSPEC allocator<wchar_t>;
+#  endif
+
+# endif /* __STL_USE_DECLSPEC */
 
 template<class _Tp, class _Alloc>
 class __simple_alloc {
@@ -955,19 +999,19 @@ private:
 public:
   _Value _M_data;
   // construction/destruction
-  _STL_alloc_proxy(const _Self& __x) : _MaybeReboundAlloc(__x), _M_data(__x._M_data) {} 
-  _STL_alloc_proxy(const _MaybeReboundAlloc& __a, const _Value& __p) : _MaybeReboundAlloc(__a), 
+  inline _STL_alloc_proxy(const _Self& __x) : _MaybeReboundAlloc(__x), _M_data(__x._M_data) {} 
+  inline _STL_alloc_proxy(const _MaybeReboundAlloc& __a, const _Value& __p) : _MaybeReboundAlloc(__a), 
     _M_data(__p) {}
-  _Self& operator = (const _Self& __x) { _M_data = __x._M_data; return *this; } 
+  inline _Self& operator = (const _Self& __x) { _M_data = __x._M_data; return *this; } 
   //  _Self& operator = (const _Value& __x) { _M_data = __x; return *this; } 
-  _Self& operator = (const _Base& __x) { ((_Base&)*this) = __x; return *this; } 
+  inline _Self& operator = (const _Base& __x) { ((_Base&)*this) = __x; return *this; } 
   //  operator _Value() const { return _M_data; } 
   
   // Unified interface to perform allocate()/deallocate() with limited
   // language support
 #if defined (__STL_MEMBER_TEMPLATE_CLASSES)
 # ifdef __BORLANDC__
-  _Tp* allocate(size_t __n) { 
+  inline _Tp* allocate(size_t __n) { 
     return _Base::allocate(__n);
   }
 # else
@@ -975,10 +1019,10 @@ public:
 # endif
 #else
   // else it is rebound already, and allocate() member is accessible
-  _Tp* allocate(size_t __n) { 
+  inline _Tp* allocate(size_t __n) { 
     return __stl_alloc_rebind(__STATIC_CAST(_Base&,*this),(_Tp*)0).allocate(__n); 
   }
-  void deallocate(_Tp* __p, size_t __n) { 
+  inline void deallocate(_Tp* __p, size_t __n) { 
     __stl_alloc_rebind(__STATIC_CAST(_Base&, *this),(_Tp*)0).deallocate(__p, __n); 
   }
 #endif

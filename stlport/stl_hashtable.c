@@ -81,7 +81,7 @@ _Hashtable_iterator<_Val,_Key,_HF,_ExK,_EqK,_All>::_M_skip_to_next() {
 
   _Node* __i=0;
   while (__i==0 && ++__bucket < __h_sz)
-    __i = _M_ht->_M_buckets[__bucket];
+    __i = (_Node*)_M_ht->_M_buckets[__bucket];
   return __i;
 }
 
@@ -112,7 +112,7 @@ hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
   ::insert_unique_noresize(const __value_type__& __obj)
 {
   const size_type __n = _M_bkt_num(__obj);
-  _Node* __first = _M_buckets[__n];
+  _Node* __first = (_Node*)_M_buckets[__n];
 
   for (_Node* __cur = __first; __cur; __cur = __cur->_M_next) 
     if (_M_equals(_M_get_key(__cur->_M_val), _M_get_key(__obj)))
@@ -131,7 +131,7 @@ hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
   ::insert_equal_noresize(const __value_type__& __obj)
 {
   const size_type __n = _M_bkt_num(__obj);
-  _Node* __first = _M_buckets[__n];
+  _Node* __first = (_Node*)_M_buckets[__n];
 
   for (_Node* __cur = __first; __cur; __cur = __cur->_M_next) 
     if (_M_equals(_M_get_key(__cur->_M_val), _M_get_key(__obj))) {
@@ -156,7 +156,7 @@ hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::find_or_insert(const __value_type__& __
   resize(_M_num_elements._M_data + 1);
 
   size_type __n = _M_bkt_num(__obj);
-  _Node* __first = _M_buckets[__n];
+  _Node* __first = (_Node*)_M_buckets[__n];
 
   for (_Node* __cur = __first; __cur; __cur = __cur->_M_next)
     if (_M_equals(_M_get_key(__cur->_M_val), _M_get_key(__obj)))
@@ -177,7 +177,7 @@ hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::equal_range(const __key_type__& __key)
   typedef pair<iterator, iterator> _Pii;
   const size_type __n = _M_bkt_num_key(__key);
 
-  for (_Node* __first = _M_buckets[__n]; __first; __first = __first->_M_next)
+  for (_Node* __first = (_Node*)_M_buckets[__n]; __first; __first = __first->_M_next)
     if (_M_equals(_M_get_key(__first->_M_val), __key)) {
       for (_Node* __cur = __first->_M_next; __cur; __cur = __cur->_M_next)
         if (!_M_equals(_M_get_key(__cur->_M_val), __key))
@@ -185,7 +185,7 @@ hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::equal_range(const __key_type__& __key)
       for (size_type __m = __n + 1; __m < _M_buckets.size(); ++__m)
         if (_M_buckets[__m])
           return _Pii(iterator(__first, this),
-                     iterator(_M_buckets[__m], this));
+                     iterator((_Node*)_M_buckets[__m], this));
       return _Pii(iterator(__first, this), end());
     }
   return _Pii(end(), end());
@@ -200,7 +200,7 @@ hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
   typedef pair<const_iterator, const_iterator> _Pii;
   const size_type __n = _M_bkt_num_key(__key);
 
-  for (const _Node* __first = _M_buckets[__n] ;
+  for (const _Node* __first = (_Node*)_M_buckets[__n] ;
        __first; 
        __first = __first->_M_next) {
     if (_M_equals(_M_get_key(__first->_M_val), __key)) {
@@ -213,7 +213,7 @@ hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
       for (size_type __m = __n + 1; __m < _M_buckets.size(); ++__m)
         if (_M_buckets[__m])
           return _Pii(const_iterator(__first, this),
-                      const_iterator(_M_buckets[__m], this));
+                      const_iterator((_Node*)_M_buckets[__m], this));
       return _Pii(const_iterator(__first, this), end());
     }
   }
@@ -225,7 +225,7 @@ __size_type__
 hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::erase(const __key_type__& __key)
 {
   const size_type __n = _M_bkt_num_key(__key);
-  _Node* __first = _M_buckets[__n];
+  _Node* __first = (_Node*)_M_buckets[__n];
   size_type __erased = 0;
 
   if (__first) {
@@ -262,7 +262,7 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::erase(const __const_iterator__& _c
   __stl_verbose_assert(__it._Owner()==this, _StlMsg_NOT_OWNER);
   if (__p) {
     const size_type __n = _M_bkt_num(__p->_M_val);
-    _Node* __cur = _M_buckets[__n];
+    _Node* __cur = (_Node*)_M_buckets[__n];
 
     if (__cur == __p) {
       _M_buckets[__n] = __cur->_M_next;
@@ -330,17 +330,17 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
   if (__num_elements_hint > __old_n) {
     const size_type __n = _M_next_size(__num_elements_hint);
     if (__n > __old_n) {
-      _BucketVector __tmp(__n, (_Hashtable_node<_Val>*)(0),
+      _BucketVector __tmp(__n, (void*)(0),
 			  _M_buckets.get_allocator());
       __STL_TRY {
         for (size_type __bucket = 0; __bucket < __old_n; ++__bucket) {
-          _Node* __first = _M_buckets[__bucket];
+          _Node* __first = (_Node*)_M_buckets[__bucket];
           while (__first) {
             size_type __new_bucket = _M_bkt_num(__first->_M_val, __n);
             _M_buckets[__bucket] = __first->_M_next;
-            __first->_M_next = __tmp[__new_bucket];
+            __first->_M_next = (_Node*)__tmp[__new_bucket];
             __tmp[__new_bucket] = __first;
-            __first = _M_buckets[__bucket];          
+            __first = (_Node*)_M_buckets[__bucket];          
           }
         }
         _M_buckets.swap(__tmp);
@@ -349,8 +349,8 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
       catch(...) {
         for (size_type __bucket = 0; __bucket < __tmp.size(); ++__bucket) {
           while (__tmp[__bucket]) {
-            _Node* __next = __tmp[__bucket]->_M_next;
-            _M_delete_node(__tmp[__bucket]);
+            _Node* __next = ((_Node*)__tmp[__bucket])->_M_next;
+            _M_delete_node((_Node*)__tmp[__bucket]);
             __tmp[__bucket] = __next;
           }
         }
@@ -365,7 +365,7 @@ template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
 void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
   ::_M_erase_bucket(const __size_type__ __n, __node__* __first, __node__* __last)
 {
-  _Node* __cur = _M_buckets[__n];
+  _Node* __cur = (_Node*)_M_buckets[__n];
   if (__cur == __first)
     _M_erase_bucket(__n, __last);
   else {
@@ -387,7 +387,7 @@ template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
 void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
   ::_M_erase_bucket(const __size_type__ __n, __node__* __last)
 {
-  _Node* __cur = _M_buckets[__n];
+  _Node* __cur = (_Node*)_M_buckets[__n];
   while (__cur && __cur != __last) {
     _Node* __next = __cur->_M_next;
     _M_delete_node(__cur);
@@ -401,7 +401,7 @@ template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
 void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::clear()
 {
   for (size_type __i = 0; __i < _M_buckets.size(); ++__i) {
-    _Node* __cur = _M_buckets[__i];
+    _Node* __cur = (_Node*)_M_buckets[__i];
     while (__cur != 0) {
       _Node* __next = __cur->_M_next;
       _M_delete_node(__cur);
@@ -423,10 +423,10 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
 {
   _M_buckets.clear();
   _M_buckets.reserve(__ht._M_buckets.size());
-  _M_buckets.insert(_M_buckets.end(), __ht._M_buckets.size(), (_Node*) 0);
+  _M_buckets.insert(_M_buckets.end(), __ht._M_buckets.size(), (void*) 0);
   __STL_TRY {
     for (size_type __i = 0; __i < __ht._M_buckets.size(); ++__i) {
-      const _Node* __cur = __ht._M_buckets[__i];
+      const _Node* __cur = (_Node*)__ht._M_buckets[__i];
       if (__cur) {
         _Node* __copy = _M_new_node(__cur->_M_val);
         _M_buckets[__i] = __copy;

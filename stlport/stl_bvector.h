@@ -291,6 +291,11 @@ struct _Bit_iter : public _Bit_iterator_base
   reference operator[](difference_type __i) { return *(*this + __i); }
 };
 
+template <class _Ref, class _Ptr>
+inline _Bit_iter<_Ref,_Ptr> operator+(ptrdiff_t __n, const _Bit_iter<_Ref, _Ptr>& __x) {
+   return __x + __n;
+}
+
 # ifndef __STL_CLASS_PARTIAL_SPECIALIZATION
 inline random_access_iterator_tag 
 iterator_category(const _Bit_iterator_base&) {return random_access_iterator_tag();}
@@ -302,6 +307,8 @@ inline bool* value_type(const _Bit_iter<bool, const bool*>&) {return (bool*)0;}
 
 typedef _Bit_iter<bool, const bool*> _Bit_const_iterator;
 typedef _Bit_iter<_Bit_reference, _Bit_reference*> _Bit_iterator;
+
+
 
 // Bit-vector base class, which encapsulates the difference between
 //  old SGI-style allocators and standard-conforming allocators.
@@ -941,14 +948,14 @@ public:
   void clear() { erase(begin(), end()); }
 #ifdef __BORLANDC__
   inline bool 
-  operator==(const __BVECTOR_QUALIFIED& __y)
+  operator==(const __BVECTOR_QUALIFIED& __y) const
     {
       return (size() == __y.size() && 
 	      equal(begin(), end(), __y.begin()));
     }
   
   inline bool 
-  operator<(const __BVECTOR_QUALIFIED& __y)
+  operator<(const __BVECTOR_QUALIFIED& __y) const
     {
       return lexicographical_compare(begin(), end(), 
 				     __y.begin(), __y.end());

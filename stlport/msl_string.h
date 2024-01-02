@@ -11,7 +11,7 @@
  * purpose.  It is provided "as is" without express or implied warranty.
  *
  */
-#if defined( __MWERKS__ ) && !defined( __SGI_STL_MSL_STRING_H_ )
+#if defined( __STL_USE_MSIPL ) && !defined( __SGI_STL_MSL_STRING_H_ )
 #define __SGI_STL_MSL_STRING_H_
 
 //# define char_traits __msl_char_traits

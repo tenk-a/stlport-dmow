@@ -164,7 +164,7 @@ inline bool operator != ( const TestClass& lhs, const TestClass& rhs ) {
 inline unsigned int TestClass::get_random( unsigned range )
 {
     return random_number( range );
-};
+}
 
 # ifdef EH_NEW_IOSTREAMS
 extern EH_STD::ostream& operator << ( EH_STD::ostream& s, const TestClass&);

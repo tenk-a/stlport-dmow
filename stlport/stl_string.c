@@ -27,11 +27,16 @@
 #define __STL_STRING_C
 
 
+#ifndef __SGI_STDEXCEPT
+#  include <stdexcept>      
+#endif
+
 # if !defined (__STL_LINK_TIME_INSTANTIATION)
 #  include <stl_string_fwd.c>
 # endif
 
-# if defined (__STL_USE_NEW_IOSTREAMS) && ! defined (__STLPORT_NEW_IOSTREAMS) && !defined (__STL_MSVC)
+# if defined (__STL_USE_NEW_IOSTREAMS) && ! defined (__STLPORT_NEW_IOSTREAMS) && \
+       !defined (__STL_MSVC) && !defined (__STL_USE_MSIPL) && !defined (__BORLANDC__)
 #  include <locale>
 # endif
 
@@ -249,10 +254,10 @@ basic_string<_CharT,_Traits,_Alloc>::append(__size_type__ __n, _CharT __c) {
 
 #ifndef __STL_MEMBER_TEMPLATES
 
-template <class _Tp, class _Traits, class _Alloc> 
-basic_string<_Tp, _Traits, _Alloc>& 
-basic_string<_Tp, _Traits, _Alloc>::append(const _Tp* __first,
-                                           const _Tp* __last)
+template <class _CharT, class _Traits, class _Alloc> 
+basic_string<_CharT, _Traits, _Alloc>& 
+basic_string<_CharT, _Traits, _Alloc>::append(const _CharT* __first,
+					      const _CharT* __last)
 {
   if (__first != __last) {
     const size_type __old_size = size();
@@ -277,7 +282,7 @@ basic_string<_Tp, _Traits, _Alloc>::append(const _Tp* __first,
       _M_end_of_storage._M_data = __new_start + __len; 
     }
     else {
-      const _Tp* __f1 = __first;
+      const _CharT* __f1 = __first;
       ++__f1;
       uninitialized_copy(__f1, __last, _M_finish + 1);
       __STL_TRY {
@@ -313,8 +318,8 @@ basic_string<_CharT,_Traits,_Alloc>::assign(const _CharT* __f,
                                             const _CharT* __l)
 {
   __stl_debug_do(__check_range(__f, __l));
-  const ptrdiff_t __n = __l - __f;
-  if (__STATIC_CAST(const size_type,__n) <= size()) {
+  ptrdiff_t __n = __l - __f;
+  if (__STATIC_CAST(size_type,__n) <= size()) {
     _Traits::copy(_M_start, __f, __n);
     erase(begin() + __n, end());
   }
@@ -452,9 +457,9 @@ basic_string<_CharT,_Traits,_Alloc>::insert(__iterator__ __position,
       }
     }
     else {
-      const size_type __old_size = size();        
-      const size_type __len
-        = __old_size + max(__old_size, __STATIC_CAST(const size_type,__n)) + 1;
+      size_type __old_size = size();        
+      size_type __len
+        = __old_size + max(__old_size, __STATIC_CAST(size_type,__n)) + 1;
       pointer __new_start = _M_end_of_storage.allocate(__len);
       pointer __new_finish = __new_start;
       __STL_TRY {
@@ -529,7 +534,7 @@ __size_type__
 basic_string<_CharT,_Traits,_Alloc>
   ::find(const _CharT* __s, size_type __pos, size_type __n) const 
 {
-  if (__pos >= size())
+  if (__pos + __n >= size())
     return npos;
   else {
     const const_pointer __result =
@@ -700,7 +705,7 @@ basic_string<_CharT, _Traits, _Alloc>
 }
 
 
-#ifdef __STL_USE_NEW_IOSTREAMS
+#if defined (__STL_USE_NEW_IOSTREAMS)
 
 template <class _CharT, class _Traits>
 inline bool
@@ -770,14 +775,14 @@ using namespace __STL_VENDOR_STD;
     typedef ctype<_CharT> _C_type;
     const locale& __loc = __is.getloc();
 #ifdef __STLPORT_NEW_IOSTREAMS
-    const _C_type& _Ctype = (const _C_type&)(__loc);
+    const _C_type& _Ctype = use_facet<_C_type>(__loc);
 #else
 # if defined (__STL_MSVC) && (__STL_MSVC <= 1200 )
-    const _C_type& _Ctype = (const _C_type&)(__loc , ( _C_type * ) 0, true);
+    const _C_type& _Ctype = use_facet(__loc , ( _C_type * ) 0, true);
 # elif defined (__SUNPRO_CC)
-    const _C_type& _Ctype = (const _C_type&)(__loc , ( _C_type * ) 0);
+    const _C_type& _Ctype = use_facet(__loc , ( _C_type * ) 0);
 # else
-    const _C_type& _Ctype = (const _C_type&)(__loc);
+    const _C_type& _Ctype = use_facet<_C_type>(__loc);
 # endif
 #endif
     __s.clear();
@@ -797,7 +802,7 @@ using namespace __STL_VENDOR_STD;
       else {
         _CharT __c = _Traits::to_char_type(__c1);
 
-        if (_Ctype.is(__STL_VENDOR_STD::ctype<_CharT>::space, __c)) {
+        if (_Ctype.is(_C_type::space, __c)) {
           if (_Traits::eq_int_type(__buf->sputbackc(__c), _Traits::eof()))
             __is.setstate(ios_base::failbit);
           break;
@@ -829,7 +834,6 @@ getline(basic_istream<_CharT, _Traits>& __is,
     basic_streambuf<_CharT, _Traits>* __buf = __is.rdbuf();
     __s.clear();
 
-    int __c1;
     while (__nread < __s.max_size()) {
       int __c1 = __buf->sbumpc();
       if (_Traits::eq_int_type(__c1, _Traits::eof())) {
@@ -853,7 +857,7 @@ getline(basic_istream<_CharT, _Traits>& __is,
 }
 # endif /* __BORLANDC */
 
-#else /* __STL_USE_NEW_IOSTREAMS */
+#elif ! defined ( __STL_USE_NO_IOSTREAMS )
 
 inline void 
 __sgi_string_fill(ostream& __os, streambuf* __buf, size_t __n)
@@ -1040,6 +1044,8 @@ __STL_END_NAMESPACE
 # undef size_type
 # undef _Make_ptr
 # undef __iterator__
+# undef iterator
+
 
 #if defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
 #pragma reset woff 1174

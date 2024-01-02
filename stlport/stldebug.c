@@ -86,35 +86,44 @@ __DECLARE_INSTANCE(const char*, __stl_debug_engine<bool>::_Message_table[_StlMsg
 # endif
 __STL_END_NAMESPACE
 
+// abort()
+#    include <cstdlib>
+
 #  if !defined( __STL_DEBUG_MESSAGE )
 
-#   ifdef __STL_USE_NEW_STYLE_HEADERS
 #    include <cstdarg>
 #    include <cstdio>
-#    include <cstdlib>
-#   else
-#    include <stdarg.h>
-#    include <stdio.h>
-#    include <stdlib.h>
-#   endif
 
 __STL_BEGIN_NAMESPACE
 
 
 template <class _Dummy>
 void 
-__stl_debug_engine<_Dummy>::_Message(const char * format_str, ...)
+__stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...)
 {
-#if defined(__MSL__) && __MSL__ <= 0x4011
-	using std::__files;
-#endif
-	va_list args;
-	va_start( args, format_str );
-	__STL_VENDOR_CSTD::vfprintf(stderr, format_str, args);
+
+#  if defined(__MSL__) && __MSL__ <= 0x4011
+	using __STL_VENDOR_STD::__files;
+#  endif
+	va_list __args;
+	va_start( __args, __format_str );
+
+# if defined (__STL_WINCE)
+
+	TCHAR __buffer[512];
+	wvsprintf(__buffer, _T(__format_str), __args);
+	__STL_WINCE_TRACE(__buffer);
+# else
+	__STL_VENDOR_CSTD::vfprintf(stderr, __format_str, __args);
+
+# endif /* WINCE */
+
 # ifdef __STL_DEBUG_MESSAGE_POST
 	__STL_DEBUG_MESSAGE_POST
 # endif
-	va_end(args);
+
+       va_end(__args);
+
 }
 
 __STL_END_NAMESPACE
@@ -138,7 +147,7 @@ __stl_debug_engine<_Dummy>::_VerboseAssert(const char* __expr, int __error_ind, 
 {
 # if defined (_MFC_VER)
 TRACE(_T(_Message_table[_StlFormat_VERBOSE_ASSERTION_FAILURE]), \
-      __FILE__, __LINE__, _Message_table[__diag_num], __f, __l, # expr );
+      __FILE__, __LINE__, _Message_table[__error_ind], __f, __l, # __expr );
     ASSERT(0);
 # else
   __stl_debug_message(_Message_table[_StlFormat_VERBOSE_ASSERTION_FAILURE],
@@ -168,6 +177,8 @@ __stl_debug_engine<_Dummy>::_Terminate()
 {
 # if defined (__STL_USE_EXCEPTIONS) && ! defined (__STL_NO_DEBUG_EXCEPTIONS)
   throw __stl_debug_exception();
+# elif defined (__STL_WINCE)
+  TerminateProcess(GetCurrentProcess(), 0);
 # else
   abort();
 # endif
@@ -231,73 +242,77 @@ inline bool __in_range_aux(const _Iterator1& __it, const _Iterator& __first,
 //==========================================================
 
 template <class _Dummy>
-void __owned_list_tmpl<_Dummy>::_Invalidate_all() {
+void __stl_debug_engine<_Dummy>::_Invalidate_all(__owned_list* __l) {
   // crucial
-  if (_M_node._M_owner) {
-    for (_Node_ptr __position = (_Node_ptr)_M_node._M_next; 
-	 __position != 0; __position= (_Node_ptr)__position->_M_next) {
+  if (__l->_M_node._M_owner) {
+    for (__owned_link*  __position = (__owned_link*)__l->_M_node._M_next; 
+	 __position != 0; __position= (__owned_link*)__position->_M_next) {
       __position->_M_owner=0;
     }
-    _M_node._M_next =0;
+    __l->_M_node._M_next =0;
   }
 }
 
 template <class _Dummy>
-void __owned_list_tmpl<_Dummy>::_Verify() {
-  __stl_assert(_M_node._Owner() != 0);
-  for (_Node_ptr __position = (_Node_ptr)_M_node._M_next; 
-       __position != 0; __position= (_Node_ptr)__position->_M_next) {
-    __stl_assert(__position->_Owner()== this);
+void __stl_debug_engine<_Dummy>::_Verify(const __owned_list* __l) {
+  __stl_assert(__l->_M_node._Owner() != 0);
+  for (__owned_link* __position = (__owned_link*)__l->_M_node._M_next; 
+       __position != 0; __position= (__owned_link*)__position->_M_next) {
+    __stl_assert(__position->_Owner()== __l);
   }
 }
 
 template <class _Dummy>
 void 
-__owned_list_tmpl<_Dummy>::_Swap_owners(__owned_list_tmpl<_Dummy>& __x, bool __swap_roots) {
-  _Invalidate_all();
+__stl_debug_engine<_Dummy>::_Swap_owners(__owned_list& __x, __owned_list& __y, bool __swap_roots) {
   __x._Invalidate_all();
+  __y._Invalidate_all();
   if (__swap_roots) {
-    const _Self* __tmp = _M_node._M_owner;
-    _M_node._M_owner=__x._M_node._M_owner;
-    __x._M_node._M_owner=__tmp;
+    const __owned_list* __tmp = __x._M_node._M_owner;
+    __x._M_node._M_owner=__y._M_node._M_owner;
+    __y._M_node._M_owner=__tmp;
   }
 }
 
 template <class _Dummy>
 void 
-__owned_list_tmpl<_Dummy>::_M_detach(const __owned_link* __c_node) const {
-  if (this  != 0) {
-    __stl_verbose_assert(_Owner()!=0, _StlMsg_INVALID_CONTAINER);
-    __STL_ACQUIRE_LOCK(_M_lock)
-    _Node* __prev, *__next;
+__stl_debug_engine<_Dummy>::_M_detach(__owned_list* __l, __owned_link* __c_node) {
+  if (__l  != 0) {
+
+    __stl_verbose_assert(__l->_Owner()!=0, _StlMsg_INVALID_CONTAINER);
+
+    __STL_ACQUIRE_LOCK(__l->_M_lock)
+
+    __owned_link* __prev, *__next;
    
-    for (__prev = (_Node*)&_M_node; (__next = __prev->_M_next) != __c_node; 
+    for (__prev = &__l->_M_node; (__next = __prev->_M_next) != __c_node; 
 	 __prev = __next) {}
       
     __prev->_M_next = __c_node->_M_next;
-    ((_Node*)__c_node)->_M_owner=0;
-    __STL_RELEASE_LOCK(_M_lock)
+    __c_node->_M_owner=0;
+
+    __STL_RELEASE_LOCK(__l->_M_lock)
   }
 }
 
 template <class _Dummy>
 void 
-__owned_list_tmpl<_Dummy>::_M_attach(const __owned_link* __c_node) const {
-  if (this ==0) {
-    ((_Node*)__c_node)->_M_owner = 0;    
+__stl_debug_engine<_Dummy>::_M_attach(__owned_list* __l, __owned_link* __c_node) {
+  if (__l ==0) {
+    (__c_node)->_M_owner = 0;    
   } else {
-    __stl_verbose_assert(_Owner()!=0, _StlMsg_INVALID_CONTAINER);
-    __STL_ACQUIRE_LOCK(_M_lock)
-    ((_Node*)__c_node)->_M_owner = this;
-    ((_Node*)__c_node)->_M_next = (_Node*)_M_node._M_next;
-    ((_Self*)this)->_M_node._M_next = (_Node*)__c_node;
-    __STL_RELEASE_LOCK(_M_lock)
+    __stl_verbose_assert(__l->_Owner()!=0, _StlMsg_INVALID_CONTAINER);
+    __STL_ACQUIRE_LOCK(__l->_M_lock)
+    __c_node->_M_owner = __l;
+    __c_node->_M_next = __l->_M_node._M_next;
+    __l->_M_node._M_next = __c_node;
+    __STL_RELEASE_LOCK(__l->_M_lock)
   }
 }
 
 template <class _Dummy>
-bool __owned_list_tmpl<_Dummy>::_Check_same_owner( const __owned_link& __i1, 
-							 const __owned_link& __i2)
+bool __stl_debug_engine<_Dummy>::_Check_same_owner( const __owned_link& __i1, 
+						    const __owned_link& __i2)
 {
   __stl_verbose_return(__i1._Valid(), _StlMsg_INVALID_LEFTHAND_ITERATOR);
   __stl_verbose_return(__i2._Valid(), _StlMsg_INVALID_RIGHTHAND_ITERATOR);
@@ -306,20 +321,20 @@ bool __owned_list_tmpl<_Dummy>::_Check_same_owner( const __owned_link& __i1,
 }
 
 template <class _Dummy>
-bool __owned_list_tmpl<_Dummy>::_Check_same_owner_or_null( const __owned_link& __i1, 
-							   const __owned_link& __i2)
+bool __stl_debug_engine<_Dummy>::_Check_same_owner_or_null( const __owned_link& __i1, 
+							    const __owned_link& __i2)
 {
-    __stl_verbose_return(__i1._Owner()==__i2._Owner(), _StlMsg_DIFFERENT_OWNERS);
-    return true;
+  __stl_verbose_return(__i1._Owner()==__i2._Owner(), _StlMsg_DIFFERENT_OWNERS);
+  return true;
 }
 
 template <class _Dummy>
-bool __owned_list_tmpl<_Dummy>::_Check_if_owner( const __owned_link& __it) const 
+bool __stl_debug_engine<_Dummy>::_Check_if_owner( const __owned_list * __l, const __owned_link& __it)
 {
-    const __owned_list_tmpl<_Dummy>* __owner_ptr = __it._Owner();
-    __stl_verbose_return(__owner_ptr!=0, _StlMsg_INVALID_ITERATOR);
-    __stl_verbose_return(this==__owner_ptr, _StlMsg_NOT_OWNER);
-    return true;
+  const __owned_list* __owner_ptr = __it._Owner();
+  __stl_verbose_return(__owner_ptr!=0, _StlMsg_INVALID_ITERATOR);
+  __stl_verbose_return(__l==__owner_ptr, _StlMsg_NOT_OWNER);
+  return true;
 }
 
 //==========================================================
@@ -350,8 +365,8 @@ bool __check_range(const _Iterator& __first, const _Iterator& __last,
 
 //===============================================================
 
-template <class _Dummy, class _Iterator>
-void __invalidate_range(const __owned_list_tmpl<_Dummy>* __base, 
+template <class _Iterator>
+void __invalidate_range(const __owned_list* __base, 
                         const _Iterator& __first,
                         const _Iterator& __last)
 {
@@ -380,8 +395,8 @@ void __invalidate_range(const __owned_list_tmpl<_Dummy>* __base,
     __STL_RELEASE_LOCK(__base->_M_lock)    
 }
 
-template <class _Dummy, class _Iterator>
-void __invalidate_iterator(const __owned_list_tmpl<_Dummy>* __base, 
+template <class _Iterator>
+void __invalidate_iterator(const __owned_list* __base, 
 			   const _Iterator& __it)
 {
     typedef __owned_link   _L_type;

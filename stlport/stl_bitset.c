@@ -278,7 +278,7 @@ _Base_bitset<1, _WordT>::_M_do_find_next(size_t __prev,
 
 # if ! defined (__STL_NON_TYPE_TMPL_PARAM_BUG)
 
-#ifdef __STL_USE_NEW_IOSTREAMS
+#if defined ( __STL_USE_NEW_IOSTREAMS)
 
 template <class _CharT, class _Traits, size_t _Nb, class _WordT>
 basic_istream<_CharT, _Traits>&
@@ -331,7 +331,7 @@ operator<<(basic_ostream<_CharT, _Traits>& __os,
   return __os << __tmp;
 }
 
-#else /* __STL_USE_NEW_IOSTREAMS */
+#elif ! defined ( __STL_USE_NO_IOSTREAMS )
 
 template <size_t _Nb, class _WordT>
 istream&

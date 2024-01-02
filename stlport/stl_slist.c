@@ -56,8 +56,8 @@ void
 slist<_Tp,_Alloc>::_M_assign_dispatch(_InputIter __first, _InputIter __last,
 		   __false_type)
 {
-  _Node_base* __prev = &_M_head._M_data;
-  _Node* __node = (_Node*) _M_head._M_data._M_next;
+  _Node_base* __prev = &this->_M_head._M_data;
+  _Node* __node = (_Node*) this->_M_head._M_data._M_next;
   while (__node != 0 && __first != __last) {
     __node->_M_data = *__first;
     __prev = __node;
@@ -67,15 +67,15 @@ slist<_Tp,_Alloc>::_M_assign_dispatch(_InputIter __first, _InputIter __last,
   if (__first != __last)
     _M_insert_after_range(__prev, __first, __last);
   else
-    _M_erase_after(__prev, 0);
+    this->_M_erase_after(__prev, 0);
 }
 
 template <class _Tp, class _Alloc>   template <class _Predicate>
 void slist<_Tp,_Alloc>::remove_if(_Predicate __pred) {
-  _Node_base* __cur = &_M_head._M_data;
+  _Node_base* __cur = &this->_M_head._M_data;
   while (__cur->_M_next) {
     if (__pred(((_Node*) __cur->_M_next)->_M_data))
-      _M_erase_after(__cur);
+      this->_M_erase_after(__cur);
     else
       __cur = __cur->_M_next;
   }
@@ -83,12 +83,12 @@ void slist<_Tp,_Alloc>::remove_if(_Predicate __pred) {
 
 template <class _Tp, class _Alloc>   template <class _BinaryPredicate> 
 void slist<_Tp,_Alloc>::unique(_BinaryPredicate __pred) {
-  _Node* __cur = (_Node*) _M_head._M_data._M_next;
+  _Node* __cur = (_Node*) this->_M_head._M_data._M_next;
   if (__cur) {
     while (__cur->_M_next) {
       if (__pred(((_Node*)__cur)->_M_data, 
 		 ((_Node*)(__cur->_M_next))->_M_data))
-	_M_erase_after(__cur);
+	this->_M_erase_after(__cur);
       else
 	__cur = (_Node*) __cur->_M_next;
     }
@@ -98,7 +98,7 @@ void slist<_Tp,_Alloc>::unique(_BinaryPredicate __pred) {
 template <class _Tp, class _Alloc>   template <class _StrictWeakOrdering>
 void slist<_Tp,_Alloc>::merge(slist<_Tp,_Alloc>& __x,
 			      _StrictWeakOrdering __comp) {
-  _Node_base* __n1 = &_M_head._M_data;
+  _Node_base* __n1 = &this->_M_head._M_data;
   while (__n1->_M_next && __x._M_head._M_data._M_next) {
     if (__comp(((_Node*) __x._M_head._M_data._M_next)->_M_data,
 	       ((_Node*)       __n1->_M_next)->_M_data))
@@ -113,12 +113,12 @@ void slist<_Tp,_Alloc>::merge(slist<_Tp,_Alloc>& __x,
 
 template <class _Tp, class _Alloc>   template <class _StrictWeakOrdering> 
 void slist<_Tp,_Alloc>::sort(_StrictWeakOrdering __comp) {
-  if (_M_head._M_data._M_next && _M_head._M_data._M_next->_M_next) {
+  if (this->_M_head._M_data._M_next && this->_M_head._M_data._M_next->_M_next) {
     slist __carry;
     slist __counter[64];
     int __fill = 0;
     while (!empty()) {
-      _Sl_global_inst::__splice_after(&__carry._M_head._M_data, &_M_head._M_data, _M_head._M_data._M_next);
+      _Sl_global_inst::__splice_after(&__carry._M_head._M_data, &this->_M_head._M_data, this->_M_head._M_data._M_next);
       int __i = 0;
       while (__i < __fill && !__counter[__i].empty()) {
 	__counter[__i].merge(__carry, __comp);
@@ -148,8 +148,8 @@ template <class _Tp, class _Alloc>
 slist<_Tp,_Alloc>& slist<_Tp,_Alloc>::operator=(const slist<_Tp,_Alloc>& __x)
 {
   if (&__x != this) {
-    _Node_base* __p1 = &_M_head._M_data;
-    _Node* __n1 = (_Node*) _M_head._M_data._M_next;
+    _Node_base* __p1 = &this->_M_head._M_data;
+    _Node* __n1 = (_Node*) this->_M_head._M_data._M_next;
     const _Node* __n2 = (const _Node*) __x._M_head._M_data._M_next;
     while (__n1 && __n2) {
       __n1->_M_data = __n2->_M_data;
@@ -158,7 +158,7 @@ slist<_Tp,_Alloc>& slist<_Tp,_Alloc>::operator=(const slist<_Tp,_Alloc>& __x)
       __n2 = (const _Node*) __n2->_M_next;
     }
     if (__n2 == 0)
-      _M_erase_after(__p1, 0);
+      this->_M_erase_after(__p1, 0);
     else
       _M_insert_after_range(__p1, _Make_const_iterator((_Node*)__n2), 
                                   _Make_const_iterator(0));
@@ -168,8 +168,8 @@ slist<_Tp,_Alloc>& slist<_Tp,_Alloc>::operator=(const slist<_Tp,_Alloc>& __x)
 
 template <class _Tp, class _Alloc>
 void slist<_Tp, _Alloc>::_M_fill_assign(__size_type__ __n, const _Tp& __val) {
-  _Node_base* __prev = &_M_head._M_data;
-  _Node* __node = (_Node*) _M_head._M_data._M_next;
+  _Node_base* __prev = &this->_M_head._M_data;
+  _Node* __node = (_Node*) this->_M_head._M_data._M_next;
   for ( ; __node != 0 && __n > 0 ; --__n) {
     __node->_M_data = __val;
     __prev = __node;
@@ -178,20 +178,20 @@ void slist<_Tp, _Alloc>::_M_fill_assign(__size_type__ __n, const _Tp& __val) {
   if (__n > 0)
     _M_insert_after_fill(__prev, __n, __val);
   else
-    _M_erase_after(__prev, 0);
+    this->_M_erase_after(__prev, 0);
 }
 
 
 template <class _Tp, class _Alloc>
 void slist<_Tp,_Alloc>::resize(__size_type__ __len, const _Tp& __x)
 {
-  _Node_base* __cur = &_M_head._M_data;
+  _Node_base* __cur = &this->_M_head._M_data;
   while (__cur->_M_next != 0 && __len > 0) {
     --__len;
     __cur = __cur->_M_next;
   }
   if (__cur->_M_next) 
-    _M_erase_after(__cur, 0);
+    this->_M_erase_after(__cur, 0);
   else
     _M_insert_after_fill(__cur, __len, __x);
 }
@@ -199,10 +199,10 @@ void slist<_Tp,_Alloc>::resize(__size_type__ __len, const _Tp& __x)
 template <class _Tp, class _Alloc>
 void slist<_Tp,_Alloc>::remove(const _Tp& __val)
 {
-  _Node_base* __cur = &_M_head._M_data;
+  _Node_base* __cur = &this->_M_head._M_data;
   while (__cur && __cur->_M_next) {
     if (((_Node*) __cur->_M_next)->_M_data == __val)
-      _M_erase_after(__cur);
+      this->_M_erase_after(__cur);
     else
       __cur = __cur->_M_next;
   }
@@ -211,12 +211,12 @@ void slist<_Tp,_Alloc>::remove(const _Tp& __val)
 template <class _Tp, class _Alloc> 
 void slist<_Tp,_Alloc>::unique()
 {
-  _Node_base* __cur = _M_head._M_data._M_next;
+  _Node_base* __cur = this->_M_head._M_data._M_next;
   if (__cur) {
     while (__cur->_M_next) {
       if (((_Node*)__cur)->_M_data == 
           ((_Node*)(__cur->_M_next))->_M_data)
-        _M_erase_after(__cur);
+        this->_M_erase_after(__cur);
       else
         __cur = __cur->_M_next;
     }
@@ -226,7 +226,7 @@ void slist<_Tp,_Alloc>::unique()
 template <class _Tp, class _Alloc>
 void slist<_Tp,_Alloc>::merge(slist<_Tp,_Alloc>& __x)
 {
-  _Node_base* __n1 = &_M_head._M_data;
+  _Node_base* __n1 = &this->_M_head._M_data;
   while (__n1->_M_next && __x._M_head._M_data._M_next) {
     if (((_Node*) __x._M_head._M_data._M_next)->_M_data < 
         ((_Node*)       __n1->_M_next)->_M_data) 
@@ -243,12 +243,12 @@ void slist<_Tp,_Alloc>::merge(slist<_Tp,_Alloc>& __x)
 template <class _Tp, class _Alloc>
 void slist<_Tp,_Alloc>::sort()
 {
-  if (_M_head._M_data._M_next && _M_head._M_data._M_next->_M_next) {
+  if (this->_M_head._M_data._M_next && this->_M_head._M_data._M_next->_M_next) {
     _Self __carry;
     _Self __counter[64];
     int __fill = 0;
     while (!empty()) {
-      _Sl_global_inst::__splice_after(&__carry._M_head._M_data, &_M_head._M_data, _M_head._M_data._M_next);
+      _Sl_global_inst::__splice_after(&__carry._M_head._M_data, &this->_M_head._M_data, this->_M_head._M_data._M_next);
       int __i = 0;
       while (__i < __fill && !__counter[__i].empty()) {
         __counter[__i].merge(__carry);

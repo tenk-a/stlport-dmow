@@ -14,48 +14,90 @@
  */
 
 #ifndef __STLPORT_CWCHAR
+# define __STLPORT_CWCHAR
 
 # ifndef __STL_CONFIG_H
 #  include <stl_config.h>
 # endif
 
-# if defined  (__STL_USE_NEW_C_HEADERS) || defined (__IN_STLPORT_CWCHAR)
-#  ifndef __IN_STLPORT_CWCHAR
-#   define __STLPORT_CWCHAR
+# if ! defined (__STL_WINCE)
+
+#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
+#    undef std
+#    define __STL_RESUME_STD_FOR_CWCHAR
+#    define __STLPORT_NATIVE_PASS
 #  endif
-#  include __STL_NATIVE_C_HEADER(cwchar)
+
+# if defined  (__STL_USE_NEW_C_HEADERS)
+
+#  include __STL_NATIVE_CPP_C_HEADER(cwchar)
+
 # elif defined (__MRC__) || defined (__SC__) || defined (__BORLANDC__)
+
 #  include <stddef.h>
+
 # else
-#  define __IN_STLPORT_CWCHAR
+
 #  include <wchar.h>
-#  undef  __IN_STLPORT_CWCHAR
+
 # endif
-
-
-#if !defined (__IN_STLPORT_CWCHAR)
 
 // this stuff is varying a lot between platforms
 #if defined(__MSL__) && __MSL__ <= 0x5012	// dwa 2/28/99 - not yet implemented by MSL 
 #  define __STL_WCHAR_MSL_EXCLUDE 1
 #  define __STL_NO_MBSTATE_T 1
 #elif defined(__sun) && defined (__SVR4) && !defined (_MBSTATE_T) && !defined (_STD_MBSTATE_T)
-// # if (defined(__SunOS_5_4) || defined(__SunOS_5_5) || defined(__SunOS_5_5_1) ||defined(__SunOS_5_6)) 
-#  define __STL_WCHAR_SUNPRO_EXCLUDE 1
-// #  define __STL_NO_MBSTATE 1
-#   define _MBSTATE_T
-#   define _STD_MBSTATE_T
-// fbp : see if disabling works better
-struct __mbstate_t {
-  __mbstate_t() {}
-  __mbstate_t(int __i) : __data(__i) {}
-  char __data;
-}; 
-typedef __mbstate_t mbstate_t;
+# ifndef __STL_NO_NATIVE_MBSTATE_T
+#  define __STL_NO_NATIVE_MBSTATE_T 1
+# endif
+# define __STL_WCHAR_SUNPRO_EXCLUDE 1
+# if defined ( __STLPORT_NEW_IOSTREAMS )
+#  define _MBSTATE_T
+#  define _STD_MBSTATE_T
+# else
+#  define __STL_NO_MBSTATE_T 1
+# endif
 #elif defined (__BORLANDC__)
 #  define __STL_NO_MBSTATE_T 1
 #  define __STL_WCHAR_BORLAND_EXCLUDE 1
+#  if (__BORLANDC__ < 0x540 )
+#   define __STL_WCHAR_SUNPRO_EXCLUDE
+#  endif
 #endif
+
+# if defined ( __STLPORT_NEW_IOSTREAMS ) && defined (__STL_NO_NATIVE_MBSTATE_T)&& ! defined (__STL_NO_MBSTATE_T)
+#  define __STL_USE_OWN_MBSTATE_T
+# endif
+
+# ifdef __STL_USE_OWN_MBSTATE_T
+
+struct __stl_mbstate_t { 
+  __stl_mbstate_t( long __st = 0 ) : _M_state(__st) {}
+  __stl_mbstate_t& operator=(const long __st) {
+    _M_state= __st;              
+    return *this;
+  } 
+  // default ones
+  __stl_mbstate_t(const __stl_mbstate_t& __x) : _M_state(__x._M_state) {}         
+  __stl_mbstate_t& operator=(const __stl_mbstate_t& __x) {
+    _M_state= __x._M_state;              
+    return *this;
+  }       
+  long _M_state;
+  //  friend inline bool operator==(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y);
+  //  friend inline bool operator!=(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y);    
+};          
+
+inline bool operator==(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y) {
+  return ( __x._M_state == __y._M_state );
+}
+
+inline bool operator!=(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y) {
+  return ( __x._M_state == __y._M_state );
+}
+
+typedef __stl_mbstate_t mbstate_t;
+# endif
 
 // dwa 2/28/99 - Fix an MSL bug. We expect this to be fixed in the next release.
 # if defined(__STL_WCHAR_MSL_EXCLUDE)
@@ -65,25 +107,36 @@ namespace std
 }
 # endif
 
+
+#  if defined (__STL_NO_MBSTATE_T) && !defined (__STL_NO_NATIVE_MBSTATE_T)
+#   define __STL_NO_NATIVE_MBSTATE_T 1
+#  endif
+
+# if defined ( __STL_RESUME_STD_FOR_CWCHAR )
+#    undef __STL_RESUME_STD_FOR_CWCHAR
+#    define std __STLPORT_NAMESPACE
+#    undef __STLPORT_NATIVE_PASS
+# endif
+
+
 # ifdef __STL_IMPORT_VENDOR_CSTD
 __STL_BEGIN_NAMESPACE
 
 using __STL_VENDOR_CSTD::wint_t;
 using __STL_VENDOR_CSTD::size_t;
 
-#  ifndef __STL_NO_MBSTATE_T
-using __STL_VENDOR_CSTD::mbstate_t;
+#  if !defined (__STL_NO_NATIVE_MBSTATE_T)
+using __STL_VENDOR_MB_NAMESPACE::mbstate_t;
+using __STL_VENDOR_MB_NAMESPACE::btowc;
+using __STL_VENDOR_MB_NAMESPACE::mbrlen;
+using __STL_VENDOR_MB_NAMESPACE::mbrtowc;
+using __STL_VENDOR_MB_NAMESPACE::mbsinit;
+using __STL_VENDOR_MB_NAMESPACE::mbsrtowcs;
+using __STL_VENDOR_MB_NAMESPACE::wcrtomb;
+using __STL_VENDOR_MB_NAMESPACE::wcsrtombs;
 #  endif
 
-#  if !defined (__STL_NO_MBSTATE_T)
-using __STL_VENDOR_CSTD::btowc;
-using __STL_VENDOR_CSTD::mbrlen;
-using __STL_VENDOR_CSTD::mbrtowc;
-using __STL_VENDOR_CSTD::mbsinit;
-using __STL_VENDOR_CSTD::mbsrtowcs;
-using __STL_VENDOR_CSTD::wcrtomb;
-using __STL_VENDOR_CSTD::wcsrtombs;
-#  endif
+# ifndef __STL_NO_NATIVE_WIDE_FUNCTIONS
 
 # ifndef __STL_WCHAR_BORLAND_EXCLUDE
 using __STL_VENDOR_CSTD::fgetwc;
@@ -93,7 +146,9 @@ using __STL_VENDOR_CSTD::fputws;
 # endif
 
 #  if !( defined (__STL_WCHAR_SUNPRO_EXCLUDE) || defined (__STL_WCHAR_BORLAND_EXCLUDE)) 
+# ifndef __DECCXX
 using __STL_VENDOR_CSTD::fwide;
+# endif
 using __STL_VENDOR_CSTD::fwprintf;
 using __STL_VENDOR_CSTD::fwscanf;
 using __STL_VENDOR_CSTD::getwchar;
@@ -163,19 +218,16 @@ using __STL_VENDOR_CSTD::wmemcpy;
 using __STL_VENDOR_CSTD::wmemset;
 #  endif
 
+# endif /* __STL_NO_NATIVE_WIDE_FUNCTIONS */
+
 __STL_END_NAMESPACE
 
 # endif /* __STL_IMPORT_VENDOR_CSTD */
 
-#endif /* __IN_STLPORT_CWCHAR */
-
-#ifndef __STLPORT_CWCHAR
-# define __STLPORT_CWCHAR
-#endif
-
 # undef __STL_WCHAR_SUNPRO_EXCLUDE
 # undef __STL_WCHAR_MSL_EXCLUDE
-// # undef __STL_NO_MBSTATE_T
+
+# endif /* CWCHAR */
 
 #endif /* __STLPORT_CWCHAR */
 

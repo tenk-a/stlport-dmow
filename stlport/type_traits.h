@@ -252,44 +252,6 @@ struct __type_traits<_Tp*> {
    typedef __true_type    is_POD_type;
 };
 
-# if 0 /* not used */
-
-// provide a mechanism for partial specialization of various
-// type_traits. No reason for __true_dominate for now.
-
-template <class T1, class T2>
-struct __false_dominate {
-    typedef __false_type resulting_type;
-};
-
-__STL_TEMPLATE_NULL 
-struct __false_dominate<__true_type, __true_type> {
-    typedef __true_type  resulting_type;
-};
-
-// a type_traits for two types composition (for pairs)
-template <class T1, class T2>
-struct __type_traits_compose {
-    typedef __type_traits<T1> type1;
-    typedef __type_traits<T2> type2;
-    typedef typename __false_dominate<typename type1::has_trivial_default_constructor,
-                          typename type2::has_trivial_default_constructor>::resulting_type 
-            has_trivial_default_constructor;
-    typedef typename __false_dominate<typename type1::has_trivial_copy_constructor,
-                          typename type2::has_trivial_copy_constructor>::resulting_type 
-            has_trivial_copy_constructor;
-    typedef typename __false_dominate<typename type1::has_trivial_assignment_operator,
-                          typename type2::has_trivial_assignment_operator>::resulting_type 
-            has_trivial_assignment_operator;
-    typedef typename __false_dominate<typename type1::has_trivial_destructor,
-                             typename type2::has_trivial_destructor>::resulting_type 
-            has_trivial_destructor;
-    typedef typename __false_dominate<typename type1::is_POD_type,
-                             typename type2::is_POD_type>::resulting_type 
-            is_POD_type;
-};
-# endif
-
 #  define __STL_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(operator*()); }
 
 #else /* __STL_CLASS_PARTIAL_SPECIALIZATION */
@@ -309,14 +271,6 @@ struct __type_traits<_Type> { \
 // the following is a workaround for arrow operator problems
 #  if defined  ( __SGI_STL_NO_ARROW_OPERATOR ) 
 
-#   if defined (__STL_NO_PROXY_ARROW_OPERATOR)
-
-// User wants to disable proxy -> operators
-#    define __STL_DEFINE_ARROW_OPERATOR
-#    define __STL_ARROW_SPECIALIZE_WITH_PTRS(_Tp)
-
-#   else
-
 // Proxy -> operator workaround for compilers that produce
 // type checking errors on unused ->() operators
 
@@ -327,6 +281,14 @@ struct __arrow_op_dispatch {
   _Ptr operator ->() const { return _M_ptr; }
 };
 
+#   if defined (__STL_NO_PROXY_ARROW_OPERATOR)
+
+// User wants to disable proxy -> operators
+#    define __STL_DEFINE_ARROW_OPERATOR
+#    define __STL_ARROW_SPECIALIZE_WITH_PTRS(_Tp)
+
+#   else
+
 struct __arrow_op_dummy { int _M_data ; };
 
 #  define __STL_ARROW_SPECIALIZE(_Tp)  \
@@ -335,6 +297,19 @@ __STL_TEMPLATE_NULL struct __arrow_op_dispatch<_Tp&, _Tp*> { \
   __arrow_op_dummy operator ->() const { return __arrow_op_dummy(); } \
 };
 
+# ifdef __SUNPRO_CC
+#  define __STL_ARROW_SPECIALIZE_WITH_PTRS(_Tp) \
+__STL_ARROW_SPECIALIZE(_Tp) \
+__STL_ARROW_SPECIALIZE(const _Tp) \
+__STL_ARROW_SPECIALIZE(_Tp*) \
+__STL_ARROW_SPECIALIZE(_Tp* const) \
+__STL_ARROW_SPECIALIZE(const _Tp*) \
+__STL_ARROW_SPECIALIZE(_Tp**) \
+__STL_ARROW_SPECIALIZE(const _Tp**) \
+__STL_ARROW_SPECIALIZE(_Tp* const *) \
+__STL_ARROW_SPECIALIZE(_Tp***) \
+__STL_ARROW_SPECIALIZE(const _Tp***)
+# else
 #  define __STL_ARROW_SPECIALIZE_WITH_PTRS(_Tp) \
 __STL_ARROW_SPECIALIZE(_Tp) \
 __STL_ARROW_SPECIALIZE(const _Tp) \
@@ -345,15 +320,20 @@ __STL_ARROW_SPECIALIZE(const _Tp**) \
 __STL_ARROW_SPECIALIZE(_Tp* const *) \
 __STL_ARROW_SPECIALIZE(_Tp***) \
 __STL_ARROW_SPECIALIZE(const _Tp***)
+# endif
 
 #  define __STL_DEFINE_ARROW_OPERATOR __arrow_op_dispatch<reference, pointer> operator->() const \
  { return __arrow_op_dispatch<reference, pointer>(this->operator*()); }
 
 #  endif /* __STL_NO_PROXY_ARROW_OPERATOR */
 # else
-
+// Compiler can handle generic -> operator.
 #  define __STL_ARROW_SPECIALIZE_WITH_PTRS(_Tp)
-#  define __STL_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(operator*()); }
+#  ifdef __BORLANDC__
+#   define __STL_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(*(*this)); }
+#  else
+#   define __STL_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(operator*()); }
+#  endif
 
 # endif /* __SGI_STL_NO_ARROW_OPERATOR */
 
@@ -364,7 +344,7 @@ __STL_TYPE_TRAITS_POD_SPECIALIZE(_Type**) \
 __STL_TYPE_TRAITS_POD_SPECIALIZE(_Type* const *) \
 __STL_TYPE_TRAITS_POD_SPECIALIZE(const _Type**) \
 __STL_TYPE_TRAITS_POD_SPECIALIZE(_Type***) \
-__STL_TYPE_TRAITS_POD_SPECIALIZE(const _Type***) \
+__STL_TYPE_TRAITS_POD_SPECIALIZE(const _Type***)
 
 # define __STL_TYPE_TRAITS_POD_PTRS_SPECIALIZE(_Type) \
 __STL_TYPE_TRAITS_POD_SPECIALIZE_V(_Type) \

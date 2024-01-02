@@ -1,9 +1,8 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
-
 // Microsoft Visual C++ 4.0, 4.1, 4.2, 5.0
 
-// VC++ 4.0 and higher
+// Common features for VC++ 4.0 and higher
 #   define __STL_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 #   define __STL_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #   define __STL_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
@@ -74,5 +73,10 @@
 #     define _REENTRANT 1
 #   endif
 
+// If we are under Windows CE, include appropriate config
+
+# ifdef UNDER_CE
+#   include <config/stl_wince.h>
+# endif
 
 
