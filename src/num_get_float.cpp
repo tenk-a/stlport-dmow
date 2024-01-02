@@ -25,12 +25,12 @@
 #include <istream>
 
 #if (defined (__GNUC__) && !defined (__sun) && !defined (__hpux)) || \
-    defined (__DMC__)
+    defined (__DMC__) || defined (__WATCOMC__)
 #  include <stdint.h>
 #endif
 
 #if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
-    defined (__BORLANDC__) || defined (__DMC__) || defined (__HP_aCC)
+    defined (__BORLANDC__) || defined (__DMC__) || defined (__HP_aCC) || defined (__WATCOMC__)
 
 #  if defined (__BORLANDC__)
 typedef unsigned int uint32_t;

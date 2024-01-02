@@ -147,8 +147,7 @@ goto :L_END
 
 :L_OW
 	set COMPILER=ow
-rem	set "WATCOM=C:\tools\watcom1.9"
-	set "WATCOM=C:\tools\ow2pre"
+	set "WATCOM=C:\WATCOM"
 	set "PATH=%WATCOM%\BINNT;%WATCOM%\BINW;%cc_base_path%"
 	set "EDPATH=%WATCOM%\EDDAT"
 	set "INCLUDE=%WATCOM%\H;%WATCOM%\H\NT;%INCLUDE%"

@@ -25,16 +25,16 @@ if /I "%COMPILER%"=="dmc"   goto J_DMC
 if /I "%COMPILER%"=="bcc"   goto J_BCC
 call mk_stlp rel sta rtsta
 call mk_stlp rel sta rtdll
-call mk_stlp rel dll rtsta
+rem call mk_stlp rel dll rtsta
 call mk_stlp rel dll rtdll
 call mk_stlp dbg sta rtsta
 call mk_stlp dbg sta rtdll
-call mk_stlp dbg dll rtsta
+rem call mk_stlp dbg dll rtsta
 call mk_stlp dbg dll rtdll
 if /I "%COMPILER%"=="ow"  goto J_END
 call mk_stlp stldbg sta rtsta
 call mk_stlp stldbg sta rtdll
-call mk_stlp stldbg dll rtsta
+rem call mk_stlp stldbg dll rtsta
 call mk_stlp stldbg dll rtdll
 goto J_END
 
