@@ -1,5 +1,5 @@
 # -*- makefile -*- Time-stamp: <03/10/26 23:11:03 ptr>
-# $Id: rules-exe-windows.mak 1173 2004-12-24 11:27:17Z ptr $
+# $Id: rules-exe-windows.mak 1459 2005-04-18 21:25:32Z ptr $
 
 release-shared:	$(OUTPUT_DIR) $(PRG)
 release-static:	$(OUTPUT_DIR_A) $(PRG_A)

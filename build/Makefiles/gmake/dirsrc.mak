@@ -1,5 +1,5 @@
 # -*- Makefile -*- Time-stamp: <03/10/27 18:07:14 ptr>
-# $Id: dirsrc.mak 1758 2005-09-20 20:13:04Z dums $
+# $Id: dirsrc.mak 1802 2005-11-01 08:25:57Z complement $
 
 # Some trick to build implicit rules for sources in some different
 # subdirectories. I remove catalogs from path to sources, with this
