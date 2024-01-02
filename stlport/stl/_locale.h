@@ -147,7 +147,7 @@ protected:
 
 public:
 #if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS) && \
-   !defined(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+   !defined(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) && !(defined(__DMC__) && defined(_STLP_USE_DYNAMIC_LIB))
   template <class _Facet>
   locale combine(const locale& __loc) const {
     _Facet *__facet = 0;
@@ -159,12 +159,13 @@ public:
 #endif
 
   // locale operations:
-  string name() const;
+  string const& name() const;   //string name() const;
 
   bool operator==(const locale&) const;
   bool operator!=(const locale&) const;
 
-#if !defined (_STLP_MEMBER_TEMPLATES) || defined (_STLP_INLINE_MEMBER_TEMPLATES) || (defined(__MWERKS__) && __MWERKS__ <= 0x2301)
+#if !defined (_STLP_MEMBER_TEMPLATES) || defined (_STLP_INLINE_MEMBER_TEMPLATES) || \
+    (defined(__MWERKS__) && __MWERKS__ <= 0x2301) || (defined(__DMC__) && defined(_STLP_USE_DYNAMIC_LIB))
   bool operator()(const string& __x, const string& __y) const;
 #  ifndef _STLP_NO_WCHAR_T
   bool operator()(const wstring& __x, const wstring& __y) const;
@@ -224,7 +225,7 @@ public:
     : _Locale(__loc, __str, __cat) {}
 
   template <class _Facet>
-  locale(const locale& __loc, _Facet* __f) 
+  locale(const locale& __loc, _Facet* __f)
     : _Locale(__f != 0 ? _copy_Nameless_Locale_impl(__loc._M_impl) : __loc._M_impl) {
     if ( __f != 0 ) {
       _STLP_PRIV _InsertFacet(*this, __f);

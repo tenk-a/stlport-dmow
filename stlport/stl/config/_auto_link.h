@@ -4,8 +4,8 @@
  *  - we are building a C translation unit, STLport is a C++ Standard library implementation
  */
 #if !defined (__BUILDING_STLPORT) && !defined (_STLP_DONT_USE_AUTO_LINK) && \
-    !defined (_STLP_NO_IOSTREAMS) && !defined (_STLP_USE_NO_IOSTREAMS) && \
-    defined (__cplusplus)
+    !defined (_STLP_KKKK_USE_HEADER_ONLY) && !defined (_STLP_KKKK_NO_BUILD_LIB) && \
+    !defined (_STLP_NO_IOSTREAMS) && defined (__cplusplus)
 
 #  define _STLP_STRINGIZE(X) _STLP_STRINGIZE_AUX(X)
 #  define _STLP_STRINGIZE_AUX(X) #X
@@ -39,7 +39,11 @@
 #  endif
 
 #  if defined (_STLP_USE_DYNAMIC_LIB)
-#    define _STLP_VERSION_STR "."_STLP_STRINGIZE(_STLPORT_MAJOR)"."_STLP_STRINGIZE(_STLPORT_MINOR)
+#    if !defined (__DMC__)
+#      define _STLP_VERSION_STR "."_STLP_STRINGIZE(_STLPORT_MAJOR)"."_STLP_STRINGIZE(_STLPORT_MINOR)
+#    else
+#      define _STLP_VERSION_STR "_"_STLP_STRINGIZE(_STLPORT_MAJOR)"_"_STLP_STRINGIZE(_STLPORT_MINOR)
+#    endif
 #  else
 #    define _STLP_VERSION_STR ""
 #  endif

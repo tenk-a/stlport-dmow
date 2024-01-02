@@ -36,7 +36,7 @@
 #      include <stl/_string_fwd.h>
 #    endif
 
-#    ifndef _STLP_USE_NO_IOSTREAMS
+#    if !defined(_STLP_KKKK_USE_HEADER_ONLY)    // ifndef _STLP_USE_NO_IOSTREAMS
 #      define _STLP_OWN_STDEXCEPT 1
 #    endif
 
@@ -75,12 +75,22 @@ public:
   ~__Named_exception() _STLP_NOTHROW_INHERENTLY;
 
 private:
+ #if defined (_STLP_KKKK_DMOW)
+  union _STLP_KKKK_name_size {
+    char    _M_static_name[256];
+    size_t  _M_size;
+  };
+  enum { _S_bufsize = sizeof(((_STLP_KKKK_name_size*)0)->_M_static_name) };
+  _STLP_KKKK_name_size _M_ns;
+ #else
   enum { _S_bufsize = 256 };
   char _M_static_name[_S_bufsize];
+ #endif
   char *_M_name;
 };
 
-#    if defined (_STLP_USE_NO_IOSTREAMS) && !defined (__BUILDING_STLPORT)
+//#  if defined (_STLP_USE_NO_IOSTREAMS) && !defined (__BUILDING_STLPORT)
+#    if defined (_STLP_KKKK_USE_HEADER_ONLY) && !defined (__BUILDING_STLPORT)
        // if not linking to the lib, expose implementation of members here
 #      include <stl/_stdexcept_base.c>
 #    endif

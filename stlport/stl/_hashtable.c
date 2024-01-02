@@ -70,7 +70,7 @@ _Stl_prime<_Dummy>::_S_next_size(size_t __n) {
   size_t __size;
   const size_t* __first = _S_primes(__size);
   const size_t* __last =  __first + __size;
-  const size_t* pos = __lower_bound(__first, __last, __n, 
+  const size_t* pos = __lower_bound(__first, __last, __n,
                                     __less((size_t*)0), __less((size_t*)0), (ptrdiff_t*)0);
   return (pos == __last ? *(__last - 1) : *pos);
 }
@@ -81,7 +81,7 @@ _Stl_prime<_Dummy>::_S_prev_sizes(size_t __n, size_t const*&__begin, size_t cons
   size_t __size;
   __begin = _S_primes(__size);
   const size_t* __last =  __begin + __size;
-  __pos = __lower_bound(__begin, __last, __n, 
+  __pos = __lower_bound(__begin, __last, __n,
                         __less((size_t*)0), __less((size_t*)0), (ptrdiff_t*)0);
 
   if (__pos== __last)
@@ -197,7 +197,12 @@ template <class _Val, class _Key, class _HF,
 pair<__iterator__, bool>
 hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::insert_unique_noresize(const value_type& __obj) {
+
+# if defined (__DMC__)
+  const size_type __n = _M_bkt_num_key(_M_get_key(__obj), bucket_count());
+# else
   const size_type __n = _M_bkt_num(__obj);
+# endif
   _ElemsIte __cur(_M_buckets[__n]);
   _ElemsIte __last(_M_buckets[__n + 1]);
 
@@ -228,7 +233,11 @@ template <class _Val, class _Key, class _HF,
 __iterator__
 hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::insert_equal_noresize(const value_type& __obj) {
+# if defined (__DMC__)
+  const size_type __n = _M_bkt_num_key(_M_get_key(__obj), bucket_count());
+# else
   const size_type __n = _M_bkt_num(__obj);
+# endif
   {
     _ElemsIte __cur(_M_buckets[__n]);
     _ElemsIte __last(_M_buckets[__n + 1]);
@@ -261,8 +270,14 @@ template <class _Val, class _Key, class _HF,
 __size_type__
 hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::erase(const key_type& __key) {
+# if defined(__DMC__)
+  const size_type __n = _M_bkt_num_key( __key, bucket_count() );
+//printf("%s %d : __n=%d bucket_count=%d _M_buckets.size()=%d\n", __FILE__, __LINE__, __n, bucket_count(), _M_buckets.size());
+  if (__n >= _M_buckets.size())
+    return 0;
+# else
   const size_type __n = _M_bkt_num_key(__key);
-
+# endif
   _ElemsIte __cur(_M_buckets[__n]);
   _ElemsIte __last(_M_buckets[__n + 1]);
   if (__cur == __last)
@@ -301,7 +316,11 @@ template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
 void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::erase(const_iterator __it) {
+# if defined(__DMC__)
+  const size_type __n = _M_bkt_num_key(_M_get_key(*__it), bucket_count());
+# else
   const size_type __n = _M_bkt_num(*__it);
+# endif
   _ElemsIte __cur(_M_buckets[__n]);
 
   size_type __erased = 0;
@@ -334,9 +353,13 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::erase(const_iterator __first, const_iterator __last) {
   if (__first == __last)
     return;
+# if defined(__DMC__)
+  size_type __f_bucket = _M_bkt_num_key(_M_get_key(*__first), bucket_count());
+  size_type __l_bucket = __last != end() ? _M_bkt_num_key(_M_get_key(*__last), bucket_count()) : (_M_buckets.size() - 1);
+# else
   size_type __f_bucket = _M_bkt_num(*__first);
   size_type __l_bucket = __last != end() ? _M_bkt_num(*__last) : (_M_buckets.size() - 1);
-
+# endif
   _ElemsIte __cur(_M_buckets[__f_bucket]);
   _ElemsIte __prev;
   if (__cur == __first._M_ite) {

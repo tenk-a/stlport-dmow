@@ -107,7 +107,9 @@ using _STLP_VENDOR_CSTD::srand;
 _STLP_END_NAMESPACE
 #endif /* _STLP_IMPORT_VENDOR_CSTD */
 
-#if (defined (__BORLANDC__) || defined (__WATCOMC__)) && defined (_STLP_USE_NEW_C_HEADERS)
+#if !defined(__WATCOMC__)
+
+#if defined (__BORLANDC__) && defined (_STLP_USE_NEW_C_HEADERS)
 //In this config bcc define everything in std namespace and not in
 //the global one.
 inline int abs(int __x) { return _STLP_VENDOR_CSTD::abs(__x); }
@@ -126,14 +128,12 @@ inline _STLP_VENDOR_CSTD::div_t div(int __x, int __y) { return _STLP_VENDOR_CSTD
     (!defined (__HP_aCC) || (__HP_aCC < 30000))
 
 //MSVC starting with .Net 2003 already define all math functions in global namespace:
-#  if !defined (__WATCOMC__) && \
-     (!defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1310) || defined (UNDER_CE))
+#  if (!defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1310) || defined (UNDER_CE))
 inline long abs(long __x) { return _STLP_VENDOR_CSTD::labs(__x); }
 #  endif
 
 /** VC since version 8 has this, the platform SDK and CE SDKs hanging behind. */
-#  if !defined (__WATCOMC__) && \
-     (!defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER) || defined (UNDER_CE))
+#  if (!defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER) || defined (UNDER_CE))
 inline _STLP_VENDOR_CSTD::ldiv_t div(long __x, long __y) { return _STLP_VENDOR_CSTD::ldiv(__x, __y); }
 #  endif
 
@@ -149,15 +149,23 @@ inline _STLP_VENDOR_CSTD::ldiv_t div(long __x, long __y) { return _STLP_VENDOR_C
 #  if !defined (_STLP_NO_VENDOR_STDLIB_L)
 #    if !defined (__sun)
 inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return _STLP_VENDOR_CSTD::llabs(__x); }
-inline lldiv_t div(_STLP_LONG_LONG __x, _STLP_LONG_LONG __y) { return _STLP_VENDOR_CSTD::lldiv(__x, __y); }
+inline _STLP_VENDOR_CSTD::lldiv_t div(_STLP_LONG_LONG __x, _STLP_LONG_LONG __y) { return _STLP_VENDOR_CSTD::lldiv(__x, __y); }
 #    else
 inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return ::llabs(__x); }
 inline lldiv_t div(_STLP_LONG_LONG __x, _STLP_LONG_LONG __y) { return ::lldiv(__x, __y); }
 #    endif
+#  elif defined(_MSC_VER) && _MSC_VER >= 1700
+
 #  else
 inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return __x < 0 ? -__x : __x; }
 #  endif
 #endif
+
+#else   // __WATCOMC__
+namespace _STLP_VENDOR_CSTD {
+inline lldiv_t div(_STLP_LONG_LONG __x, _STLP_LONG_LONG __y) { return _STLP_VENDOR_CSTD::lldiv(__x, __y); }
+}
+#endif  // __WATCOMC__
 
 /* C++ Standard is unclear about several call to 'using ::func' if new overloads
  * of ::func appears between 2 successive 'using' calls. To avoid this potential
@@ -171,10 +179,17 @@ inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return __x < 0 ? -__x : __x; 
 
 #if defined (_STLP_IMPORT_VENDOR_CSTD) && !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
 // ad hoc, don't replace with _STLP_VENDOR_CSTD::abs here! - ptr 2005-03-05
+#if !defined(_STLP_KKKK_DMOW)
 _STLP_BEGIN_NAMESPACE
 using ::abs;
 using ::div;
 _STLP_END_NAMESPACE
+#else   //_STLP_KKKK_DMOW
+_STLP_BEGIN_NAMESPACE
+using _STLP_VENDOR_CSTD::abs;
+using _STLP_VENDOR_CSTD::div;
+_STLP_END_NAMESPACE
+#endif  //_STLP_KKKK_DMOW
 #endif
 
 #endif /* _STLP_INTERNAL_CSTDLIB */

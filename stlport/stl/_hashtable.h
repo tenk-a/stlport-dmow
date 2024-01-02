@@ -189,7 +189,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 template <class _Dummy>
 class _Stl_prime {
   // Returns begining of primes list and size by reference.
-  static const size_t* _S_primes(size_t&);
+  static const size_t* _STLP_CALL _S_primes(size_t&);
 public:
   //Returns the maximum number of buckets handled by the hashtable implementation
   static size_t _STLP_CALL _S_max_nb_buckets();
@@ -393,8 +393,13 @@ public:
   size_type elems_in_bucket(size_type __bucket) const
   { return _STLP_STD::distance(_ElemsIte(_M_buckets[__bucket]), _ElemsIte(_M_buckets[__bucket + 1])); }
 
+# if defined (__DMC__)
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type bucket(const _KT& __k) const { return _M_bkt_num_key(__k, bucket_count()); }
+# else
   _STLP_TEMPLATE_FOR_CONT_EXT
   size_type bucket(const _KT& __k) const { return _M_bkt_num_key(__k); }
+# endif
 
   // hash policy
   float load_factor() const { return (float)size() / (float)bucket_count(); }
@@ -496,7 +501,11 @@ public:
 private:
   _STLP_TEMPLATE_FOR_CONT_EXT
   _ElemsIte _M_find(const _KT& __key) const {
+#  if defined (__DMC__)
+    size_type __n = _M_bkt_num_key(__key, bucket_count());
+#  else
     size_type __n = _M_bkt_num_key(__key);
+#  endif
     _ElemsIte __first(_M_buckets[__n]);
     _ElemsIte __last(_M_buckets[__n + 1]);
     for ( ; (__first != __last) && !_M_equals(_M_get_key(*__first), __key); ++__first);
@@ -514,7 +523,11 @@ public:
 
   _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __key) const {
+#  if defined (__DMC__)
+    const size_type __n = _M_bkt_num_key(__key, bucket_count());
+#  else
     const size_type __n = _M_bkt_num_key(__key);
+#  endif
 
     _ElemsIte __cur(_M_buckets[__n]);
     _ElemsIte __last(_M_buckets[__n + 1]);
@@ -533,7 +546,11 @@ public:
   _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator, iterator> equal_range(const _KT& __key) {
     typedef pair<iterator, iterator> _Pii;
+#  if defined (__DMC__)
+    const size_type __n = _M_bkt_num_key(__key, bucket_count());
+#  else
     const size_type __n = _M_bkt_num_key(__key);
+#  endif
 
     for (_ElemsIte __first(_M_buckets[__n]), __last(_M_buckets[__n + 1]);
          __first != __last; ++__first) {
@@ -549,7 +566,11 @@ public:
   _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range(const _KT& __key) const {
     typedef pair<const_iterator, const_iterator> _Pii;
+#  if defined (__DMC__)
+    const size_type __n = _M_bkt_num_key(__key, bucket_count());
+#  else
     const size_type __n = _M_bkt_num_key(__key);
+#  endif
 
     for (_ElemsIte __first(_M_buckets[__n]), __last(_M_buckets[__n + 1]);
          __first != __last; ++__first) {
@@ -602,8 +623,13 @@ private:
   size_type _M_bkt_num_key(const _KT& __key) const
   { return _M_bkt_num_key(__key, bucket_count()); }
 
+#  if defined (__DMC__)
+  size_type _M_bkt_num(const value_type& __obj) const
+  { return _M_bkt_num_key(_M_get_key(__obj), bucket_count()); }
+#  else
   size_type _M_bkt_num(const value_type& __obj) const
   { return _M_bkt_num_key(_M_get_key(__obj)); }
+#endif
 
   _STLP_TEMPLATE_FOR_CONT_EXT
   size_type _M_bkt_num_key(const _KT& __key, size_type __n) const

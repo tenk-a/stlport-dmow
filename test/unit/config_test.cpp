@@ -94,11 +94,15 @@ void ConfigTest::new_throw_bad_alloc()
     largest possible size_t value bus slightly less in order to avoid
     triggering any overflows due to the allocator adding some more for
     its internal data structures. */
+#  if defined(__DMC__)  // dmc: BUG: size=0x7fffffff over, return not NULL, but bad address.
+    size_t const huge_amount = 0x7fffffff; // INT_MAX
+#  else
     size_t const huge_amount = size_t(-1) - 1024;
+#  endif
     void* pvoid = operator new (huge_amount);
 #if !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
     // Allocation should have fail
-    CPPUNIT_ASSERT( pvoid != 0 );
+    CPPUNIT_CHECK( pvoid != 0 );
 #endif
     // Just in case it succeeds:
     operator delete(pvoid);

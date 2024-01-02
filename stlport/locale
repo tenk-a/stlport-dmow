@@ -27,7 +27,9 @@
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x1041) && \
    !(defined (_STLP_NO_IOSTREAMS) && defined (_STLP_IMPORT_VENDOR_STD))
+#  if !defined(_STLP_USE_NO_IOSTREAMS)
 #  include <stl/_ioserr.h>
+#  endif
 
 // Individual facets
 #  ifndef _STLP_INTERNAL_CTYPE_H
@@ -42,24 +44,26 @@
 #    include <stl/_collate.h>
 #  endif
 
-#  ifndef _STLP_INTERNAL_NUM_PUT_H
+#  if !defined(_STLP_USE_NO_IOSTREAMS)
+#   ifndef _STLP_INTERNAL_NUM_PUT_H
 #    include <stl/_num_put.h>
-#  endif
+#   endif
 
-#  ifndef _STLP_INTERNAL_NUM_GET_H
+#   ifndef _STLP_INTERNAL_NUM_GET_H
 #    include <stl/_num_get.h>
-#  endif
+#   endif
 
 // those never included separately anyway
-#  include <stl/_monetary.h>
-#  include <stl/_time_facets.h>
-#  include <stl/_messages_facets.h>
+#   include <stl/_monetary.h>
+#   include <stl/_time_facets.h>
+#   include <stl/_messages_facets.h>
 
 // some stuff for streambuf iterators ended up defined there
 // Strictly speaking, _istream.h portion is only required for <iterator>, but it may break too many
 // programs if we omit it
-#  ifndef _STLP_ISTREAM_H
-#    include <stl/_istream.h>
+#   if !defined(_STLP_ISTREAM_H)
+#     include <stl/_istream.h>
+#   endif
 #  endif
 
 // Convenience interfaces

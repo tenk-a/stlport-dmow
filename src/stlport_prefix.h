@@ -1,7 +1,9 @@
 #ifndef STLPORT_PREFIX_H
 #define STLPORT_PREFIX_H
 
+#ifndef __BUILDING_STLPORT
 #define __BUILDING_STLPORT 1
+#endif
 
 #if defined (_WIN32) || defined (WIN32)
 #  ifdef __cplusplus

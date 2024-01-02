@@ -18,6 +18,8 @@
 #ifndef _STLP_MONETARY_C
 #define _STLP_MONETARY_C
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 # ifndef _STLP_INTERNAL_MONETARY_H
 #  include <stl/_monetary.h>
 # endif
@@ -520,6 +522,7 @@ money_put<_CharT, _OutputIter>
 
 _STLP_END_NAMESPACE
 
+#endif /* _STLP_USE_NO_IOSTREAMS */
 #endif /* _STLP_MONETARY_C */
 
 // Local Variables:

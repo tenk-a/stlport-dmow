@@ -23,7 +23,7 @@ using namespace std::tr1;
 class UnorderedTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(UnorderedTest);
-#if !defined (STLPORT) 
+#if !defined (STLPORT)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(uset);
@@ -320,7 +320,7 @@ void UnorderedTest::hash_policy()
 
 void UnorderedTest::buckets()
 {
-#if defined (STLPORT) 
+#if defined (STLPORT)
   unordered_set<int> int_uset;
 
   CPPUNIT_ASSERT( int_uset.bucket_count() < int_uset.max_bucket_count() );
@@ -519,7 +519,7 @@ struct Key
   int m_data;
 
 #if defined (__DMC__) // slist<_Tp,_Alloc>::remove error
-  bool operator==(const Key&) const;
+  bool operator==(const Key& rhs) const { return this == &rhs; }
 #endif
 };
 
@@ -655,7 +655,7 @@ void UnorderedTest::template_methods()
 
 #if defined (STLPORT) && \
     (!defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION))
-#  if !defined (__DMC__)
+#  if !defined (__DMC__) && !defined(__WATCOMC__) && !(defined (__BORLANDC__) && __BORLANDC__ < 0x560)
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.

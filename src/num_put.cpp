@@ -18,7 +18,10 @@
 
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_USE_NO_IOSTREAMS)
+
 #include <locale>
+#include <stl/_num_put.h>
 #include <ostream>
 
 _STLP_BEGIN_NAMESPACE
@@ -177,6 +180,8 @@ template class num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif  // !defined(_STLP_USE_NO_IOSTREAMS)
 
 // Local Variables:
 // mode:C++

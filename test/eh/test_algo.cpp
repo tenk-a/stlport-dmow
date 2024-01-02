@@ -96,7 +96,7 @@ struct test_stable_partition
         SortClass* d = EH_STD::stable_partition( buf.begin(), buf.end(), throw_cmp );
 
         // Suppress warning about unused variable.
-        d;
+        _STLP_MARK_PARAMETER_AS_UNUSED(d)
 
         // If we get here no exception occurred during the operation.
         // Stop any potential failures that might occur during verification.

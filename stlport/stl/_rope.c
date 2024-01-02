@@ -1352,7 +1352,7 @@ const _CharT* rope<_CharT,_Alloc>::replace_with_c_str() {
 
 // Algorithm specializations.  More should be added.
 
-#if (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310)) && !defined (__DMC__)
+#if (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310)) && !defined (__DMC__) && !defined(__WATCOMC__)
 // I couldn't get this to work with VC++
 template<class _CharT,class _Alloc>
 void _Rope_rotate(_Rope_iterator<_CharT,_Alloc> __first,

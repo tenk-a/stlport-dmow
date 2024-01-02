@@ -17,6 +17,8 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <typeinfo>
 
 #include "message_facets.h"
@@ -241,6 +243,8 @@ void messages_byname<wchar_t>::do_close(catalog cat) const
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif  // !_STLP_USE_NO_IOSTREAMS
 
 // Local Variables:
 // mode:C++

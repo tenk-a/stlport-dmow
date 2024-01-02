@@ -21,6 +21,10 @@
 #  include <stl/_prolog.h>
 #endif
 
+#  if  defined(_STLP_USE_NEW_C_HEADERS)
+#    include <stl/_exception.h>
+#  endif
+
 #if defined (__BORLANDC__) || defined (_MSC_VER)
 #  include <exception>
 #else

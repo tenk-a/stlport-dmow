@@ -17,11 +17,11 @@
  */
 # include "stlport_prefix.h"
 
+#if !defined (_STLP_NO_FORCE_INSTANTIATE) && !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <istream>
 
 _STLP_BEGIN_NAMESPACE
-
-#if !defined(_STLP_NO_FORCE_INSTANTIATE)
 
 // instantiations
 #  if defined (_STLP_USE_TEMPLATE_EXPORT)
@@ -39,9 +39,9 @@ template class _STLP_CLASS_DECLSPEC basic_istream<wchar_t, char_traits<wchar_t> 
 template class _STLP_CLASS_DECLSPEC basic_iostream<wchar_t, char_traits<wchar_t> >;
 #  endif /* !_STLP_NO_WCHAR_T */
 
-#endif /* _STLP_NO_FORCE_INSTANTIATE */
-
 _STLP_END_NAMESPACE
+
+#endif /* _STLP_NO_FORCE_INSTANTIATE */
 
 // Local Variables:
 // mode:C++

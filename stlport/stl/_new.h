@@ -23,7 +23,11 @@
 
 #if defined (__BORLANDC__) && (__BORLANDC__ < 0x570)
 // new.h uses ::malloc ;(
+#  if __BORLANDC__ > 0x551
 #  include _STLP_NATIVE_CPP_C_HEADER(cstdlib)
+#  else
+#  include <stl/_cstdlib.h>
+#  endif
 using _STLP_VENDOR_CSTD::malloc;
 #endif
 
@@ -54,7 +58,16 @@ using _STLP_VENDOR_CSTD::malloc;
 #  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
 #endif
 
-#if defined (_STLP_USE_EXCEPTIONS) && defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
+#if defined(__WATCOMC__)
+namespace std {
+  struct nothrow_t {};
+  const nothrow_t nothrow;
+  typedef void (*new_handler)();
+  new_handler set_new_handler(new_handler __new_handler) throw();
+}
+#endif
+
+#if defined (_STLP_USE_EXCEPTIONS) && defined(_STLP_NO_BAD_ALLOC)   // defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
 
 #  ifndef _STLP_INTERNAL_EXCEPTION
 #    include <stl/_exception.h>
@@ -89,7 +102,7 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
-#  if !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
+#  if !defined(_STLP_NO_BAD_ALLOC)  // !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
 using _STLP_VENDOR_EXCEPT_STD::bad_alloc;
 #  endif
 
@@ -112,6 +125,7 @@ _STLP_END_NAMESPACE
 #  if !defined (_STLP_USE_EXCEPTIONS)
 #    ifndef _STLP_INTERNAL_CSTDIO
 #      include <stl/_cstdio.h>
+#      include <stl/_cstdlib.h>
 #    endif
 #    define _STLP_THROW_BAD_ALLOC puts("out of memory\n"); exit(1)
 #  else
@@ -119,7 +133,7 @@ _STLP_END_NAMESPACE
 #  endif
 #endif
 
-#if defined (_STLP_NO_NEW_NEW_HEADER) || defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
+#if (defined (_STLP_NO_NEW_NEW_HEADER) || defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)) // && !defined(_STLP_NO_EXCEPTIONS)
 #  define _STLP_CHECK_NULL_ALLOC(__x) void* __y = __x; if (__y == 0) { _STLP_THROW_BAD_ALLOC; } return __y
 #else
 #  define _STLP_CHECK_NULL_ALLOC(__x) return __x

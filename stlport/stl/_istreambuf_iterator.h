@@ -82,6 +82,7 @@ public:
 private:
   void _M_init(streambuf_type* __p) {
     _M_buf = __p;
+    _M_c   = _CharT();
     _M_eof = (__p == 0);
     _M_have_c = false;
   }

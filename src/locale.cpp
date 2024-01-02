@@ -18,6 +18,8 @@
 
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <locale>
 #include <stdexcept>
 
@@ -26,7 +28,14 @@
 
 _STLP_BEGIN_NAMESPACE
 
+# if defined (_STLP_KKKK_DMOW)
+static char const* const _Nameless = "*";
+static inline bool is_nameless(char const* name) { return name[0] == '*' && name[1] == '\0'; }
+static inline bool is_nameless(string const& name) { return name[0] == '*' && name.size() == 1; }
+#else
 static const string _Nameless("*");
+static inline bool is_nameless(string const& name) { return name == _Nameless; }
+#endif
 
 static inline bool is_C_locale_name (const char* name)
 { return ((name[0] == 'C') && (name[1] == 0)); }
@@ -41,7 +50,7 @@ locale* _Stl_get_global_locale();
 
 locale::facet::~facet() {}
 
-#if !defined (_STLP_MEMBER_TEMPLATES) || defined (_STLP_INLINE_MEMBER_TEMPLATES)
+#if !defined (_STLP_MEMBER_TEMPLATES) || defined (_STLP_INLINE_MEMBER_TEMPLATES) || (defined(__DMC__) && defined(_STLP_USE_DYNAMIC_LIB))
 // members that fail to be templates
 bool locale::operator()(const string& __x,
                         const string& __y) const
@@ -143,6 +152,10 @@ locale::locale(const char* name)
     _M_impl = _get_Locale_impl( locale::classic()._M_impl );
     return;
   }
+
+# if defined (_STLP_KKKK_DMOW)
+  _Locale_impl::_Init::init();
+# endif
 
   _Locale_impl* impl = 0;
   _STLP_TRY {
@@ -248,8 +261,8 @@ locale::locale(const locale& L, const char* name, locale::category c)
   if (!name)
     _M_throw_on_null_name();
 
-  if (_Nameless == name)
-    _STLP_THROW(runtime_error((string("Invalid locale name '") + _Nameless + "'").c_str()));
+  if (is_nameless(name))    // if (_Nameless == name)
+    _STLP_THROW(runtime_error((string("Invalid locale name '") + name/*_Nameless*/ + "'").c_str()));
 
   _Locale_impl* impl = 0;
 
@@ -298,7 +311,7 @@ locale::locale(const locale& L1, const locale& L2, category c)
 
   _Locale_impl* i2 = L2._M_impl;
 
-  if (L1.name() != _Nameless && L2.name() != _Nameless)
+  if (!is_nameless(L1.name()) && !is_nameless(L2.name()))   // if (L1.name() != _Nameless && L2.name() != _Nameless)
     _Stl_loc_combine_names(impl, L1._M_impl->name.c_str(), L2._M_impl->name.c_str(), c);
   else {
     impl->name = _Nameless;
@@ -385,14 +398,16 @@ locale::facet* locale::_M_use_facet(const locale::id& n) const {
   return f;
 }
 
-string locale::name() const {
+//string locale::name() const
+string const& locale::name() const
+{
   return _M_impl->name;
 }
 
 // Compare two locales for equality.
 bool locale::operator==(const locale& L) const {
-  return this->_M_impl == L._M_impl ||
-         (this->name() == L.name() && this->name() != _Nameless);
+  // return this->_M_impl == L._M_impl || (this->name() == L.name() && this->name() != _Nameless);
+  return this->_M_impl == L._M_impl || (this->name() == L.name() && !is_nameless(this->name()));
 }
 
 bool locale::operator!=(const locale& L) const {
@@ -418,7 +433,7 @@ _Locale_impl* _STLP_CALL locale::global(const locale& L) {
 
     // Set the global C locale, if appropriate.
 #if !defined(_STLP_NO_LOCALE_SUPPORT)
-    if (L.name() != _Nameless)
+    if (!is_nameless(L.name())) //if (L.name() != _Nameless)
       setlocale(LC_ALL, L.name().c_str());
 #endif
   }
@@ -443,3 +458,4 @@ const locale::category locale::all;
 
 _STLP_END_NAMESPACE
 
+#endif

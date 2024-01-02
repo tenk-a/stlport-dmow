@@ -190,6 +190,9 @@ struct _Deque_iterator : public _Deque_iterator_base< _Tp> {
   _STLP_DEFINE_ARROW_OPERATOR
 
   difference_type operator-(const const_iterator& __x) const { return this->_M_subtract(__x); }
+ #ifdef __WATCOMC__
+  difference_type operator-(const iterator& __x) const { return this->_M_subtract(__x); }
+ #endif
 
   _Self& operator++() { this->_M_increment(); return *this; }
   _Self operator++(int)  {

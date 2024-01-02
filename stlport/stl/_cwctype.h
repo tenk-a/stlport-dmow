@@ -57,7 +57,7 @@ _STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD_WFUNC::wctype_t;
 using _STLP_VENDOR_CSTD_WFUNC::wint_t;
 #    if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
-#      if !defined (__BORLANDC__) && !defined (__MSL__)
+#      if !defined (__BORLANDC__) && !defined (__MSL__) && !defined(__WATCOMC__)
 using _STLP_VENDOR_CSTD_WFUNC::wctrans_t;
 #        if !defined (__DMC__) && (!defined(_WIN32_WCE) || (_WIN32_WCE < 400))
 using _STLP_VENDOR_CSTD_WFUNC::towctrans;

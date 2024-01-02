@@ -153,7 +153,7 @@ extern long double __tanhl(long double);
 }
 #endif
 
-#if defined (__BORLANDC__)
+#if defined (__BORLANDC__) || defined (__WATCOMC__)
 #  define _STLP_CMATH_FUNC_NAMESPACE _STLP_VENDOR_CSTD
 #else
 #  define _STLP_CMATH_FUNC_NAMESPACE
@@ -349,7 +349,7 @@ Meaning of suffixes:
 #  define _STLP_RESTORE_FUNCTION_INTRINSIC
 #endif // _STLP_MSVC && _STLP_MSVC <= 1300 && !_STLP_WCE && _MSC_EXTENSIONS
 
-#if (defined (__BORLANDC__) || defined (__WATCOMC__)) && defined (_STLP_USE_NEW_C_HEADERS)
+#if defined (__BORLANDC__) && defined (_STLP_USE_NEW_C_HEADERS)
 /* In this config Borland native lib only define functions in std namespace.
  * In order to have all overloads in STLport namespace we need to add the
  * double overload in global namespace. We do not use a using statement to avoid
@@ -532,19 +532,19 @@ _STLP_DEF_MATH_INLINE2(hypot, _hypot)
 
 #if defined (_STLP_IMPORT_VENDOR_CSTD) && !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
 _STLP_BEGIN_NAMESPACE
-using ::abs;
-using ::acos;
-using ::asin;
-using ::atan;
-using ::atan2;
-using ::ceil;
-using ::cos;
-using ::cosh;
-using ::exp;
-using ::fabs;
-using ::floor;
-using ::fmod;
-using ::frexp;
+using _STLP_CMATH_FUNC_NAMESPACE::abs;
+using _STLP_CMATH_FUNC_NAMESPACE::acos;
+using _STLP_CMATH_FUNC_NAMESPACE::asin;
+using _STLP_CMATH_FUNC_NAMESPACE::atan;
+using _STLP_CMATH_FUNC_NAMESPACE::atan2;
+using _STLP_CMATH_FUNC_NAMESPACE::ceil;
+using _STLP_CMATH_FUNC_NAMESPACE::cos;
+using _STLP_CMATH_FUNC_NAMESPACE::cosh;
+using _STLP_CMATH_FUNC_NAMESPACE::exp;
+using _STLP_CMATH_FUNC_NAMESPACE::fabs;
+using _STLP_CMATH_FUNC_NAMESPACE::floor;
+using _STLP_CMATH_FUNC_NAMESPACE::fmod;
+using _STLP_CMATH_FUNC_NAMESPACE::frexp;
 /*
    Because of some weird interaction between STLport headers
    and native HP-UX headers, when compiled with _STLP_DEBUG
@@ -553,24 +553,53 @@ using ::frexp;
    this problem.
 */
 #if !(defined(__HP_aCC) && defined(_STLP_DEBUG))
-using ::hypot;
+using _STLP_CMATH_FUNC_NAMESPACE::hypot;
 #endif
-using ::ldexp;
-using ::log;
-using ::log10;
-using ::modf;
-using ::pow;
-using ::sin;
-using ::sinh;
-using ::sqrt;
-using ::tan;
-using ::tanh;
+using _STLP_CMATH_FUNC_NAMESPACE::ldexp;
+using _STLP_CMATH_FUNC_NAMESPACE::log;
+using _STLP_CMATH_FUNC_NAMESPACE::log10;
+using _STLP_CMATH_FUNC_NAMESPACE::modf;
+using _STLP_CMATH_FUNC_NAMESPACE::pow;
+using _STLP_CMATH_FUNC_NAMESPACE::sin;
+using _STLP_CMATH_FUNC_NAMESPACE::sinh;
+using _STLP_CMATH_FUNC_NAMESPACE::sqrt;
+using _STLP_CMATH_FUNC_NAMESPACE::tan;
+using _STLP_CMATH_FUNC_NAMESPACE::tanh;
 _STLP_END_NAMESPACE
 #  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x560) && !defined (__linux__)
 using _STLP_VENDOR_CSTD::_ecvt;
 using _STLP_VENDOR_CSTD::_fcvt;
 #  endif
 #endif
+
+#if defined(__WATCOMC__)    // need global ?
+using _STLP_CMATH_FUNC_NAMESPACE::abs;
+using _STLP_CMATH_FUNC_NAMESPACE::acos;
+using _STLP_CMATH_FUNC_NAMESPACE::asin;
+using _STLP_CMATH_FUNC_NAMESPACE::atan;
+using _STLP_CMATH_FUNC_NAMESPACE::atan2;
+using _STLP_CMATH_FUNC_NAMESPACE::ceil;
+using _STLP_CMATH_FUNC_NAMESPACE::cos;
+using _STLP_CMATH_FUNC_NAMESPACE::cosh;
+using _STLP_CMATH_FUNC_NAMESPACE::exp;
+using _STLP_CMATH_FUNC_NAMESPACE::fabs;
+using _STLP_CMATH_FUNC_NAMESPACE::floor;
+using _STLP_CMATH_FUNC_NAMESPACE::fmod;
+using _STLP_CMATH_FUNC_NAMESPACE::frexp;
+#if !(defined(__HP_aCC) && defined(_STLP_DEBUG))
+using _STLP_CMATH_FUNC_NAMESPACE::hypot;
+#endif
+using _STLP_CMATH_FUNC_NAMESPACE::ldexp;
+using _STLP_CMATH_FUNC_NAMESPACE::log;
+using _STLP_CMATH_FUNC_NAMESPACE::log10;
+using _STLP_CMATH_FUNC_NAMESPACE::modf;
+using _STLP_CMATH_FUNC_NAMESPACE::pow;
+using _STLP_CMATH_FUNC_NAMESPACE::sin;
+using _STLP_CMATH_FUNC_NAMESPACE::sinh;
+using _STLP_CMATH_FUNC_NAMESPACE::sqrt;
+using _STLP_CMATH_FUNC_NAMESPACE::tan;
+using _STLP_CMATH_FUNC_NAMESPACE::tanh;
+#endif  // __WATCOMC__
 
 #endif /* _STLP_INTERNAL_CMATH */
 

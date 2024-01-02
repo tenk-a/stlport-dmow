@@ -17,11 +17,11 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_KKKK_USE_HEADER_ONLY) && !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <sstream>
 
 _STLP_BEGIN_NAMESPACE
-
-#if !defined (_STLP_NO_FORCE_INSTANTIATE)
 
 // Force instantiation of stringstream classes.
 template class _STLP_CLASS_DECLSPEC basic_stringbuf<char, char_traits<char>, allocator<char> >;
@@ -36,9 +36,9 @@ template class _STLP_CLASS_DECLSPEC basic_istringstream<wchar_t, char_traits<wch
 template class _STLP_CLASS_DECLSPEC basic_stringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
 #  endif
 
-#endif
-
 _STLP_END_NAMESPACE
+
+#endif
 
 // Local Variables:
 // mode:C++

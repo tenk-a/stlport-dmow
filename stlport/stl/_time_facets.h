@@ -35,7 +35,7 @@
 #  include <stl/_ios_base.h>
 #endif
 
-#ifndef _STLP_INTERNAL_IOSTREAM_STRING_H
+#if !defined(_STLP_INTERNAL_IOSTREAM_STRING_H) && !defined(_STLP_USE_NO_IOSTREAMS)
 #  include <stl/_iostream_string.h>
 #endif
 
@@ -163,7 +163,7 @@ protected:
     : _STLP_PRIV time_init<_Ch>(__time)
   {}
 
-  ~time_get() {}
+  virtual ~time_get() {}
 
   virtual dateorder do_date_order() const { return this->_M_dateorder; }
 
@@ -189,7 +189,7 @@ protected:
                                 tm* __t) const;
 };
 
-#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
+#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES) || defined(_STLP_USE_NO_IOSTREAMS)
 template <class _Ch, class _InIt>
 #else
 template <class _Ch, class _InIt = istreambuf_iterator<_Ch, char_traits<_Ch> > >
@@ -204,7 +204,7 @@ public:
     : time_get<_Ch, _InIt>(__name, __refs) {}
 
 protected:
-  ~time_get_byname() {}
+  virtual ~time_get_byname() {}
   dateorder do_date_order() const { return this->_M_dateorder; }
 
 private:
@@ -270,13 +270,13 @@ protected:
   time_put(_Locale_time *__time)
     : _STLP_PRIV time_init<_Ch>(__time)
   {}
-  ~time_put() {}
+  virtual ~time_put() {}
   virtual iter_type do_put(iter_type __s, ios_base& __f,
                            char_type  /* __fill */, const tm* __tmb,
                            char __format, char /* __modifier */) const;
 };
 
-#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
+#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES) || defined(_STLP_USE_NO_IOSTREAMS)
 template <class _Ch, class _OutIt>
 #else
 template <class _Ch, class _OutIt = ostreambuf_iterator<_Ch, char_traits<_Ch> > >
@@ -293,7 +293,7 @@ public:
   {}
 
 protected:
-  ~time_put_byname() {}
+  virtual ~time_put_byname() {}
 
 private:
   time_put_byname(_Locale_time *__time)
@@ -306,7 +306,7 @@ private:
   _Self& operator = (_Self const&);
 };
 
-#if defined (_STLP_USE_TEMPLATE_EXPORT)
+#if defined (_STLP_USE_TEMPLATE_EXPORT) && !defined(_STLP_USE_NO_IOSTREAMS)
 _STLP_EXPORT_TEMPLATE_CLASS time_get<char, istreambuf_iterator<char, char_traits<char> > >;
 _STLP_EXPORT_TEMPLATE_CLASS time_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 #  if !defined (_STLP_NO_WCHAR_T)

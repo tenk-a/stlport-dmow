@@ -260,7 +260,11 @@ protected:                      // Virtual locale functions.
 
 public:                         // Locale-related functions.
   locale pubimbue(const locale&);
+#  if defined(_STLP_KKKK_DMOW)
+  locale const& getloc() const { return _M_locale; }
+#  else
   locale getloc() const { return _M_locale; }
+#  endif
 
 #if !defined (_STLP_NO_ANACHRONISMS)
   void stossc() { this->sbumpc(); }

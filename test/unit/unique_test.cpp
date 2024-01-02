@@ -27,7 +27,7 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UniqueTest);
 
-static bool str_equal(const char* a_, const char* b_)
+static bool str_equal_2(const char* a_, const char* b_)
 { return *a_ == *b_; }
 //
 // tests implementation
@@ -53,7 +53,7 @@ void UniqueTest::unique2()
 
   const unsigned count = sizeof(labels) / sizeof(labels[0]);
 
-  unique((const char**)labels, (const char**)labels + count, str_equal);
+  unique((const char**)labels, (const char**)labels + count, str_equal_2);
 
   // QWERTY
   CPPUNIT_ASSERT(*labels[0] == 'Q');
@@ -93,7 +93,7 @@ void UniqueTest::uniqcpy2()
   const char **puCopy = &uCopy[0];
   fill(puCopy, puCopy + count, "");
 
-  unique_copy(plabels, plabels + count, puCopy, str_equal);
+  unique_copy(plabels, plabels + count, puCopy, str_equal_2);
 
   //QWERTY
   CPPUNIT_ASSERT(*uCopy[0] == 'Q');

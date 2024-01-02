@@ -12,6 +12,9 @@
  * modified is included with the above copyright notice.
  *
  */
+#if defined(__cplusplus) && defined(_STLP_KKKK_H_INCLUDE_NEW_C_HEADERS) && !defined(_STLP_CERRNO)
+#  include <cerrno>
+#endif
 
 #if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x205
@@ -41,7 +44,7 @@ _STLP_END_NAMESPACE
 #    endif
 #  endif /* errno */
 
-#  if !defined (_STLP_NATIVE_ERRNO_H_INCLUDED)
+#  if !defined (_STLP_NATIVE_ERRNO_H_INCLUDED) && !defined(__WATCOMC__)
 /* If errno has been defined before inclusion of native errno.h including it from STLport errno.h
  * becomes impossible because if:
  * #define errno foo

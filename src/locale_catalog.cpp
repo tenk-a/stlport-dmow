@@ -21,7 +21,9 @@
 #include <string>
 
 #include <locale>
+#if !defined(_STLP_USE_NO_IOSTREAMS)
 #include <istream>
+#endif
 
 #include "c_locale.h"
 #include "locale_impl.h"

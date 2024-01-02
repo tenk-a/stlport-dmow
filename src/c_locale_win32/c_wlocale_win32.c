@@ -19,8 +19,9 @@
 #  define _STLP_WCSNCPY(D, DS, S, C) wcsncpy(D, S, C)
 #endif
 
-static const wchar_t* __wtrue_name = L"true";
-static const wchar_t* __wfalse_name = L"false";
+#if defined (__cplusplus)
+extern "C" {
+#endif
 
 typedef struct _Locale_codecvt {
   _Locale_lcid_t lc;
@@ -31,6 +32,18 @@ typedef struct _Locale_codecvt {
   DWORD wctomb_flags;
 } _Locale_codecvt_t;
 
+#if defined (__cplusplus)
+}
+#endif
+
+#if defined (__cplusplus)
+_STLP_BEGIN_NAMESPACE
+extern "C" {
+#endif
+
+static const wchar_t* __wtrue_name = L"true";
+static const wchar_t* __wfalse_name = L"false";
+
 /* Ctype */
 _Locale_mask_t _WLocale_ctype(_Locale_ctype_t* ltype, wint_t c,
                               _Locale_mask_t which_bits) {
@@ -39,7 +52,7 @@ _Locale_mask_t _WLocale_ctype(_Locale_ctype_t* ltype, wint_t c,
   buf[0] = c; buf[1] = 0;
   GetStringTypeW(CT_CTYPE1, buf, -1, out);
   _STLP_MARK_PARAMETER_AS_UNUSED(ltype)
-  return (_Locale_mask_t)(MapCtypeMask(out[0]) & which_bits);
+  return (_Locale_mask_t)(_MapCtypeMask(out[0]) & which_bits);
 }
 
 wint_t _WLocale_tolower(_Locale_ctype_t* ltype, wint_t c) {
@@ -312,3 +325,9 @@ const wchar_t* _WLocale_am_str(_Locale_time_t* ltime,
 const wchar_t* _WLocale_pm_str(_Locale_time_t* ltime,
                                wchar_t* buf, size_t bufSize)
 { GetLocaleInfoW(ltime->lc.id, LOCALE_S2359, buf, (int)bufSize); return buf; }
+
+
+#ifdef __cplusplus
+}
+_STLP_END_NAMESPACE
+#endif

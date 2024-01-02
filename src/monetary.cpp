@@ -17,6 +17,8 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <locale>
 #include <istream>
 
@@ -36,9 +38,16 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
 }
 
 // This is being used throughout the library
+#if defined(__WATCOMC__)    // defined(_STLP_KKKK_DMOW)
+#define _S_empty_string     string()
+# ifndef _STLP_NO_WCHAR_T
+#define _S_empty_wstring    wstring()
+# endif
+#else
 static const string _S_empty_string;
-#ifndef _STLP_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 static const wstring _S_empty_wstring;
+# endif
 #endif
 
 //
@@ -146,6 +155,8 @@ const bool moneypunct<wchar_t, false>::intl;
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif
 
 // Local Variables:
 // mode:C++

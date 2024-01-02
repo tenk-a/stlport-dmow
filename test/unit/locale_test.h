@@ -49,7 +49,8 @@ class LocaleTest : public CPPUNIT_NS::TestCase
 #  endif
   CPPUNIT_STOP_IGNORE;
 #if (defined (STLPORT) && \
-   (!defined (_STLP_USE_EXCEPTIONS) || defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)))
+   (!defined (_STLP_USE_EXCEPTIONS) || defined (_STLP_NO_MEMBER_TEMPLATES) || \
+     defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS) || (defined(__DMC__) && defined(_STLP_USE_DYNAMIC_LIB)) ) )
   CPPUNIT_IGNORE;
 #  endif
   CPPUNIT_TEST(combine);

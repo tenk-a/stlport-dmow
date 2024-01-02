@@ -207,14 +207,14 @@ _Locale_mask_t _WLocale_ctype(struct _Locale_ctype *lctype, wint_t wc, _Locale_m
   _Locale_mask_t ret = 0;
   if ((mask & _Locale_ALPHA) != 0 && iswalpha(wc))
     ret |= _Locale_ALPHA;
-  
+
   if ((mask & _Locale_CNTRL) != 0 && iswcntrl(wc))
     ret |= _Locale_CNTRL;
 
   if ((mask & _Locale_DIGIT) != 0 && iswdigit(wc))
     ret |= _Locale_DIGIT;
 
-  if ((mask & _Locale_PRINT) != 0 && iswprint(wc)) 
+  if ((mask & _Locale_PRINT) != 0 && iswprint(wc))
     ret |= _Locale_PRINT;
 
   if ((mask & _Locale_PUNCT) != 0 && iswpunct(wc))
@@ -403,65 +403,65 @@ const wchar_t* _WLocale_negative_sign(struct _Locale_monetary * lmon,
 #endif
 
 /* Time */
-static const char* full_monthname[] =
+static const char* const full_monthname[] =
 { "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December" };
 const char * _Locale_full_monthname(struct _Locale_time * ltime, int n)
 { return full_monthname[n]; }
 
-static const char* abbrev_monthname[] =
+static const char* const abbrev_monthname[] =
 { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 const char * _Locale_abbrev_monthname(struct _Locale_time * ltime, int n)
 { return abbrev_monthname[n]; }
 
-static const char* full_dayname[] =
+static const char* const full_dayname[] =
 { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 const char * _Locale_full_dayofweek(struct _Locale_time * ltime, int n)
 { return full_dayname[n]; }
 
-static const char* abbrev_dayname[] =
+static const char* const abbrev_dayname[] =
 { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 const char * _Locale_abbrev_dayofweek(struct _Locale_time * ltime, int n)
 { return abbrev_dayname[n]; }
 
-const char* _Locale_d_t_fmt(struct _Locale_time* ltime)
+const char* const _Locale_d_t_fmt(struct _Locale_time* ltime)
 { return "%m/%d/%y"; }
-const char* _Locale_d_fmt(struct _Locale_time* ltime)
+const char* const _Locale_d_fmt(struct _Locale_time* ltime)
 { return "%m/%d/%y"; }
-const char* _Locale_t_fmt(struct _Locale_time* ltime)
+const char* const _Locale_t_fmt(struct _Locale_time* ltime)
 { return "%H:%M:%S"; }
-const char* _Locale_long_d_t_fmt(struct _Locale_time* ltime)
+const char* const _Locale_long_d_t_fmt(struct _Locale_time* ltime)
 { return _empty_str; }
-const char* _Locale_long_d_fmt(struct _Locale_time* ltime)
+const char* const _Locale_long_d_fmt(struct _Locale_time* ltime)
 { return _empty_str; }
-const char* _Locale_am_str(struct _Locale_time* ltime)
+const char* const _Locale_am_str(struct _Locale_time* ltime)
 { return "AM"; }
-const char* _Locale_pm_str(struct _Locale_time* ltime)
+const char* const _Locale_pm_str(struct _Locale_time* ltime)
 { return "PM"; }
 
 #ifndef _STLP_NO_WCHAR_T
-static const wchar_t* full_wmonthname[] =
+static const wchar_t* const full_wmonthname[] =
 { L"January", L"February", L"March", L"April", L"May", L"June",
   L"July", L"August", L"September", L"October", L"November", L"December" };
 const wchar_t * _WLocale_full_monthname(struct _Locale_time * ltime, int n,
                                         wchar_t* buf, size_t bufSize)
 { return full_wmonthname[n]; }
 
-static const wchar_t* abbrev_wmonthname[] =
+static const wchar_t* const abbrev_wmonthname[] =
 { L"Jan", L"Feb", L"Mar", L"Apr", L"May", L"Jun",
   L"Jul", L"Aug", L"Sep", L"Oct", L"Nov", L"Dec" };
 const wchar_t * _WLocale_abbrev_monthname(struct _Locale_time * ltime, int n,
                                           wchar_t* buf, size_t bufSize)
 { return abbrev_wmonthname[n]; }
 
-static const wchar_t* full_wdayname[] =
+static const wchar_t* const full_wdayname[] =
 { L"Sunday", L"Monday", L"Tuesday", L"Wednesday", L"Thursday", L"Friday", L"Saturday" };
 const wchar_t * _WLocale_full_dayofweek(struct _Locale_time * ltime, int n,
                                         wchar_t* buf, size_t bufSize)
 { return full_wdayname[n]; }
 
-static const wchar_t* abbrev_wdayname[] =
+static const wchar_t* const abbrev_wdayname[] =
 { L"Sun", L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat" };
 const wchar_t * _WLocale_abbrev_dayofweek(struct _Locale_time * ltime, int n,
                                           wchar_t* buf, size_t bufSize)

@@ -18,6 +18,8 @@
 
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <limits>
 #include <locale>
 #include <istream>
@@ -104,7 +106,7 @@ typedef unsigned long uint32;
 typedef unsigned __int64 uint64;
 #  define ULL(x) x##Ui64
 #elif defined (__unix) || defined (__MINGW32__) || \
-      (defined (__DMC__) && (__LONGLONG)) || defined (__WATCOMC__)
+      defined (__DMC__) || defined (__WATCOMC__)
 typedef uint32_t uint32;
 typedef uint64_t uint64;
 #  define ULL(x) x##ULL
@@ -877,6 +879,8 @@ __string_to_float(const __iostring& v, long double& val) {
 
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
+
+#endif  // !_STLP_USE_NO_IOSTREAMS
 
 // Local Variables:
 // mode:C++

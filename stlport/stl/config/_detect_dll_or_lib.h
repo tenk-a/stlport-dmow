@@ -29,7 +29,7 @@
 #    endif
 #  endif
 #else
-#  if !defined (_STLP_NO_IOSTREAMS)
+#  if !defined (_STLP_NO_IOSTREAMS) && !defined (_STLP_KKKK_USE_HEADER_ONLY)
 /* STLport use only depend on _STLP_RUNTIME_DLL as we are replacing
  * the native runtime.
  */

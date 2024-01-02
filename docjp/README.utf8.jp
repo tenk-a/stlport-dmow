@@ -1,0 +1,54 @@
+STLport で utf8 ファイルの読み書きをどのように行うかを記す.
+
+UTF8は、ワイド文字のエンコーディング方法の一つ.
+
+でもって、C++標準ライブラリでのエンコーディング管理としては、
+ctype カテゴリーとして codecvt のロケールのファセットのハンドルをつかう.
+
+なぜなら、ctypeカテゴリのロケールインスタンスだけじゃ文字を判別できず
+utf8 のエンコーディングするには不十分.
+
+以下は C++ ではコードは失敗し例外が投げられるだろう.
+
+#include <locale>
+// std::runtime_error exceptionが例外を投げるだろう.
+std::locale loc(".utf8");
+
+同じ理由で ctypeファセット指定付きでロケールをutf8指定するのも間違い.
+
+// std::runtime_error exceptionが例外を投げるだろう.
+std::locale loc(locale::classic(), ".utf8", std::locale::ctype);
+
+utf8 エンコーディングできるロケールインスタンスを得る唯一の方法は、
+特別にutf8 エンコーディング設定のcodecvtのファセットを用いる.
+
+// プラットフォームがサポートしてくれてたら、成功するだろう.
+locale loc(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>(".utf8"));
+
+
+ロケールインスタンスが取得できれば、utf8ファイルの読み書きのための
+ファイルストリームに設定できる:
+
+std::fstream fstr("file.utf8");
+fstr.imbue(loc);
+
+
+同様に utf8 エンコーディング/デーディング操作用に直接ファセットに
+アクセスすることもできる:
+
+typedef std::codecvt<wchar_t, char, mbstate_t> codecvt_t;
+const codecvt_t& encoding = use_facet<codecvt_t>(loc);
+
+
+Notes:
+
+1. utf8 の前に '.'がつく.
+   これは POSIX規約で、ロケール名は次のような書式になる:
+
+     言語[_国[.エンコーディング]]
+
+  Ex: 'fr_FR'
+      'french'
+      'ru_RU.koi8r'
+
+2. UTF8エンコーディングはさしあたり Windows下でのみサポートされている.

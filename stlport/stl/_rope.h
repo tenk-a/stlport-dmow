@@ -121,10 +121,15 @@ template<class _CharT, class _Alloc>
 struct _Rope_Concat_fn
   : public binary_function<rope<_CharT,_Alloc>, rope<_CharT,_Alloc>,
                            rope<_CharT,_Alloc> > {
+# if defined(__DMC__)   // @@@@ atode kakunin....
+  rope<_CharT,_Alloc> operator() (const rope<_CharT,_Alloc>& __x,
+                                  const rope<_CharT,_Alloc>& __y);
+# else
   rope<_CharT,_Alloc> operator() (const rope<_CharT,_Alloc>& __x,
                                   const rope<_CharT,_Alloc>& __y) {
     return __x + __y;
   }
+# endif
 };
 
 template <class _CharT, class _Alloc>
@@ -834,7 +839,7 @@ private:
   }
 
 public:
-  _Rope_iterator_base(const _Self& __x) : 
+  _Rope_iterator_base(const _Self& __x) :
       _M_current_pos(__x._M_current_pos),
       _M_root(__x._M_root),
       _M_leaf_pos( __x._M_leaf_pos ),
@@ -905,7 +910,9 @@ public:
   }
   reference operator*() {
     if (0 == this->_M_buf_ptr)
-#if !defined (__DMC__)
+#if defined (__GNUC__)
+      _Base::_S_setcache(*this);
+#elif !defined (__DMC__)
       _S_setcache(*this);
 #else
     { _Rope_iterator_base<_CharT, _Alloc>* __x = this; _S_setcache(*__x); }
@@ -1451,7 +1458,11 @@ public:
         __result = _STLP_PRIV __power(__base_rope, __exponent, _Concat_fn());
       }
       if (0 != __remainder) {
+# if defined(__DMC__)
+        __result.append(__remainder_rope);
+# else
         __result += __remainder_rope;
+# endif
       }
     } else {
       __result = __remainder_rope;
@@ -2173,7 +2184,7 @@ operator-(const _Rope_iterator<_CharT,_Alloc>& __x,
           ptrdiff_t __n) {
   return _Rope_iterator<_CharT,_Alloc>(__x._M_root_rope, __x._M_current_pos - __n);
 }
-# endif
+#endif
 
 template <class _CharT, class _Alloc>
 inline _Rope_iterator<_CharT,_Alloc>
@@ -2193,7 +2204,12 @@ inline rope<_CharT,_Alloc>
 operator+ (const rope<_CharT,_Alloc>& __left,
            const rope<_CharT,_Alloc>& __right) {
   _STLP_ASSERT(__left.get_allocator() == __right.get_allocator())
+# if defined (__WATCOMC__)
+  typedef rope<_CharT,_Alloc> __this_type;
+  return __this_type(__this_type::_S_concat_rep(__left._M_tree_ptr._M_data, __right._M_tree_ptr._M_data));
+# else
   return rope<_CharT,_Alloc>(rope<_CharT,_Alloc>::_S_concat_rep(__left._M_tree_ptr._M_data, __right._M_tree_ptr._M_data));
+# endif
   // Inlining this should make it possible to keep __left and __right in registers.
 }
 
@@ -2294,6 +2310,17 @@ basic_ostream<_CharT, _Traits>& operator<< (basic_ostream<_CharT, _Traits>& __o,
                                             const rope<_CharT, _Alloc>& __r);
 #endif
 
+
+#if defined(__DMC__)
+template<class _CharT, class _Alloc>
+rope<_CharT,_Alloc> inline
+_Rope_Concat_fn<_CharT,_Alloc>::operator() (const rope<_CharT,_Alloc>& __x
+                                          , const rope<_CharT,_Alloc>& __y)
+{
+  return __x + __y;
+}
+#endif
+
 typedef rope<char, allocator<char> > crope;
 #if defined (_STLP_HAS_WCHAR_T)
 typedef rope<wchar_t, allocator<wchar_t> > wrope;
@@ -2342,7 +2369,7 @@ _STLP_TEMPLATE_NULL struct hash<wrope> {
 };
 #endif
 
-#if (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310))
+#if (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310)) && !defined(__DMC__) && !defined(__WATCOMC__)
 // I couldn't get this to work with VC++
 template<class _CharT,class _Alloc>
 #  if defined (__DMC__)

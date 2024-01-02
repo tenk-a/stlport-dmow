@@ -128,8 +128,21 @@ typedef size_t __stl_atomic_t;
 #    endif /* if defined(__GNUC__) && defined(__i386__) */
 
 #  elif defined (_STLP_WIN32THREADS)
-
-#    if !defined (_STLP_ATOMIC_INCREMENT)
+typedef long __stl_atomic_t;
+#    if defined (__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1)) && (defined (__amd64__) || defined (__x86_64__))
+#      if !defined (_STLP_ATOMIC_INCREMENT)
+#        define _STLP_ATOMIC_INCREMENT(__x)			__sync_add_and_fetch(__CONST_CAST(__stl_atomic_t*, __x), 1)
+#      endif
+#      if !defined (_STLP_ATOMIC_DECREMENT)
+#        define _STLP_ATOMIC_DECREMENT(__x)			__sync_sub_and_fetch(__CONST_CAST(__stl_atomic_t*, __x), 1)
+#      endif
+#      if !defined (_STLP_ATOMIC_EXCHANGE)
+#        define _STLP_ATOMIC_EXCHANGE(__x, __y)		__sync_lock_test_and_set(__CONST_CAST(__stl_atomic_t*, __x), __y)
+#      endif
+#      if !defined (_STLP_ATOMIC_EXCHANGE_PTR)
+#        define _STLP_ATOMIC_EXCHANGE_PTR(__x, __y)	__sync_lock_test_and_set(__x, __y)
+#      endif
+#    elif !defined (_STLP_ATOMIC_INCREMENT)
 #      if !defined (_STLP_NEW_PLATFORM_SDK)
 #        define _STLP_ATOMIC_INCREMENT(__x)           InterlockedIncrement(__CONST_CAST(long*, __x))
 #        define _STLP_ATOMIC_DECREMENT(__x)           InterlockedDecrement(__CONST_CAST(long*, __x))
@@ -141,7 +154,6 @@ typedef size_t __stl_atomic_t;
 #      endif
 #      define _STLP_ATOMIC_EXCHANGE_PTR(__x, __y)     STLPInterlockedExchangePointer(__x, __y)
 #    endif
-typedef long __stl_atomic_t;
 
 #  elif defined (__DECC) || defined (__DECCXX)
 

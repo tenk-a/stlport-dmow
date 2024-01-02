@@ -21,6 +21,10 @@
  */
 #if !defined(RC_INVOKED)
 
+#  if defined(__cplusplus) && defined(_STLP_KKKK_H_INCLUDE_NEW_C_HEADERS) && !defined(_STLP_CCTYPE)
+#    include <cctype>
+#  endif
+
 #  if !defined (_STLP_OUTERMOST_HEADER_ID)
 #    define _STLP_OUTERMOST_HEADER_ID 0x219
 #    include <stl/_prolog.h>

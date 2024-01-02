@@ -15,7 +15,6 @@
 ************************************************************************************************/
 
 #include "nc_alloc.h"
-#include <string>
 
 #if defined (EH_NEW_HEADERS)
 #  include <new>
@@ -26,6 +25,7 @@
 #  include <stdlib.h>
 #  include <new.h>
 #endif
+#include <string>
 
 #if defined (EH_NEW_IOSTREAMS)
 #  include <iostream>
@@ -112,6 +112,12 @@ static bool using_alloc_set = false;
 class FastAllocator {
 public:
   //FastAllocator() : mFree(0), mUsed(0) {}
+# if defined (_STLP_KKKK_DMOW)  // defined(__WATCOMC__)
+  ~FastAllocator() {
+    // EH_CSTD::free( mBlocks );
+  }
+# endif
+
   static void *Allocate(size_t s) {
     void *result = 0;
 
@@ -120,9 +126,22 @@ public:
         result = mFree;
         mFree = mFree->next;
       }
+#    if defined (_STLP_KKKK_DMOW)   // defined(__WATCOMC__)
+      else if (mUsed < kBlockCount) {
+        if (mBlocks == 0) {
+          mBlocks = (FastAllocator::Block*)EH_CSTD::calloc( sizeof(FastAllocator::Block), FastAllocator::kBlockCount );
+          mFree   = NULL;
+          mUsed   = 0;
+        }
+        if (mBlocks != 0) {
+          result  = (void*)&mBlocks[mUsed++];
+        }
+      }
+#    else
       else if (mBlocks != 0 && mUsed < kBlockCount) {
         result =  (void*)&mBlocks[mUsed++];
       }
+#    endif
     }
     return result;
   }
@@ -161,10 +180,16 @@ public:
   static size_t mUsed;
 };
 
+# if defined (_STLP_KKKK_DMOW)  // defined(__WATCOMC__)
+FastAllocator::Block *FastAllocator::mBlocks = NULL;
+FastAllocator::Block *FastAllocator::mFree   = NULL;
+size_t FastAllocator::mUsed = 0;
+# else
 FastAllocator::Block *FastAllocator::mBlocks =
 (FastAllocator::Block*)EH_CSTD::calloc( sizeof(FastAllocator::Block), FastAllocator::kBlockCount );
 FastAllocator::Block *FastAllocator::mFree;
 size_t FastAllocator::mUsed;
+# endif
 
 
 static FastAllocator gFastAllocator;
@@ -194,7 +219,7 @@ static void* OperatorNew( size_t s ) {
     using_alloc_set = true;
     bool inserted = alloc_set().insert(p).second;
     // Suppress warning about unused variable.
-    inserted; 
+    _STLP_MARK_PARAMETER_AS_UNUSED(inserted)
     EH_ASSERT(inserted);
     using_alloc_set = false;
   }
@@ -220,7 +245,11 @@ void* _STLP_CALL operator new(size_t size, const EH_STD::nothrow_t&) throw() {
 #endif
 
 #if 1 /* defined (EH_VECTOR_OPERATOR_NEW) */
-void* _STLP_CALL operator new[](size_t size ) throw(EH_STD::bad_alloc) {
+void* _STLP_CALL operator new[](size_t size ) 
+ #if !defined(__DMC__)
+  throw(EH_STD::bad_alloc)
+ #endif
+{
   return OperatorNew( size );
 }
 
@@ -235,8 +264,13 @@ void* _STLP_CALL operator new[](size_t size, const EH_STD::nothrow_t&) throw() {
 }
 #  endif
 
-void _STLP_CALL operator delete[](void* ptr) throw()
-{ operator delete( ptr ); }
+void _STLP_CALL operator delete[](void* ptr)
+# if !defined(__DMC__)
+  throw()
+# endif
+{
+  operator delete( ptr );
+}
 #endif
 
 #if defined (EH_DELETE_HAS_THROW_SPEC)

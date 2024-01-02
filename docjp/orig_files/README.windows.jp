@@ -1,0 +1,59 @@
+Windowsユーザー向けのノート.
+
+  使用時同様、ライブラリビルド時も、ターゲットとなる
+Windows OS のバージョンの指定を多いに推奨する.
+
+よく知られる WINVER, _WIN32_WINDOWS, _WIN32_WINNT マクロを使うといい.
+これらの使い方は  platform SDK のドキュメントをみて.
+
+ライブラリ・ビルド時に設定するには、configure スクリプトの
+--extra-cxxflag オプションを使う.
+Visual Studio2005 を使ってターゲットOSを Windows XP 向けで
+STLport を構築するなら
+
+  configure -c msvc8 --extra-cxxflag "/D_WIN32_WINNT=0x0501"
+
+宣言しない場合は、STLportビルド時に使われた PSDK の
+windows.h で定義される WINVER のデフォルト値が使われる.
+
+しかしながら、このライブラリを使うとき、
+windows.h は必ずしもincludeされるわけでなく、
+少なくとも STLportの内部ではincludeしない.
+ランタイム時は未定義だとほとんどの場合ビルド時とは矛盾する
+0が定義されるだろう.
+
+
+以下のアドバイスは、主に Windows 95 の互換性の問題のため:
+
+  Because of a modification in the behavior of the Win32 API functions
+InterlockedIncrement and InterlockedDecrement after Windows 95, STLport
+libraries built for Windows 95 cannot be used to generate an application
+built for Windows XP for instance. So, if you build STLport with a Windows
+95 PSDK, STLport will be ready for Windows 95. If you then use it without
+defining _WIN32_WINDOWS to signal Windows 95 compatibility, STLport will
+consider that it can use latest Windows OS features like the new
+InterlockedIncrement and InterlockedDecrement functions which change the
+memory footprint of some internal STLport objects making it incompatible
+with the libraries built for Windows 95.
+
+  Normally, doing so wouldn't generate any compilation or link error, you
+would only experiment undefined behavior at runtime. In order to make this
+problem more obvious STLport forces a link time error in debug mode (_DEBUG
+macro defined).
+
+Unresolved symbol will be:
+  - 'building_for_at_least_windows98_but_library_built_for_windows95'
+  if you are trying to use STLport libraries built for Windows 98 or later
+  to generate an application targetting the Windows 95 platform.
+  - 'building_for_windows95_but_library_built_for_at_least_windows98'
+  if you are trying to use STLport libraries built for Windows 95 to generate
+  an appliation targetting the
+  
+  Windows XP platform for instance.
+
+  Of course, targetting the latest Windows OS versions will give you the best
+performance from STLport. This is why when none of the platform macros are
+defined STLport consider that there is no minimum OS requirement and will
+use the latest API functions. There is only one exception to this behavior,
+the SwitchToThread function that is used only if you define _WIN32_WINNT to a
+value higher or equal to 0X0400.

@@ -41,7 +41,7 @@ It dtor done    <-- 0
  */
 #include <stdio.h>
 
-using namespace std;
+//using namespace std;
 
 class Init
 {

@@ -18,6 +18,8 @@
 
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <algorithm>
 #include <ios>
 #include <locale>
@@ -312,6 +314,8 @@ template class _STLP_CLASS_DECLSPEC basic_ios<wchar_t, char_traits<wchar_t> >;
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif  // !_STLP_USE_NO_IOSTREAMS
 
 // Local Variables:
 // mode:C++

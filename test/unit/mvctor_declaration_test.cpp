@@ -61,7 +61,7 @@ static bool is_move_complete(const _Tp&) {
 struct specially_allocated_struct {
   bool operator < (const specially_allocated_struct&) const;
 #  if defined (__DMC__) // slist<_Tp,_Alloc>::remove error
-  bool operator==(const specially_allocated_struct&) const;
+  bool operator==(const specially_allocated_struct& rhs) const { return this == &rhs; }
 #  endif
 };
 

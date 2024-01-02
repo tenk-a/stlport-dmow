@@ -17,6 +17,9 @@
  */
 
 #include "stlport_prefix.h"
+
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include "stdio_streambuf.h"
 
 #ifdef _STLP_UNIX
@@ -232,6 +235,8 @@ stdio_ostreambuf::int_type stdio_ostreambuf::overflow(int_type c) {
 
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
+
+#endif  // !_STLP_USE_NO_IOSTREAMS
 
 // Local Variables:
 // mode:C++

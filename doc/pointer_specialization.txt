@@ -5,7 +5,7 @@
 
   What is it for:
 
-    The major problem of template code is the potentialy huge binary
+    The major problem of template code is the potentially huge binary
   size that can result from the compilation. Each template type 
   instanciation is a new type from the compiler point of view even if
   the generated binaries are identicals. To avoid this binary duplication

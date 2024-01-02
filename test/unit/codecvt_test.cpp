@@ -127,12 +127,12 @@ struct eater_codecvt : public codecvt<char, char, mbstate_t> {
   virtual int do_max_length() const __NO_THROW
   { return 2; }
 
-#ifdef __DMC__
+#ifdef __STLP_KKKK_OLD_DMC__
   static locale::id id;
 #endif
 };
 
-#ifdef __DMC__
+#ifdef __STLP_KKKK_OLD_DMC__
 locale::id eater_codecvt::id;
 
 locale::id& _GetFacetId(const eater_codecvt*)
@@ -271,12 +271,12 @@ struct generator_codecvt : public codecvt<char, char, mbstate_t> {
 
   virtual int do_max_length() const __NO_THROW
   { return 0; }
-#ifdef __DMC__
+#ifdef __STLP_KKKK_OLD_DMC__
   static locale::id id;
 #endif
 };
 
-#ifdef __DMC__
+#ifdef __STLP_KKKK_OLD_DMC__
 locale::id generator_codecvt::id;
 
 locale::id& _GetFacetId(const generator_codecvt*)
@@ -630,7 +630,10 @@ void CodecvtTest::special_encodings()
       res = cvt.out(state, utf8_wstr.data(), utf8_wstr.data() + utf8_wstr.size(), from_next,
                            buf, buf + sizeof(buf), to_next);
       CPPUNIT_ASSERT( res == codecvt_base::ok );
-      CPPUNIT_CHECK( string(buf, to_next) == utf8_str );
+      if (!(string(buf, to_next) == utf8_str)) {
+        printf("string(buf, to_next)=%s ??? utf8_str=%s\n", string(buf, to_next).c_str(), utf8_str.c_str());
+        CPPUNIT_CHECK( string(buf, to_next) == utf8_str );
+      }
     }
 
     {
@@ -641,7 +644,10 @@ void CodecvtTest::special_encodings()
       wchar_t *to_next;
       res = cvt.in(state, bad_utf8_str.data(), bad_utf8_str.data() + bad_utf8_str.size(), from_next,
                           &wc, &wc + 1, to_next);
-      CPPUNIT_ASSERT( res == codecvt_base::error );
+      if (!(res == codecvt_base::error))
+      {
+        CPPUNIT_ASSERT( res == codecvt_base::error );
+      }
     }
   }
   catch (const runtime_error&)

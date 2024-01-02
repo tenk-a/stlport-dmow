@@ -18,9 +18,12 @@
 
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_USE_NO_IOSTREAMS)
+
 #include <cmath>
-#include <ios>
 #include <locale>
+#include <limits>
+#include <ios>
 
 #if defined (__DECCXX)
 #  define NDIG 400
@@ -84,7 +87,7 @@
 
 #include <algorithm>
 
-#if defined (__DMC__)
+#if defined (__DMC__) || defined(__WATCOMC__)
 #  define snprintf _snprintf
 #endif
 
@@ -331,8 +334,8 @@ static inline char* _Stl_fcvtR(long double x, int n, int* pt, int* sign, char* b
 #    endif
 #  elif defined (_AIX) || defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
         defined (__MRC__) || defined (__SC__) || defined (_CRAY) || \
-        defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR) || \
-        defined (__DMC__)
+        defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR) /* || \ */
+        /* defined (__DMC__) */
 static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign)
 { return ecvt(x, n, pt, sign ); }
 static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign)
@@ -342,6 +345,25 @@ static inline char* _Stl_ecvtR(long double x, int n, int* pt, int* sign)
 { return ecvt(x, n, pt, sign ); }
 static inline char* _Stl_fcvtR(long double x, int n, int* pt, int* sign)
 { return fcvt(x, n, pt, sign); }
+#    endif
+#    define _STLP_CVT_NEED_SYNCHRONIZATION
+#  elif defined (__DMC__)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign)
+{ return ecvt(x, n, pt, sign ); }
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign)
+{ return fcvt(x, n, pt, sign); }
+#    if 1
+#      define _STLP_EMULATE_LONG_DOUBLE_CVT
+#    else
+static inline char* _Stl_ecvtR(long double x, int n, int* pt, int* sign) {
+  //printf("%s %d : %Le, %d, %p %p\n", __FILE__, __LINE__, x, n, pt, sign);
+  double d = (x < -DBL_MAX) ? -DBL_MAX : (x > DBL_MAX) ? DBL_MAX : (double)x;
+  return ecvt(d, n, pt, sign);
+}
+static inline char* _Stl_fcvtR(long double x, int n, int* pt, int* sign) {
+  double d = (x < -DBL_MAX) ? -DBL_MAX : (x > DBL_MAX) ? DBL_MAX : (double)x;
+  return fcvt(d, n, pt, sign);
+}
 #    endif
 #    define _STLP_CVT_NEED_SYNCHRONIZATION
 #  else
@@ -401,7 +423,7 @@ static void __fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modi
 static char* _Stl_ecvtR(long double x, int n, int* pt, int* sign, char* buf) {
   // If long double value can be safely converted to double without losing precision
   // we use the ecvt function for double:
-  double y = __STATIC_CAST(double, x); 
+  double y = __STATIC_CAST(double, x);
   if (x == y)
     return _Stl_ecvtR(y, n, pt, sign, buf);
 
@@ -796,7 +818,7 @@ static size_t  __write_floatT(__iostring &buf, ios_base::fmtflags flags, int pre
   case ios_base::fixed:
     {
       /* Here, number of digits represents digits _after_ decimal point.
-       * In order to limit static buffer size we have to give 2 different values depending on x value. 
+       * In order to limit static buffer size we have to give 2 different values depending on x value.
        * For small values (abs(x) < 1) we need as many digits as requested by precision limited by the maximum number of digits
        * which is min_exponent10 + digits10 + 2
        * For bigger values we won't have more than limits::digits10 + 2 digits after decimal point. */
@@ -912,6 +934,8 @@ __adjust_float_buffer(__iostring &str, char dot) {
 
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
+
+#endif  // !_STLP_USE_NO_IOSTREAMS
 
 // Local Variables:
 // mode:C++

@@ -109,9 +109,9 @@ _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
-#if defined (__DMC__)
+#if defined (__STLP_KKKK_OLD_DMC__)
 #  define _STLP_PRIVATE public
-#elif defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#elif defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) || defined(__DMC__)
 #  define _STLP_PRIVATE protected
 #else
 #  define _STLP_PRIVATE private
@@ -747,8 +747,8 @@ _STLP_PRIVATE:  // Helper functions for insert.
                           const __false_type& /*Integral*/) {
     _STLP_FIX_LITERAL_BUG(__p)
     /* We are forced to do a temporary string to avoid the self referencing issue. */
-    const _Self __self(__first, __last, get_allocator());
-    _M_insertT(__p, __self.begin(), __self.end(), forward_iterator_tag());
+    const _Self __mySelf(__first, __last, get_allocator());
+    _M_insertT(__p, __mySelf.begin(), __mySelf.end(), forward_iterator_tag());
   }
 
   template <class _InputIterator>
@@ -902,8 +902,8 @@ _STLP_PRIVATE:                        // Helper functions for replace.
                              _InputIter __f, _InputIter __l, const __false_type& /*IsIntegral*/) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     /* We are forced to do a temporary string to avoid the self referencing issue. */
-    const _Self __self(__f, __l, get_allocator());
-    return _M_replace(__first, __last, __self._M_Start(), __self._M_Finish(), false);
+    const _Self __mySelf(__f, __l, get_allocator());
+    return _M_replace(__first, __last, __mySelf._M_Start(), __mySelf._M_Finish(), false);
   }
 
 public:
@@ -1168,7 +1168,7 @@ _STLP_END_NAMESPACE
 
 #include <stl/_string_operators.h>
 
-#if defined(_STLP_USE_NO_IOSTREAMS) || \
+#if defined(_STLP_KKKK_USE_HEADER_ONLY) || \
     (defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION))
 #  include <stl/_string.c>
 #endif

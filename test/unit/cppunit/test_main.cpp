@@ -13,11 +13,11 @@
  *
  */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include "cppunit_proxy.h"
 #include "file_reporter.h"
 #include "cppunit_timer.h"
-
-#include "stdio.h"
 
 #if 0
 namespace CPPUNIT_NS
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
       }
     }
 
-		// invalid option, we display normal usage.
+        // invalid option, we display normal usage.
     usage(argv[0]);
     return 1;
   }

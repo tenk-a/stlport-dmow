@@ -19,6 +19,10 @@
  */
 #if !defined (RC_INVOKED)
 
+#  if defined(__cplusplus) && defined(_STLP_KKKK_H_INCLUDE_NEW_C_HEADERS) && !defined(_STLP_CSTDLIB)
+#    include <cstdlib>
+#  endif
+
 #  if !defined (_STLP_OUTERMOST_HEADER_ID)
 #    define _STLP_OUTERMOST_HEADER_ID 0x265
 #    include <stl/_cprolog.h>

@@ -18,6 +18,8 @@
 #ifndef _STLP_NUM_GET_C
 #define _STLP_NUM_GET_C
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #ifndef _STLP_INTERNAL_NUM_GET_H
 #  include <stl/_num_get.h>
 #endif
@@ -616,6 +618,7 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_b
 
 _STLP_END_NAMESPACE
 
+#endif /* _STLP_USE_NO_IOSTREAMS */
 #endif /* _STLP_NUMERIC_FACETS_C */
 
 // Local Variables:

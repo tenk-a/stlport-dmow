@@ -1,0 +1,165 @@
+このドキュメントは STLport のnamespaceの構成と、STLportがコンパイラ付属の
+C++標準ライブラリをどのように置き換えるかについての付加情報を記す.
+
+
+1. STLport の namespace って何？
+
+STLport は C++標準ライブラリの実装なので、 STLport の namespace は『std』だ.
+通常の使用では、知るべきことはこれだけ. なので、ここで読み終えていい.
+
+
+
+2. STLport は どのように コンパイラ付属のC++標準ライブラリを置き換えるか?
+
+STLport では、ユーザーコードで使われる std 参照を全て、
+『std』の名のマクロを定義して違う名前に置換する.
+
+このテクニックには、いくつかの欠点と利点がある.
+
+欠点としては、あなたのほうで標準コンポーネントの宣言が行えない.
+
+
+//foo.h
+namespace std
+{
+  template <class _Tp>
+  class allocator;
+}
+
+void f1(const std::allocator<int>&);
+
+
+//foo.cpp
+#include "foo.h"
+#include <memory>
+
+void f1(const std::allocator<int>& alloc)
+{
+  //implementation
+}
+
+//bar.cpp
+#include "foo.h"
+#include <memory>
+
+int main(int, char**)
+{
+  std::allocator<int> alloc;
+  f1(alloc);
+}
+
+
+このコードをビルドした場合、f1はstd::allocatorをパラメータに持つ
+よう宣言されているのに、使う側ではstdのではなく STLport の
+allocatorが呼ばれることになり コンパイルエラーになるだろう.
+
+この欠点がマシなのは、コンパイル時エラー、少なくともリンク時エラーに
+なるので発見が容易だということだ.
+
+回避策としては、allocator定義する前に何某かのstlヘッダを include
+すればいい. 候補としては小さいヘッダの <utility>, <cerrno> あたり.
+
+これらをincludeすれば、stdをSTLportの namespace に置換できる.
+
+
+このマクロ置換の利点はコンパイラ・オプションによって STLport 
+ネームスペースをカスタマイズすることができるということ。
+
+たとえば、_STLP_DEBUG を定義すれば、STLportのセーフモードを
+使用できるが、通常のデバッグビルドとはバイナリ非互換になる.
+
+_STLP_DEBUG を指定しないビルドとリンクして実行時のランダムな
+クラッシュになるよりもリンク時エラーで済むように、このオプション
+での namespace を違えておくことで混在しないことを保証できる.
+
+
+
+3. なぜ namespaceインジェクションを使わないのか?
+
+  コンパイラネイティブの C++標準ライブラリの実装を置き換える別の方法でして
+  namespaceインジェクションを使う手が考えられる.
+
+namespace std
+{
+  using namespace stlport;
+}
+
+
+この解法の第一の大きな欠点は、STLport がネイティブヘッダにもっと敏感でないと
+いけなくなる.
+
+ネイティブヘッダがincludeされ、例えば、vector クラスが間接的に定義されると、
+STLport のvector定義と衝突するだろう.
+
+さらに、もっと単純な理由で、この方法は有効でない.
+
+C++標準ライブラリは、ユーザーが標準アルゴリズムの特殊化を行うことを許す.
+特殊化を行うには、メインのtemplate定義と同じnamespaceでないといけない.
+
+//In an STLport header:
+namespace stlport
+{
+  template <class _Tp>
+  struct less
+  {
+    bool operator () (const _Tp& x, const _Tp& y) const;
+  };
+}
+
+//User code:
+
+struct MyStruct;
+
+namespace std
+{
+  template <>
+  struct less<MyStruct>
+  {
+  };
+}
+
+見ての通り特殊化したものが STLport の less の namespace と違うため、
+インスタンス化時に特殊化したものが使われない.
+
+
+
+4. STLport の具体的な namespace は何?
+
+オフィシャルな STLport の namespace: stlport.
+
+ただし標準的な名前としてで、さらに置換されるため実際の namespace は
+これではない.
+
+本当の STLportのnamespaceは、コンパイルオプションで切り替わるため
+直接使うことはできない.
+
+なので stlport は本物の STLport の namespace の別名となる.
+
+
+
+5. 他の STLport の namespace は何?
+
+  ここに情報として名前をあげるが、ユーザーコードでは絶対に使ってはいけない.
+
+  デフォルトの STLport のnamespace : stlp_std.
+
+   カスタマイズされた namespace としては
+
+  - stlpd_std  : _STLP_DEBUG 定義時
+  - stlpx_std  : STLportが共有ライブラリ(dll)でネイティブランタイムがstatic時,
+                 あるいは、STLportがstaticで、ネイティブランタイムがdynamic時.
+                 このオプションは、一部のコンパイラのみサポートする.
+  - stlpmtx_std: スレッドセーフでない STLport のビルド時
+
+  これらを組み合わせた stlpdxmtx_std や stlpdmtx_std のような名前もありえる.
+
+  また、これら以外の namespace として、STLport の内部関数やstrcut/class の
+  ための内部 namespace : prev がある.
+
+    namespace stlport
+    {
+      namespace priv
+      {
+      }
+    }
+

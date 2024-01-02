@@ -38,7 +38,8 @@ void MinTest::min1()
   int r = min(42, 100);
   CPPUNIT_ASSERT( r == 42 );
 
-  r = min(--r, r);
+  int r2 = r;
+  r = min(--r2, r);
   CPPUNIT_ASSERT( r == 41 );
 }
 void MinTest::min2()

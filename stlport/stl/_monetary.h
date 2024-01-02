@@ -23,6 +23,10 @@
 #ifndef _STLP_INTERNAL_MONETARY_H
 #define _STLP_INTERNAL_MONETARY_H
 
+#if defined (_STLP_USE_NO_IOSTREAMS)
+#  include <stl/_ioserr.h>
+#endif
+
 #ifndef _STLP_INTERNAL_OSTREAMBUF_ITERATOR_H
 #  include <stl/_ostreambuf_iterator.h>
 #endif

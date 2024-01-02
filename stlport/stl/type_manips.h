@@ -100,7 +100,7 @@ struct _Lor3<__false_type, __false_type, __false_type> { typedef __false_type _R
 //the second template type!!
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  if defined (__BORLANDC__) 
+#  if defined (__BORLANDC__)
 template <class _CondT, class _Tp1, class _Tp2>
 struct __selectT { typedef _Tp1 _Ret; };
 
@@ -116,7 +116,7 @@ template <class _Tp1, class _Tp2>
 struct __select<false, _Tp1, _Tp2> { typedef _Tp2 _Ret; };
 #  else
 template <bool _Cond, class _Tp1, class _Tp2>
-struct __select 
+struct __select
 { typedef __selectT<typename __bool2type<_Cond>::_Ret, _Tp1, _Tp2>::_Ret _Ret; };
 #  endif
 
@@ -160,7 +160,7 @@ struct __select {
 #if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
     (!defined (__GNUC__) || (__GNUC__ > 2))
 // Helper struct that will forbid volatile qualified types:
-#  if !defined (__BORLANDC__)
+#  if !defined (__BORLANDC__) && !defined (__WATCOMC__)
 struct _NoVolatilePointerShim { _NoVolatilePointerShim(const void*); };
 template <class _Tp>
 char _STLP_CALL _IsCopyableFun(bool, _NoVolatilePointerShim, _Tp const*, _Tp*); // no implementation is required
@@ -234,8 +234,8 @@ struct _IsConvertible {
   typedef typename __bool2type<value>::_Ret _Ret;
 };
 
-#  if defined (__BORLANDC__)
-#    if (__BORLANDC__ < 0x590)
+#  if defined (__BORLANDC__) || defined (__WATCOMC__)
+#    if (__BORLANDC__ < 0x590) || defined (__WATCOMC__)
 template<class _Tp>
 struct _UnConstPtr { typedef _Tp _Type; };
 
@@ -259,7 +259,7 @@ template <class _Tp>
 struct _IsConst <const _Tp> { typedef __true_type _Ret; };
 #    endif
 
-#    if (__BORLANDC__ < 0x590)
+#    if (__BORLANDC__ < 0x590) || defined (__WATCOMC__)
 template<class _Tp>
 struct _IsConst<_Tp*> { typedef _AreSameTypes<_Tp*, const _Tp*>::_Ret _Ret; };
 #    endif
@@ -291,7 +291,7 @@ template <class _Tp> struct _UnQual<const volatile _Tp> { typedef _Tp _Type; };
  */
 template <class _Src, class _Dst>
 struct _IsCVConvertible {
-#  if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x590)
+#  if (!defined (__BORLANDC__) || (__BORLANDC__ >= 0x590)) && !defined (__WATCOMC__)
   typedef _ConversionHelper<_Src, _Dst> _H;
   enum { value = (sizeof(char) == sizeof(_H::_Test(false, _H::_MakeSource()))) };
 #  else

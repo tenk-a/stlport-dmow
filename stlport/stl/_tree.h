@@ -268,6 +268,20 @@ protected:
   }
 
   void _M_rebind(_Node_base *__static_node) {
+#  if 1 //
+    if (!this)
+        return;
+    _Node_base& __node = _M_header._M_data;
+    if (__node._M_parent) {
+      __node._M_parent->_M_parent = &__node;
+    }
+    if (__node._M_right == __static_node) {
+      __node._M_right = &__node;
+    }
+    if (__node._M_left == __static_node) {
+      __node._M_left = &__node;
+    }
+#  else
     if (_M_header._M_data._M_parent != 0) {
       _M_header._M_data._M_parent->_M_parent = &_M_header._M_data;
     }
@@ -277,6 +291,7 @@ protected:
     if (_M_header._M_data._M_left == __static_node) {
       _M_header._M_data._M_left = &_M_header._M_data;
     }
+#  endif
   }
 
   _AllocProxy _M_header;
@@ -433,10 +448,14 @@ public:
   size_type size() const { return _M_node_count; }
   size_type max_size() const { return size_type(-1); }
 
+# if defined (__WATCOMC__)
+  void swap(_Self& __t);
+# else
   void swap(_Self& __t) {
     if (__t.empty()) {
       if (this->empty()) return;
       __t._M_header.swap(this->_M_header);
+      //this->_M_header.swap(__t._M_header);
       __t._M_rebind(&this->_M_header._M_data);
       this->_M_empty_initialize();
     }
@@ -452,6 +471,7 @@ public:
     _STLP_STD::swap(_M_node_count, __t._M_node_count);
     _STLP_STD::swap(_M_key_compare, __t._M_key_compare);
   }
+# endif
 
 public:
                                 // insert/erase
@@ -644,6 +664,32 @@ public:
   bool __rb_verify() const;
 #endif //_STLP_DEBUG
 };
+
+
+#if defined (__WATCOMC__)
+template <class _Key, class _Compare,
+          class _Value, class _KeyOfValue, class _Traits,
+          class _Alloc >
+void _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc>::swap(_Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc>& __t) {
+    if (__t.empty()) {
+      if (this->empty()) return;
+      __t._M_header.swap(this->_M_header);
+      __t._M_rebind(&this->_M_header._M_data);
+      this->_M_empty_initialize();
+    }
+    else if (this->empty()) {
+      __t.swap(*this);
+      return;
+    }
+    else {
+      this->_M_header.swap(__t._M_header);
+      this->_M_rebind(&__t._M_header._M_data);
+      __t._M_rebind(&this->_M_header._M_data);
+    }
+    _STLP_STD::swap(_M_node_count, __t._M_node_count);
+    _STLP_STD::swap(_M_key_compare, __t._M_key_compare);
+  }
+#endif
 
 #if defined (_STLP_DEBUG)
 #  undef _Rb_tree

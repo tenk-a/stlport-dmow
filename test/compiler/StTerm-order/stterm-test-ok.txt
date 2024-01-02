@@ -1,0 +1,9 @@
+Init::Init()
+Init::use_it
+It ctor done
+Init::use_it done
+Init ctor done
+Init2 ctor done
+Init2 dtor done
+Init dtor done
+It dtor done

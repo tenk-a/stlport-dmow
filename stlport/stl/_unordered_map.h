@@ -188,7 +188,7 @@ public:
   void rehash(size_type __hint) { _M_ht.rehash(__hint); }
 
 #if defined (__DMC__) // disable operator==(pair<x,unordered_map>, pair<x,unordered_map>)
-  bool operator==(const _Self&) const;
+  bool operator==(const _Self& __rhs) const { return this == &__rhs; }
 #endif
 };
 

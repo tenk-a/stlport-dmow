@@ -415,7 +415,7 @@ void LocaleTest::_money_put_X_bug( const locale& loc, const ref_monetary* prl )
 }
 
 typedef void (LocaleTest::*_Test) (const locale&, const ref_monetary*);
-static void test_supported_locale(LocaleTest& inst, _Test __test) {
+static void test_supported_locale_by_money(LocaleTest& inst, _Test __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
   for (size_t i = 0; i < n; ++i) {
     locale loc;
@@ -451,10 +451,10 @@ static void test_supported_locale(LocaleTest& inst, _Test __test) {
 }
 
 void LocaleTest::money_put_get()
-{ test_supported_locale(*this, &LocaleTest::_money_put_get); }
+{ test_supported_locale_by_money(*this, &LocaleTest::_money_put_get); }
 
 void LocaleTest::money_put_X_bug()
-{ test_supported_locale(*this, &LocaleTest::_money_put_X_bug); }
+{ test_supported_locale_by_money(*this, &LocaleTest::_money_put_X_bug); }
 
 void LocaleTest::moneypunct_by_name()
 {

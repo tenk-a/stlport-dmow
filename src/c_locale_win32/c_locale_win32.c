@@ -19,14 +19,22 @@
  *
  */
 
+#if defined (__cplusplus)
+#include <climits>
+#include <cstring>
+#include <clocale>
+#include <cstdlib>
+#include <cstdio>
+#else
 #include <limits.h>
-#if defined (_STLP_MSVC) || defined (__ICL)
-#  include <memory.h>
-#endif
 #include <string.h>
 #include <locale.h>
 #include <stdlib.h>
 #include <stdio.h>
+#endif
+#if defined (_STLP_MSVC) || defined (__ICL)
+#  include <memory.h>
+#endif
 
 #if defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
 #  define _STLP_STRCPY(D, DS, S) strcpy_s(D, DS, S)
@@ -39,6 +47,7 @@
 #endif
 
 #if defined (__cplusplus)
+using namespace std;
 extern "C" {
 #endif
 
@@ -262,7 +271,7 @@ void my_ltoa(long __x, char* buf) {
 
 #if defined (__cplusplus)
 _STLP_BEGIN_NAMESPACE
-extern "C" {
+//extern "C" {
 #endif
 
 _Locale_lcid_t* _Locale_get_ctype_hint(_Locale_ctype_t* ltype)
@@ -281,7 +290,7 @@ _Locale_lcid_t* _Locale_get_messages_hint(struct _Locale_messages* lmessages) {
 }
 
 #define MAP(x, y) if ((mask & x) != 0) ret |= (y)
-unsigned short MapCtypeMask(unsigned short mask) {
+unsigned short _MapCtypeMask(unsigned short mask) {
   unsigned short ret = 0;
   MAP(C1_UPPER, _Locale_UPPER | _Locale_PRINT);
   MAP(C1_LOWER, _Locale_LOWER | _Locale_PRINT);
@@ -295,9 +304,9 @@ unsigned short MapCtypeMask(unsigned short mask) {
   return ret;
 }
 
-static void MapCtypeMasks(unsigned short *cur, unsigned short *end) {
+static void _MapCtypeMasks(unsigned short *cur, unsigned short *end) {
   for (; cur != end; ++cur) {
-    *cur = MapCtypeMask(*cur);
+    *cur = _MapCtypeMask(*cur);
   }
 }
 
@@ -351,7 +360,7 @@ _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint
       MultiByteToWideChar(ltype->cp, MB_PRECOMPOSED, (const char*)Buffer, 256, wbuffer, BufferSize);
 
       GetStringTypeW(CT_CTYPE1, wbuffer, 256, ltype->ctable);
-      MapCtypeMasks(ltype->ctable, ltype->ctable + 256);
+      _MapCtypeMasks(ltype->ctable, ltype->ctable + 256);
       free(wbuffer);
     }
     else {
@@ -373,13 +382,13 @@ _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint
       /* Translate ctype table. */
       for (i = 0; i < 256; ++i) {
         if (!TargetBuffer[i]) continue;
-        ltype->ctable[TargetBuffer[i]] = MapCtypeMask(ctable[i]);
+        ltype->ctable[TargetBuffer[i]] = _MapCtypeMask(ctable[i]);
       }
     }
   }
   else {
     GetStringTypeA(ltype->lc.id, CT_CTYPE1, (const char*)Buffer, 256, ltype->ctable);
-    MapCtypeMasks(ltype->ctable, ltype->ctable + 256);
+    _MapCtypeMasks(ltype->ctable, ltype->ctable + 256);
   }
   return ltype;
 }
@@ -717,7 +726,7 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
   wchar_t wbuf80[80];
 
   _Locale_time_t *ltime = (_Locale_time_t*)malloc(sizeof(_Locale_time_t));
-  
+
   if (!ltime) { *__err_code = _STLP_LOC_NO_MEMORY; return ltime; }
   memset(ltime, 0, sizeof(_Locale_time_t));
 
@@ -1262,22 +1271,22 @@ int _Locale_n_sign_posn(_Locale_monetary_t * lmon) {
 
 /* Time */
 const char * _Locale_full_monthname(_Locale_time_t * ltime, int month) {
-  const char **names = (const char**)ltime->month;
+  char const* const* names = (char const* const*)ltime->month;
   return names[month];
 }
 
 const char * _Locale_abbrev_monthname(_Locale_time_t * ltime, int month) {
-  const char **names = (const char**)ltime->abbrev_month;
+  char const* const* names = (char const* const*)ltime->abbrev_month;
   return names[month];
 }
 
 const char * _Locale_full_dayofweek(_Locale_time_t * ltime, int day) {
-  const char **names = (const char**)ltime->dayofweek;
+  char const* const* names = (char const* const*)ltime->dayofweek;
   return names[day];
 }
 
 const char * _Locale_abbrev_dayofweek(_Locale_time_t * ltime, int day) {
-  const char **names = (const char**)ltime->abbrev_dayofweek;
+  char const* const* names = (char const* const*)ltime->abbrev_dayofweek;
   return names[day];
 }
 
@@ -1322,7 +1331,7 @@ const char* _Locale_catgets(struct _Locale_messages* lmes, nl_catd_type cat,
 }
 
 #ifdef __cplusplus
-} /* extern C */
+//} /* extern C */
 _STLP_END_NAMESPACE
 #endif
 
@@ -1411,7 +1420,7 @@ int __ParseLocaleString(const char* lname,
     len = tmpLen; ++tmpLen;
     tmpLen += strcspn(lname + tmpLen, ".");
   }
-  if (len != -1) { /* Means that we found a '.' */
+  if (len != (size_t)(-1)) { /* Means that we found a '.' */
     if (param == 0) {
       /* We have no lang yet so we have to fill it first, no country */
       if (len > MAX_LANG_LEN) return -1;
@@ -1626,11 +1635,11 @@ char const* __GetLocaleName(LCID lcid, const char* cp, char* buf) {
 }
 
 char const* __Extract_locale_name(const char* loc, const char* category, char* buf) {
-  char *expr;
+  char const *expr;
   size_t len_name;
 
   if (loc[0] == 'L' && loc[1] == 'C' && loc[2] == '_') {
-    expr = strstr((char*)loc, category);
+    expr = strstr(loc, category);
     if (expr == NULL) return NULL; /* Category not found. */
     expr = strchr(expr, '=');
     if (expr == NULL) return NULL;

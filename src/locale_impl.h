@@ -77,12 +77,16 @@ class _STLP_CLASS_DECLSPEC _Locale_impl : public _Refcount_Base {
     void operator=(const _Locale_impl&);
 
   public:
-    class _STLP_CLASS_DECLSPEC Init {
+    class _STLP_CLASS_DECLSPEC _Init {
       public:
-        Init();
-        ~Init();
+        _Init();
+        ~_Init();
+#    if defined (_STLP_KKKK_DMOW)
+        static void init();
+#    else
       private:
         _Refcount_Base& _M_count() const;
+#    endif
     };
 
     static void _STLP_CALL _S_initialize();

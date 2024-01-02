@@ -1,0 +1,115 @@
+Digital Mars C++ コンパイラ用の STLport README
+
+
+Digital Mars C++ コンパイラ用のSTLportのビルドは
+Microsoft Visual Studio コンパイラの場合と
+たいへんよく似ている.(README.msvc を参照).
+
+以下、若干の追加ヒント.
+(DMCユーザーは補足情報をよろしく)
+
+
+
+=====================
+必要条件
+=====================
+
+- Digital Mars C++ 8.49 以上.
+
+- makeツール込みのGNU環境.
+  Cygwin には Digital Mars linker とコマンド名が
+  衝突するリンカーがあるので、
+  MinGW / MSys のほうがよいだろう.
+
+補足情報のために README.mingw を参照のこと.
+
+
+=====================
+STLportのインストール
+=====================
+
+STLport ディレクトリは dm\include ディレクトリ
+以外ならどこでもいい.
+
+
+
+=====================
+STLport の設定
+=====================
+
+コンソール窓で STLport の build\lib フォルダに移動し
+
+configure -c dmc
+
+を実行.
+
+
+(訳追記 5.20以降では)
+コンソール窓で STLport フォルダに移動し
+
+configure --use-compiler-family=dmc
+
+を実行.
+
+
+
+=====================
+STLport のビルド
+=====================
+
+- STLport ライブラリのビルドは
+
+  cd [STLportディレクトリ]\build\lib
+  [mingw32-make] -f dmc.mak install
+
+- STLport (dynamic) ユニットテストのビルドは
+
+  cd [STLportディレクトリ]\build\test\unit
+  [mingw32-make] -f dmc.mak install
+
+
+
+=====================
+周知の問題
+=====================
+
+1. typeinfo.h 
+
+DMC はどんな翻訳単位の始まりにでも typeinfo.h ヘッダーが
+強制的に読み込まれる.
+このことは STLport の include 構造を壊す.
+ライブラリ構築時はとくに.
+
+回避策として STLport の typeinfo.h では DMC本来のヘッダーを
+include するだけで、STLportのnamespaceにインポートするような
+内部処理は何も行わない。
+
+このため、typeinfo.h をユーザーコードで参照してはいけない。
+が、C++標準ヘッダは typeinfo であり、typeinfo.h は C/C++
+ヘッダのいづれでもないので、大きな制限とはならないだろう.
+
+
+
+２． link.exe と lib.exe 
+
+STLport の DMC用 makefile では、他のコンパイラのリンカ＆アーカイバ
+との衝突をさけるため、link と lib の変わりに dm_link と dm_lib を
+用いている.
+
+STLportをビルドするにあたっては、それらをコピーするかrenameして
+ください。
+
+  copy dm\bin\link.exe dm\bin\dm_link.exe
+  copy dm\bin\lib.exe  dm\bin\dm_lib.exe
+
+
+
+３．フリー・オンライン版
+
+もし フリー・オンライン版のコンパイラやリンカーでエラーが出るときは、
+オンラインでフリー配布されているCDアップデートを用いれば解決できる
+かもしれない。
+
+バージョン 8.30以上の CDパッチを全てダウンロードして解凍、
+バージョン順に前のファイルに上書きしていく.
+出来たそれを、フリー・オンライン版の8.49以上に、上書きする。

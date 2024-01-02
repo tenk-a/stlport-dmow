@@ -18,6 +18,8 @@
 #ifndef _STLP_TIME_FACETS_C
 #define _STLP_TIME_FACETS_C
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #ifndef _STLP_INTERNAL_TIME_FACETS_H
 #  include <stl/_time_facets.h>
 #endif
@@ -434,6 +436,7 @@ time_put<_Ch,_OutputIter>::do_put(_OutputIter __s, ios_base& __f, _Ch /* __fill 
 
 _STLP_END_NAMESPACE
 
+#endif /* _STLP_USE_NO_IOSTREAMS */
 #endif /* _STLP_TIME_FACETS_C */
 
 // Local Variables:

@@ -26,7 +26,7 @@ struct State {
   bool *m_sharedOk;
   int *m_sharedNbAlloc;
 
-#if defined (__DMC__)
+#if defined (__DMC__) // (__STLP_KKKK_OLD_DMC__)    //@@@ atode
   State(){}
 #endif
 
@@ -98,7 +98,7 @@ struct StackAllocator
     }
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     throw __STD bad_alloc();
-#  if defined (__DMC__)
+#  if defined (__STLP_KKKK_OLD_DMC__)
     return 0;
 #  endif
 #else
@@ -171,20 +171,20 @@ private:
 namespace std {
 #endif
 
-#  if defined (STLPORT) && (defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) || !defined (_STLP_MEMBER_TEMPLATES))
+#if defined (STLPORT) && (defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) || !defined (_STLP_MEMBER_TEMPLATES))
 template <class _Tp1, class _Tp2>
 inline StackAllocator<_Tp2>&
 __stl_alloc_rebind(StackAllocator<_Tp1>& __a, const _Tp2*) {  return (StackAllocator<_Tp2>&)(__a); }
 template <class _Tp1, class _Tp2>
 inline StackAllocator<_Tp2>
 __stl_alloc_create(const StackAllocator<_Tp1>& __a, const _Tp2*) { return StackAllocator<_Tp2>(__a.getState()); }
-#  endif
+#endif
 
-#  if !defined (STLPORT) || defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+#if !defined (STLPORT) || defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   template <class _Tp>
   inline void swap(StackAllocator<_Tp>& __a, StackAllocator<_Tp>& __b)
   { __a.swap(__b); }
-#  elif !defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+#elif !defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
 //The following overloads depends on instanciation, if new unit tests are written
 //with new StackAllocator instanciations associated swap overload should also be
 //written
@@ -195,10 +195,18 @@ inline void swap(StackAllocator<char>& __a, StackAllocator<char>& __b)
 inline void swap(StackAllocator<pair<const int, int> >& __a,
                  StackAllocator<pair<const int, int> >& __b)
 { __a.swap(__b); }
-#  endif
+#endif
 
 #if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 }
+#endif
+
+#if 0 //def __WATCOMC__
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+_STLP_BEGIN_NAMESPACE
+template<class T> struct _SwapImplemented<StackAllocator<T> > { typedef __bool2type<1>::_Ret _Ret; };
+_STLP_END_NAMESPACE
+#endif
 #endif
 
 #undef __STD

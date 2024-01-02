@@ -18,6 +18,6 @@ struct positive : public unary_function<int, bool> {
 
 struct square_root : public unary_function<double, double> {
   double operator()(double x_) const
-  { return ::sqrt(x_); }
+  { using namespace std; return sqrt(x_); }
 };
 #endif // _unary_h

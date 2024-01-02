@@ -164,6 +164,7 @@ _STLP_WCE_WINBASEAPI BOOL WINAPI TerminateProcess(HANDLE hProcess, DWORD uExitCo
 void WINAPI OutputDebugStringW(LPCWSTR);
 
 _STLP_WCE_WINBASEAPI void WINAPI Sleep(DWORD);
+_STLP_WCE_WINBASEAPI int  WINAPI SwitchToThread(void);
 
 #          undef _STLP_WCE_WINBASEAPI
 
@@ -177,15 +178,18 @@ _STLP_WCE_WINBASEAPI void WINAPI Sleep(DWORD);
 #    if !defined (_STLP_WCE)
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL Sleep(unsigned long);
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutputString);
+_STLP_IMPORT_DECLSPEC int  _STLP_STDCALL SwitchToThread(void);
 #    endif
 
-#    if defined (InterlockedIncrement)
+#    if !defined (__MINGW64__)
+#     if defined (InterlockedIncrement)
 #      pragma intrinsic(_InterlockedIncrement)
 #      pragma intrinsic(_InterlockedDecrement)
 #      pragma intrinsic(_InterlockedExchange)
 #      if defined (_WIN64)
 #        pragma intrinsic(_InterlockedExchangePointer)
 #      endif
+#     endif
 #    endif
 #    if defined (__cplusplus)
 } /* extern "C" */

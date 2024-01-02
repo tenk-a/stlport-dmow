@@ -467,7 +467,6 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
 { return _STLP_PRIV __do_put_integer(__s, __f, __fill, __val); }
 #endif /* _STLP_LONG_LONG */
 
-
 // 22.2.2.2.2 Stage 1: "For conversion from void* the specifier is %p."
 // This is not clear and I'm really don't follow this (below).
 template <class _CharT, class _OutputIter>
@@ -496,16 +495,26 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__
 #  pragma warning (push)
 #  pragma warning (disable : 4311) //pointer truncation from 'const void*' to 'unsigned long'
 #endif
+#if 0 // has stdint.h
+  _OutputIter result = _STLP_PRIV __do_put_integer(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(uintptr_t,__val));
+#elif defined (_STLP_KKKK_X64)
+  typedef char __pointer_size_is_longlong[ sizeof(void*) == sizeof(_STLP_LONG_LONG) ? 1 : -1 ];
+  _OutputIter result = _STLP_PRIV __do_put_integer(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned _STLP_LONG_LONG,__val));
+#elif defined (_STLP_KKKK_DMOW)
+  typedef char __is_pointer_size_is_int[ sizeof(void*) == sizeof(int) ? 1 : -1 ];
+  _OutputIter result = _STLP_PRIV __do_put_integer(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned int,__val));
+#else
   _OutputIter result =
-#ifdef _STLP_LONG_LONG
+#  ifdef _STLP_LONG_LONG
     ( sizeof(void*) == sizeof(unsigned long) ) ?
-#endif
+#  endif
     _STLP_PRIV __do_put_integer(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned long,__val))
-#ifdef _STLP_LONG_LONG
+#  ifdef _STLP_LONG_LONG
       : /* ( sizeof(void*) == sizeof(unsigned _STLP_LONG_LONG) ) ? */
     _STLP_PRIV __do_put_integer(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned _STLP_LONG_LONG,__val))
-#endif
+#  endif
         ;
+#endif
 #if defined (_STLP_MSVC)
 #  pragma warning (pop)
 #endif

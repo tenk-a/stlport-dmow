@@ -50,6 +50,10 @@
 #  include <stl/_move_construct_fwk.h>
 #endif
 
+#if defined(__BORLANDC__)
+#define typename
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp>
@@ -281,6 +285,10 @@ inline void destroy(_ForwardIterator __first, _ForwardIterator __last) { _STLP_S
 #endif /* _STLP_NO_ANACHRONISMS */
 
 _STLP_END_NAMESPACE
+
+#if defined(__BORLANDC__)
+#undef typename
+#endif
 
 #endif /* _STLP_INTERNAL_CONSTRUCT_H */
 

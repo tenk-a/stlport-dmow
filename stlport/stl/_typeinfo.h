@@ -49,7 +49,7 @@ using ::type_info;
 using _STLP_VENDOR_EXCEPT_STD::type_info;
 #    endif
 
-#    if !defined (__DMC__)
+#    if !defined (__STLP_KKKK_OLD_DMC__)
 using _STLP_VENDOR_EXCEPT_STD::bad_typeid;
 #    endif
 
@@ -70,7 +70,7 @@ _STLP_END_NAMESPACE
 #  endif
 
 _STLP_BEGIN_NAMESPACE
-#  if !defined (__DMC__)
+#  if !defined (__STLP_KKKK_OLD_DMC__)
 struct bad_cast : exception {};
 #  endif
 _STLP_END_NAMESPACE

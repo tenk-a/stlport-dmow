@@ -17,6 +17,8 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined(_STLP_USE_NO_IOSTREAMS)
+
 #include <locale>
 
 _STLP_BEGIN_NAMESPACE
@@ -40,6 +42,8 @@ numpunct<wchar_t>::~numpunct() {}
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif  // !_STLP_USE_NO_IOSTREAMS
 
 // Local Variables:
 // mode:C++

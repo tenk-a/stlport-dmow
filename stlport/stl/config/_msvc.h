@@ -36,6 +36,12 @@
 /* We hope this bug will be fixed in future versions. */
 #    define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
 #  endif
+#else
+#  if _MSC_VER >= 1400
+#    define _STLP_NATIVE_INCLUDE_PATH ../../vc/include
+#  elif _MSC_VER >= 1300
+#    define _STLP_NATIVE_INCLUDE_PATH ../../vc7/include
+#  endif
 #endif
 
 #define _STLP_CALL __cdecl
@@ -67,7 +73,9 @@
 #  define _STLP_WCHAR_T_IS_USHORT 1
 #endif
 
+#if _MSVC_VER < 1700
 #define _STLP_NO_VENDOR_STDLIB_L 1
+#endif
 
 #if defined (_STLP_MSVC)
 
@@ -245,8 +253,9 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #endif
 #define _STLP_EXPORT_TEMPLATE_KEYWORD
 
+#if !defined (_STLP_KKKK_NO_BUILD_LIB)
 #include <stl/config/_auto_link.h>
-
+#endif
 #if defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 /* The Windows 64 bits SDK required for the moment link to bufferoverflowU.lib for
  * additional buffer overrun checks. Rather than require the STLport build system and
@@ -263,3 +272,12 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #if defined (_STLP_MSVC)
 #  include <stl/config/_feedback.h>
 #endif
+
+//#define _STLP_MARK_PARAMETER_AS_UNUSED(v)     ((void)(v));
+//#define _STLP_USE_WIN32_IO    1
+//#define _STLP_USE_SHORT_STRING_OPTIM
+#define _STLP_DONT_USE_SHORT_STRING_OPTIM 1
+//#define _STLP_USE_NEWALLOC
+
+//#define _STLP_USE_PTR_SPECIALIZATIONS
+#define _STLP_KKKK_DMOW

@@ -137,7 +137,7 @@ struct derived : public base
 //
 template <typename _Src, typename _Dst>
 int is_convertible(_Src, _Dst) {
-#  if !defined(__BORLANDC__)
+#  if !defined(__BORLANDC__) && !defined(__WATCOMC__)
   typedef typename _IsConvertible<_Src, _Dst>::_Ret _Ret;
 #  else
   enum { _Is = _IsConvertible<_Src, _Dst>::value };
@@ -148,7 +148,7 @@ int is_convertible(_Src, _Dst) {
 
 template <typename _Src, typename _Dst>
 int is_cv_convertible(_Src, _Dst) {
-#  if !defined(__BORLANDC__)
+#  if !defined(__BORLANDC__) && !defined(__WATCOMC__)
   typedef typename _IsCVConvertible<_Src, _Dst>::_Ret _Ret;
 #  else
   enum { _Is = _IsCVConvertible<_Src, _Dst>::value };
@@ -248,7 +248,7 @@ void TypeTraitsTest::manips()
     CPPUNIT_ASSERT( type_to_value(_SelectFirstRet()) == 1 );
     typedef __select<0, __true_type, __false_type>::_Ret _SelectSecondRet;
     CPPUNIT_ASSERT( type_to_value(_SelectSecondRet()) == 0 );
-#  if defined (__BORLANDC__)
+#  if defined (__BORLANDC__) //|| defined (__WATCOMC__)
     typedef __selectT<__true_type, __true_type, __false_type>::_Ret _SelectFirstRet;
     CPPUNIT_ASSERT( type_to_value(_SelectFirstRet()) == 1 );
     typedef __selectT<__false_type, __true_type, __false_type>::_Ret _SelectSecondRet;
@@ -572,7 +572,7 @@ void TypeTraitsTest::is_POD()
 template <typename _Tp>
 int is_stlport_class(_Tp) {
   typedef _IsSTLportClass<_Tp> _STLportClass;
-#    if !defined (__BORLANDC__)
+#    if !defined (__BORLANDC__) && !defined(__WATCOMC__)
   typedef typename _STLportClass::_Ret _Is;
 #    else
   typedef typename __bool2type<_STLportClass::_Is>::_Ret _Is;

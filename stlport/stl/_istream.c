@@ -1184,18 +1184,38 @@ basic_istream<_CharT, _Traits>::ignore(streamsize __n, int_type __delim) {
 // it is called from sentry's constructor.
 template <class _CharT, class _Traits>
 void basic_istream<_CharT, _Traits>::_M_skip_whitespace(bool __set_failbit) {
+ #if defined(_STLP_KKKK_DMOW)   // for watcom
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
-  if (!__buf)
+  if (!__buf) {
     this->setstate(ios_base::badbit);
-  else if (__buf->gptr() != __buf->egptr())
+  } else {
+    _STLP_PRIV _Is_not_wspace<_Traits> __is_not_wspace_traits(this->_M_ctype_facet());
+    if (__buf->gptr() != __buf->egptr()) {
+      _STLP_PRIV _Scan_for_not_wspace<_Traits> __scan_for_not_wspace_traits(this->_M_ctype_facet());
+      _M_ignore_buffered(this,  __buf, __is_not_wspace_traits, __scan_for_not_wspace_traits, false, __set_failbit);
+    }
+    else {
+      _M_ignore_unbuffered(this,  __buf, __is_not_wspace_traits, false, __set_failbit);
+    }
+  }
+ #else
+  typedef _STLP_PRIV _Is_not_wspace<_Traits> _Is_not_wspace_Traits;
+  typedef _STLP_PRIV _Scan_for_not_wspace<_Traits> _Scan_for_not_wspace_Traits;
+  basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
+  if (!__buf) {
+    this->setstate(ios_base::badbit);
+  } else if (__buf->gptr() != __buf->egptr()) {
     _M_ignore_buffered(this,  __buf,
-                       _STLP_PRIV _Is_not_wspace<_Traits>(this->_M_ctype_facet()),
-                       _STLP_PRIV _Scan_for_not_wspace<_Traits>(this->_M_ctype_facet()),
+                       _Is_not_wspace_Traits(this->_M_ctype_facet()),
+                       _Scan_for_not_wspace_Traits(this->_M_ctype_facet()),
                        false, __set_failbit);
-  else
+  }
+  else {
     _M_ignore_unbuffered(this,  __buf,
-                         _STLP_PRIV _Is_not_wspace<_Traits>(this->_M_ctype_facet()),
+                         _Is_not_wspace_Traits(this->_M_ctype_facet()),
                          false, __set_failbit);
+  }
+ #endif
 }
 
 
@@ -1414,7 +1434,8 @@ basic_iostream<_CharT, _Traits>
 
 template <class _CharT, class _Traits>
 basic_iostream<_CharT, _Traits>::~basic_iostream()
-{}
+{
+}
 
 _STLP_END_NAMESPACE
 

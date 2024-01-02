@@ -27,7 +27,7 @@
 #endif
 
 // For the STLport iostreams, only declaration here, definition is in the lib
-#if !defined (_STLP_USE_NO_IOSTREAMS) && !defined (_STLP_EXTERN_RANGE_ERRORS)
+#if !defined (_STLP_KKKK_USE_HEADER_ONLY) && !defined (_STLP_EXTERN_RANGE_ERRORS)   // !defined (_STLP_USE_NO_IOSTREAMS)
 #  define _STLP_EXTERN_RANGE_ERRORS
 #endif
 

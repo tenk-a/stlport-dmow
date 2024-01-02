@@ -17,6 +17,10 @@
  * eMbedded Visual C++. The standard .rc file includes windows header files,
  * which in turn include stdarg.h, which results in warnings and errors
  */
+#if defined(__cplusplus) && defined(_STLP_KKKK_H_INCLUDE_NEW_C_HEADERS) && !defined(_STLP_CSTDARG)
+#  include <cstdarg>
+#endif
+
 #if !defined (RC_INVOKED)
 
 #  if !defined (_STLP_OUTERMOST_HEADER_ID)

@@ -24,6 +24,8 @@
 
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <strstream>
 #include <algorithm>
 #include <limits>
@@ -385,6 +387,8 @@ char* strstream::str() {
 }
 
 _STLP_END_NAMESPACE
+
+#endif  // !_STLP_USE_NO_IOSTREAMS
 
 // Local Variables:
 // mode:C++

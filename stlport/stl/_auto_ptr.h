@@ -20,6 +20,86 @@
 #define _STLP_AUTO_PTR_H
 
 _STLP_BEGIN_NAMESPACE
+
+#if defined (_STLP_KKKK_DMOW)   // defined (__WATCOMC__) || defined(__DMC__) || defined(_MSC_VER)
+
+template <class _Tp>
+class auto_ptr_ref {
+    _Tp*  _M_p;
+public:
+    explicit auto_ptr_ref(_Tp* __px) { _M_p = __px; }
+    _Tp* get() const _STLP_NOTHROW { return _M_p; }
+};
+
+template<class _Tp>
+class auto_ptr {
+    _Tp*    _M_p;
+public:
+    typedef _Tp element_type;
+    typedef auto_ptr<_Tp> _Self;
+
+    ~auto_ptr() _STLP_NOTHROW { delete this->_M_p; }
+
+    explicit auto_ptr(_Tp* __px = 0) _STLP_NOTHROW { this->_M_p = __px; }
+
+    auto_ptr(auto_ptr_ref<_Tp> __r) _STLP_NOTHROW { this->_M_p = __r.get(); }
+    _Self& operator=(auto_ptr_ref<_Tp> __r) _STLP_NOTHROW { this->_M_p = __r.get(); return *this; }
+    operator auto_ptr_ref<_Tp>() _STLP_NOTHROW { return auto_ptr_ref<_Tp>(release()); }
+
+# if defined(_STLP_MEMBER_TEMPLATES) && !defined(_STLP_NO_TEMPLATE_CONVERSIONS)
+    template<class _Tp1> auto_ptr(auto_ptr_ref<_Tp1> __r) _STLP_NOTHROW { this->_M_p = __r.get(); }
+    template<class _Tp1> auto_ptr<_Tp>& operator=(auto_ptr_ref<_Tp1> __r) _STLP_NOTHROW { reset( __r.get() ); return *this; }
+    template<class _Tp1> operator auto_ptr_ref<_Tp1>() _STLP_NOTHROW { return auto_ptr_ref<_Tp1>(release()); }
+# endif
+
+# if defined(__WATCOMC__)
+    auto_ptr(_Self const& __r) _STLP_NOTHROW { this->_M_p = (*(_Self*)&__r).release(); }
+    _Self& operator=(auto_ptr<_Tp> const& __r) _STLP_NOTHROW { this->_M_p = (*(_Self*)&__r).release(); return *this; }
+#  if defined(_STLP_MEMBER_TEMPLATES) && !defined(_STLP_NO_TEMPLATE_CONVERSIONS)
+    template<class _Tp1> auto_ptr(auto_ptr<_Tp1> const& __r) _STLP_NOTHROW { this->_M_p = (*(_Self*)&__r).release(); }
+    template<class _Tp1> auto_ptr<_Tp>& operator=(auto_ptr<_Tp1> const& __r) _STLP_NOTHROW { reset( (*(_Self*)&__r).release() ); return *this; }
+    template<class _Tp1> operator auto_ptr<_Tp1>() _STLP_NOTHROW { return auto_ptr<_Tp1>(release()); }
+#  endif
+# else
+    auto_ptr(_Self& __r) _STLP_NOTHROW { this->_M_p = __r.release(); }
+    _Self& operator=(_Self& __r) _STLP_NOTHROW { reset(__r.release()); return *this; }
+#  if defined(_STLP_MEMBER_TEMPLATES) && !defined(_STLP_NO_TEMPLATE_CONVERSIONS)
+    template<class _Tp1> auto_ptr(auto_ptr<_Tp1>& __r) _STLP_NOTHROW { this->_M_p = __r.release(); }
+    template<class _Tp1> auto_ptr<_Tp>& operator=(auto_ptr<_Tp1>& __r) _STLP_NOTHROW { reset( __r.release() ); return *this; }
+    template<class _Tp1> operator auto_ptr<_Tp1>() _STLP_NOTHROW { return auto_ptr<_Tp1>(release()); }
+#  endif
+# endif
+
+    _Tp* get() const _STLP_NOTHROW { return this->_M_p; }
+
+    _Tp* release() _STLP_NOTHROW {
+        _Tp* __p  = this->_M_p;
+        this->_M_p= 0;
+        return __p;
+    }
+
+    void reset(_Tp* __px = 0) _STLP_NOTHROW {
+        _Tp* __pt = this->_M_p;
+        if (__pt != __px)
+            delete __pt;
+        this->_M_p= __px;
+    }
+
+    _Tp& operator*() const _STLP_NOTHROW {
+        _STLP_VERBOSE_ASSERT(this->_M_p != 0, _StlMsg_AUTO_PTR_NULL)
+        return *this->_M_p;
+    }
+
+# if !defined (_STLP_NO_ARROW_OPERATOR)
+    _Tp* operator->() const _STLP_NOTHROW {
+        _STLP_VERBOSE_ASSERT(this->_M_p != 0, _StlMsg_AUTO_PTR_NULL)
+        return this->_M_p;
+    }
+# endif
+};
+
+#else   // others
+
 // implementation primitive
 class __ptr_base {
 public:
@@ -83,7 +163,7 @@ public:
 
   explicit auto_ptr(_Tp* __px = 0) _STLP_NOTHROW { this->__set(__px); }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
+# if defined (_STLP_MEMBER_TEMPLATES)
 #  if !defined (_STLP_NO_TEMPLATE_CONVERSIONS)
   template<class _Tp1> auto_ptr(auto_ptr<_Tp1>& __r) _STLP_NOTHROW {
     _Tp* __conversionCheck = __r.release();
@@ -95,7 +175,7 @@ public:
     reset(__conversionCheck);
     return *this;
   }
-#endif
+# endif
 
   auto_ptr(_Self& __r) _STLP_NOTHROW { this->__set(__r.release()); }
 
@@ -124,6 +204,9 @@ public:
   { return auto_ptr_ref<_Tp>(*this, this->get()); }
 #endif
 };
+
+#endif  // __WATCOMC__
+
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_AUTO_PTR_H */

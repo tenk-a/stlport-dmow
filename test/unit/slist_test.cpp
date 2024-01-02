@@ -28,11 +28,11 @@ using namespace __gnu_cxx;
 class SlistTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(SlistTest);
-#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS) || defined (_STLP_USE_NO_IOSTREAMS) 
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS) || defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(slist1);
-#if defined (STLPORT) && defined (_STLP_USE_NO_IOSTREAMS) 
+#if defined (STLPORT) && defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_STOP_IGNORE;
 #endif
   CPPUNIT_TEST(erase);
@@ -540,7 +540,7 @@ void SlistTest::allocator_with_state()
 
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && \
     (!defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION))
-#  if !defined (__DMC__)
+#  if !defined (__DMC__) && !defined(__WATCOMC__) && !(defined (__BORLANDC__) && __BORLANDC__ < 0x560)
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.

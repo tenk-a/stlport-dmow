@@ -1,0 +1,70 @@
+いろいろなコンパイラのために MinGW GNU make コマンドで使った STLport のビルド.
+
+
+- gcc (ネイティブ・コンパイラ):
+
+  Makefile : gcc.mak
+
+  Notes:
+
+    1. Static ライブラリ (アーカイブ)
+
+    STLportの static ライブラリバージョンを使う場合、
+    あなたの実行ファイルにちゃんとリンクするには、
+    _STLP_USE_STATIC_LIB マクロを定義しないといけない.
+
+
+    2. シェル
+
+    STLport のビルドするのに MSys が必要.
+    が使用する make コマンドに注意.
+    STLport は GNU make を使うが、unixライクのプラットフォーム用に
+    設計されていて、メイクファイルが Windowsプラットフォーム向けでない.
+    Windows用の GNU make コマンドとしては、MSys 環境用のものでなく、
+    MingGW パッケージの 'mingw32-make' を使う必要がある.
+
+
+    3. スレッド設定
+
+    STLport ライブラリはデフォルトではマルチスレッド環境用にビルドする.
+    MinGW コンパイラオプションの -mthread を使うことになる.
+
+    STLportライブラリを使う場合、あなたのコンパイラオプションにも
+    忘れずに追加すること.
+
+    スレッドセーフでないライブラリが入用なら、configure スクリプト
+    のオプションとして --no-thread を指定して作れる.
+
+
+    4. リンク
+
+    このSTLport環境は libstdc++ をほぼ完全に置き換える.
+
+    libstdc++(-lstdc++) のリンク指定の代わりに
+    STLport(例えば -lstlport.5.2) に置き換えることになる.
+    コンパイラは(-lsupc++)でlibsupc++をサポートする.
+
+    ただし、gccはデフォルトで自動的に libstdc++ といくつかのシステム
+    ライブラリを自動的にリンクする.
+
+    この動作を抑止するため、コンパイラーオプション -nodefaultlibs と
+    必要なライブラリを明示的に指定する必要がある.
+
+    どのライブラリが必要かはユニットテストをビルドしてみて.
+    このノートが書かれた時点では:
+
+      -lstlportg.5.2 -lsupc++ -lgcc_s -lmingw32 -lmingwex -lmsvcrt -lm -lmoldname
+      -lcoldname -lkernel32
+
+
+
+- Borland C++ コンパイラ:
+
+  Makefile : bcc.mak
+
+
+
+- Digital Mars C++ コンパイラ:
+
+  Makefile : dmc.mak
+

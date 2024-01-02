@@ -41,7 +41,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 //  global non-inline functions
 //==========================================================
 // [ i1, i2)
-#if !defined (__DMC__)
+#if !defined (__STLP_KKKK_OLD_DMC__)
 template <class _Iterator>
 inline bool  _STLP_CALL
 stlp_in_range_aux(const _Iterator& __it, const _Iterator& __first,

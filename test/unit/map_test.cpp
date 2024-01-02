@@ -438,7 +438,7 @@ void MapTest::template_methods()
 
 #if !defined (STLPORT) || \
     !defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  if !defined (__DMC__)
+#  if !defined (__DMC__) && !defined(__WATCOMC__) && !(defined (__BORLANDC__) && __BORLANDC__ < 0x560)
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.

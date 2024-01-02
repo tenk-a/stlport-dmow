@@ -31,7 +31,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MismatchTest);
 //
 // tests implementation
 //
-bool str_equal(const char* a_, const char* b_)
+static bool str_equal_1(const char* a_, const char* b_)
 {
   return strcmp(a_, b_) == 0 ? 1 : 0;
 }
@@ -71,12 +71,12 @@ void MismatchTest::mismatch2()
 
   char const* n2[size];
   copy(n1, n1 + 5, (char const**)n2);
-  pair <char const**, char const**> result = mismatch((char const**)n1, (char const**)n1 + size, (char const**)n2, str_equal);
+  pair <char const**, char const**> result = mismatch((char const**)n1, (char const**)n1 + size, (char const**)n2, str_equal_1);
 
   CPPUNIT_ASSERT(result.first == n1 + size && result.second == n2 + size);
 
   n2[2] = "QED";
-  result = mismatch((char const**)n1, (char const**)n1 + size, (char const**)n2, str_equal);
+  result = mismatch((char const**)n1, (char const**)n1 + size, (char const**)n2, str_equal_1);
   CPPUNIT_ASSERT(!(result.first == n2 + size && result.second == n2 + size));
   CPPUNIT_ASSERT((result.first - n1)==2);
 }

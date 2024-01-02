@@ -7,6 +7,8 @@
 #  error - Borland compilers below version 5.5.1 not supported.
 #endif
 
+#  define _STLP_KKKK_DMOW
+
 #pragma defineonoption _STLP_NO_RTTI -RT-
 
 #define _STLP_DONT_SUP_DFLT_PARAM
@@ -33,7 +35,7 @@
 #  undef _SYS_CDEFS_H
 #  include </usr/include/sys/cdefs.h>
 
-#  ifdef __MT__
+#  if defined (__MT__) || defined (_MT)
 #    define _PTHREADS
 #    if !defined (_RTLDLL)
 #      define _STLP_DONT_USE_PTHREAD_SPINLOCK
@@ -45,7 +47,7 @@
 #  pragma defineonoption _CPPUNWIND -xd
 #  define _STLP_NO_EXCEPTION_HEADER
 #  define _STLP_DONT_USE_EXCEPTIONS
-#endif 
+#endif
 
 #if (__BORLANDC__ >= 0x560) && (__BORLANDC__ < 0x570)
 #  define _USE_OLD_RW_STL
@@ -53,7 +55,7 @@
 
 #if (__BORLANDC__ >= 0x560)
 #  if !defined (__BUILDING_STLPORT)
-#    define NOWINBASEINTERLOCK  
+#    define NOWINBASEINTERLOCK
 #  endif
 #  define _STLP_LANG_INVARIANT_DEFINED
 #endif
@@ -88,6 +90,18 @@
 #  define _UNCAUGHT_EXCEPTION 1
 #endif
 
+#if (__BORLANDC__ < 0x560)
+#  define _STLP_NO_NEW_C_HEADERS
+#  define _STLP_HAS_NO_NEW_C_HEADERS
+#  define _STLP_VENDOR_GLOBAL_CSTD
+#  define _STLP_PRIV
+#  define _STLP_NO_CWCHAR
+#  define _STLP_USE_ABBREVS
+#  if !defined (__MT__) && !defined (_MT)
+#    define _NOTHREADS
+#  endif
+#endif
+
 // <limits> problem
 #define _STLP_STATIC_CONST_INIT_BUG
 
@@ -100,7 +114,7 @@
 #  define _STLP_HAS_NO_EXCEPTIONS
 #endif
 
-#if defined (__MT__) && !defined (_NOTHREADS)
+#if (defined (__MT__) || defined (_MT)) && !defined (_NOTHREADS)
 #  define _STLP_THREADS
 #endif
 
@@ -131,7 +145,7 @@
 #  define  _STLP_CALL __cdecl
 #endif
 
-#if !defined (__linux__)
+#if !defined (__linux__) && !defined (_STLP_KKKK_NO_BUILD_LIB)
 #  include <stl/config/_auto_link.h>
 #endif
 

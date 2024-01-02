@@ -157,7 +157,7 @@ void IterTest::iterswp3()
   //iter_swap(cvvints.begin(), lvints.begin());
   //iter_swap(lvints.begin(), cvvints.begin());
 
-#if defined (STLPORT) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (STLPORT) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) //&& !defined(__WATCOMC__)
   int *pvvint = &vvints.front().front();
   int *plvint = &lvints.front().front();
 

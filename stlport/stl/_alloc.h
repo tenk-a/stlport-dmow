@@ -56,7 +56,7 @@ _STLP_BEGIN_NAMESPACE
 // Malloc-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.
 
-#if !defined (_STLP_USE_NO_IOSTREAMS)
+#if !defined (_STLP_KKKK_USE_HEADER_ONLY)
 typedef void (* __oom_handler_type)();
 #endif
 
@@ -64,10 +64,10 @@ class _STLP_CLASS_DECLSPEC __malloc_alloc {
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-  static void* _STLP_CALL allocate(size_t __n)
-#if !defined (_STLP_USE_NO_IOSTREAMS)
-  ;
+#if !defined (_STLP_KKKK_USE_HEADER_ONLY)
+  static void* _STLP_CALL allocate(size_t __n) ;
 #else
+  static void* _STLP_CALL allocate(size_t __n)
   {
     void *__result = malloc(__n);
     if (__result == 0) {
@@ -78,7 +78,7 @@ public:
 #endif
 
   static void _STLP_CALL deallocate(void* __p, size_t /* __n */) { free((char*)__p); }
-#if !defined (_STLP_USE_NO_IOSTREAMS)
+#if !defined (_STLP_KKKK_USE_HEADER_ONLY)
   static __oom_handler_type _STLP_CALL set_malloc_handler(__oom_handler_type __f);
 #endif
 };
@@ -141,7 +141,7 @@ enum { _MAX_BYTES = 256 };
 enum { _MAX_BYTES = 32 * sizeof(void*) };
 #  endif
 
-#if !defined (_STLP_USE_NO_IOSTREAMS)
+#if !defined(_STLP_KKKK_USE_HEADER_ONLY)
 // Default node allocator.
 // With a reasonable compiler, this should be roughly as fast as the
 // original STL class-specific allocators, but with less fragmentation.
@@ -398,7 +398,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Tp>
 struct __alloc_type_traits {
-#if !defined (__BORLANDC__)
+#if !defined (__BORLANDC__) && !defined (__WATCOMC__)
   typedef typename _IsSTLportClass<allocator<_Tp> >::_Ret _STLportAlloc;
 #else
   enum { _Is = _IsSTLportClass<allocator<_Tp> >::_Is };
@@ -505,7 +505,7 @@ private:
 
 public:
   void _M_swap_alloc(_Self& __x) {
-#if !defined (__BORLANDC__)
+#if !defined (__BORLANDC__) && !defined (__WATCOMC__)
     typedef typename _IsStateless<_MaybeReboundAlloc>::_Ret _StatelessAlloc;
 #else
     typedef typename __bool2type<_IsStateless<_MaybeReboundAlloc>::_Is>::_Ret _StatelessAlloc;
@@ -517,13 +517,17 @@ public:
    * as those allocators might have implement a special swap function to correctly
    * move datas from an instance to the oher, _STLP_alloc_proxy should not break
    * this mecanism. */
+#if defined (__WATCOMC__)
+  void swap(_Self& __x);
+#else
   void swap(_Self& __x) {
     _M_swap_alloc(__x);
     _STLP_STD::swap(_M_data, __x._M_data);
   }
+#endif
 
   _Tp* allocate(size_type __n, size_type& __allocated_n) {
-#if !defined (__BORLANDC__)
+#if !defined (__BORLANDC__) && !defined (__WATCOMC__)
     typedef typename _IsSTLportClass<_MaybeReboundAlloc>::_Ret _STLportAlloc;
 #else
     typedef typename __bool2type<_IsSTLportClass<_MaybeReboundAlloc>::_Is>::_Ret _STLportAlloc;
@@ -554,6 +558,14 @@ private:
   _Tp* allocate(size_type __n, size_type& __allocated_n, const __false_type& /*STLport allocator*/)
   { __allocated_n = __n; return allocate(__n); }
 };
+
+#if defined (__WATCOMC__)
+template <class _Value, class _Tp, class _MaybeReboundAlloc>
+void _STLP_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc>::swap(_STLP_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc> & __x) {
+    _M_swap_alloc(__x);
+    _STLP_STD::swap(_M_data, __x._M_data);
+}
+#endif
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<char*, char, allocator<char> >;

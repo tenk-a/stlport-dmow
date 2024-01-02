@@ -39,7 +39,7 @@
 #  endif
 
 _STLP_BEGIN_NAMESPACE
-#  if !defined (_STLP_NATIVE_SETJMP_H_INCLUDED)
+#  if !defined (_STLP_NATIVE_SETJMP_H_INCLUDED) && !defined(__WATCOMC__)
 using _STLP_VENDOR_CSTD::jmp_buf;
 #  else
 // if setjmp.h was included first, this is in global namespace, not in
@@ -48,7 +48,7 @@ using ::jmp_buf;
 #  endif
 #  if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
 #    if !defined (setjmp)
-#      if !defined (__MSL__) || ((__MSL__ > 0x7001) && (__MSL__ < 0x8000))
+#      if (!defined (__MSL__) || ((__MSL__ > 0x7001) && (__MSL__ < 0x8000))) && !defined(__WATCOMC__)
 #        ifndef _STLP_NATIVE_SETJMP_H_INCLUDED
 using _STLP_VENDOR_CSTD::setjmp;
 #        else
@@ -56,7 +56,7 @@ using ::setjmp;
 #        endif
 #      endif
 #    endif
-#    if !defined (_STLP_NATIVE_SETJMP_H_INCLUDED)
+#    if !defined (_STLP_NATIVE_SETJMP_H_INCLUDED) && !defined(__WATCOMC__)
 using _STLP_VENDOR_CSTD::longjmp;
 #    else
 using ::longjmp;

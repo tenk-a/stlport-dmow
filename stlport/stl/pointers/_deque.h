@@ -75,7 +75,7 @@ struct _DequeIteCast {
 };
 
 #define DEQUE_IMPL _STLP_PTR_IMPL_NAME(deque)
-#if defined (__BORLANDC__) || defined (__DMC__)
+#if defined (__BORLANDC__) || defined (__STLP_KKKK_OLD_DMC__)
 #  define typename
 #endif
 
@@ -377,7 +377,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 #undef DEQUE_IMPL
-#if defined (__BORLANDC__) || defined (__DMC__)
+#if defined (__BORLANDC__) || defined (__STLP_KKKK_OLD_DMC__)
 #  undef typename
 #endif
 

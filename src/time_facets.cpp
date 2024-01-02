@@ -18,8 +18,11 @@
 
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <cstdio>
 #include <locale>
+#include <stl/_num_put.h>
 #include <istream>
 
 #include "c_locale.h"
@@ -165,17 +168,21 @@ void __subformat(_STLP_BASIC_IOSTRING(_Ch) &buf, const ctype<_Ch>& ct,
 static void __append(__iostring &buf, const string& name)
 { buf.append(name.data(), name.data() + name.size()); }
 
+#if !defined (_STLP_NO_WCHAR_T)
 static void __append(__iowstring &buf, const wstring& name)
 { buf.append(name.data(), name.data() + name.size()); }
+#endif
 
 static void __append(__iostring &buf, char *first, char *last, const ctype<char>& /* ct */)
 { buf.append(first, last); }
 
+#if !defined (_STLP_NO_WCHAR_T)
 static void __append(__iowstring &buf, char *first, char *last, const ctype<wchar_t>& ct) {
   wchar_t _wbuf[64];
   ct.widen(first, last, _wbuf);
   buf.append(_wbuf, _wbuf + (last - first));
 }
+#endif
 
 #if defined (__GNUC__)
 /* The number of days from the first day of the first ISO week of this
@@ -456,10 +463,12 @@ void _STLP_CALL __write_formatted_time(__iostring &buf, const ctype<char>& ct,
                                        const _Time_Info& table, const tm* t)
 { __write_formatted_timeT(buf, ct, format, modifier, table, t); }
 
+#if !defined (_STLP_NO_WCHAR_T)
 void _STLP_CALL __write_formatted_time(__iowstring &buf, const ctype<wchar_t>& ct,
                                        char format, char modifier,
                                        const _WTime_Info& table, const tm* t)
 { __write_formatted_timeT(buf, ct, format, modifier, table, t); }
+#endif
 
 static time_base::dateorder __get_date_order(_Locale_time* time) {
   const char * fmt = _Locale_d_fmt(time);
@@ -563,3 +572,6 @@ template class time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif  // !_STLP_USE_NO_IOSTREAMS
+

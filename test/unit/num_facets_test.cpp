@@ -129,7 +129,7 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale* prl ) {
 }
 
 typedef void (LocaleTest::*_Test) (const locale&, const ref_locale*);
-static void test_supported_locale(LocaleTest& inst, _Test __test) {
+static void test_supported_locale_by_facets(LocaleTest& inst, _Test __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
   for (size_t i = 0; i < n; ++i) {
     locale loc;
@@ -164,7 +164,7 @@ static void test_supported_locale(LocaleTest& inst, _Test __test) {
 }
 
 void LocaleTest::num_put_get()
-{ test_supported_locale(*this, &LocaleTest::_num_put_get); }
+{ test_supported_locale_by_facets(*this, &LocaleTest::_num_put_get); }
 
 void LocaleTest::numpunct_by_name()
 {

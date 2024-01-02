@@ -18,6 +18,7 @@
 
 #if defined (_WIN32)
 #  define CPPUNIT_WIN32_TIMER
+#  include <stdlib.h>
 #  include <windows.h>
 #endif
 

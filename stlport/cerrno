@@ -35,7 +35,7 @@
 
 #ifndef errno /* errno is not a macro */
 #  if defined (_STLP_IMPORT_VENDOR_CSTD)
-#      if !defined (__IBMCPP__) && !defined (__hpux) && !defined (__MWERKS__) && !defined (_STLP_WCE)
+#      if !defined (__IBMCPP__) && !defined (__hpux) && !defined (__MWERKS__) && !defined (_STLP_WCE) && !defined(__WATCOMC__)
 _STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD::errno;
 _STLP_END_NAMESPACE

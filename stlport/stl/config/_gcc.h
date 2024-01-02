@@ -49,7 +49,7 @@
 #  define _STLP_LITTLE_ENDIAN
 #endif
 
-#if defined (__MINGW32__)
+#if defined (__MINGW32__) || defined(__MINGW64__)
 /* Mingw32, egcs compiler using the Microsoft C runtime */
 #  if (__GNUC__ >= 3)
 /* For gcc before version 3 this macro is defined below */
@@ -58,6 +58,9 @@
 #  undef  _STLP_NO_DRAND48
 #  define _STLP_NO_DRAND48
 #  define _STLP_CALL
+#  define _STLP_NEW_PLATFORM_SDK
+#  define _STLP_KKKK_DMOW
+#  undef  _PTHREADS
 #endif /* __MINGW32__ */
 
 #if defined (__CYGWIN__) || defined (__MINGW32__)
@@ -182,7 +185,7 @@ typedef unsigned int wint_t;
 
 /* strict ANSI prohibits "long long" ( gcc) */
 #if defined ( __STRICT_ANSI__ )
-#  undef _STLP_LONG_LONG 
+#  undef _STLP_LONG_LONG
 #endif
 
 #ifndef __EXCEPTIONS
@@ -195,4 +198,8 @@ typedef unsigned int wint_t;
    instantiation within library: nothing except increased library size. - ptr
  */
 #  define _STLP_NO_FORCE_INSTANTIATE
+#endif
+
+#if defined (_STLP_VERBOSE) && !defined (_STLP_VERBOSE_MODE_SUPPORTED)
+#  undef _STLP_VERBOSE
 #endif

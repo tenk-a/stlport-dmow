@@ -163,14 +163,14 @@ bool basic_ostream<_CharT, _Traits>
         break;
 
       __cguard.guard(__c);
-#if defined (__DMC__)
-      _STLP_TRY {
+#if defined (__STLP_KKKK_OLD_DMC__)
+      _STLP_TRY
 #endif
-      if (this->_S_eof(__to->sputc(_Traits::to_char_type(__c))))
-        break;
-
-#if defined (__DMC__)
+      {
+        if (this->_S_eof(__to->sputc(_Traits::to_char_type(__c))))
+          break;
       }
+#if defined (__STLP_KKKK_OLD_DMC__)
       _STLP_CATCH_ALL {
         this->_M_handle_exception(ios_base::badbit);
         break;

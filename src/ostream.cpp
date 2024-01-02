@@ -17,11 +17,11 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_NO_FORCE_INSTANTIATE) && !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <ostream>
 
 _STLP_BEGIN_NAMESPACE
-
-#if !defined(_STLP_NO_FORCE_INSTANTIATE)
 
 // instantiations
 template class _STLP_CLASS_DECLSPEC basic_ostream<char, char_traits<char> >;
@@ -31,16 +31,16 @@ template  class _STLP_CLASS_DECLSPEC _Osentry<char, char_traits<char> >;
 # endif
 
 #ifndef _STLP_NO_WCHAR_T
+template class _STLP_CLASS_DECLSPEC basic_ostream<wchar_t, char_traits<wchar_t> >;
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 template class _STLP_CLASS_DECLSPEC _Osentry<wchar_t, char_traits<wchar_t> >;
 # endif
-template class _STLP_CLASS_DECLSPEC basic_ostream<wchar_t, char_traits<wchar_t> >;
-#endif
-
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif
 
 // Local Variables:
 // mode:C++

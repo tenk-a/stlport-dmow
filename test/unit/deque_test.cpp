@@ -317,7 +317,7 @@ void DequeTest::erase()
 #if (!defined (STLPORT) || \
     (!defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION))) && \
      (!defined (_MSC_VER) || (_MSC_VER > 1400)) && \
-     (!defined(__GNUC__) || (__GNUC__ < 4) || (__GNUC_MINOR__ < 3))
+     (!defined(__GNUC__) || (__GNUC__ < 4) || (__GNUC_MINOR__ < 3)) && !defined(__WATCOMC__) && !(defined (__BORLANDC__) && __BORLANDC__ < 0x560)
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.

@@ -61,8 +61,8 @@ _STLP_BEGIN_NAMESPACE
 // program; the same applies to cout and wcout, and cerr/clog and
 // wcerr/wclog.
 
+# if !defined(_STLP_KKKK_USE_CINCOUTCERR_REF)
 extern _STLP_DECLSPEC istream cin;
-
 #  ifdef _STLP_REDIRECT_STDSTREAMS
 extern _STLP_DECLSPEC ofstream cout;
 extern _STLP_DECLSPEC ofstream cerr;
@@ -72,13 +72,33 @@ extern _STLP_DECLSPEC ostream cout;
 extern _STLP_DECLSPEC ostream cerr;
 extern _STLP_DECLSPEC ostream clog;
 #  endif
-
 #  ifndef _STLP_NO_WCHAR_T
 extern _STLP_DECLSPEC wistream wcin;
 extern _STLP_DECLSPEC wostream wcout;
 extern _STLP_DECLSPEC wostream wcerr;
 extern _STLP_DECLSPEC wostream wclog;
 #  endif
+
+# else	// defined(_STLP_KKKK_USE_CINCOUTCERR_REF)
+extern _STLP_DECLSPEC istream& cin;
+#  ifdef _STLP_REDIRECT_STDSTREAMS
+extern _STLP_DECLSPEC ofstream& cout;
+extern _STLP_DECLSPEC ofstream& cerr;
+extern _STLP_DECLSPEC ofstream& clog;
+#  else
+extern _STLP_DECLSPEC ostream& cout;
+extern _STLP_DECLSPEC ostream& cerr;
+extern _STLP_DECLSPEC ostream& clog;
+#  endif
+#  ifndef _STLP_NO_WCHAR_T
+extern _STLP_DECLSPEC wistream& wcin;
+extern _STLP_DECLSPEC wostream& wcout;
+extern _STLP_DECLSPEC wostream& wcerr;
+extern _STLP_DECLSPEC wostream& wclog;
+#  endif
+
+# endif	// _STLP_KKKK_USE_CINCOUTCERR_REF
+
 
 _STLP_END_NAMESPACE
 

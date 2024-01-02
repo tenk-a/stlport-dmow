@@ -65,7 +65,7 @@ void EqualTest::equal_range1()
 }
 
 struct Test {
-#if defined (__DMC__)
+#if defined (__STLP_KKKK_OLD_DMC__)
   Test();
 #endif
 

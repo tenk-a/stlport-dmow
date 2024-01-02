@@ -81,16 +81,16 @@ void IOStreamTest::manipulators()
 
 void IOStreamTest::in_avail()
 {
-  CPPUNIT_CHECK( cin.rdbuf()->in_avail() == 0 );
-  CPPUNIT_CHECK( cout.rdbuf()->in_avail() == -1 );
-  CPPUNIT_CHECK( clog.rdbuf()->in_avail() == -1 );
-  CPPUNIT_CHECK( cerr.rdbuf()->in_avail() == -1 );
+  CPPUNIT_CHECK( cin.rdbuf() && cin.rdbuf()->in_avail() == 0 );
+  CPPUNIT_CHECK( cout.rdbuf() && cout.rdbuf()->in_avail() == -1 );
+  CPPUNIT_CHECK( clog.rdbuf() && clog.rdbuf()->in_avail() == -1 );
+  CPPUNIT_CHECK( cerr.rdbuf() && cerr.rdbuf()->in_avail() == -1 );
 
 #if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
-  CPPUNIT_CHECK( wcin.rdbuf()->in_avail() == 0 );
-  CPPUNIT_CHECK( wcout.rdbuf()->in_avail() == 0 );
-  CPPUNIT_CHECK( wclog.rdbuf()->in_avail() == 0 );
-  CPPUNIT_CHECK( wcerr.rdbuf()->in_avail() == 0 );
+  CPPUNIT_CHECK( wcin.rdbuf() && wcin.rdbuf()->in_avail() == 0 );
+  CPPUNIT_CHECK( wcout.rdbuf() && wcout.rdbuf()->in_avail() == 0 );
+  CPPUNIT_CHECK( wclog.rdbuf() && wclog.rdbuf()->in_avail() == 0 );
+  CPPUNIT_CHECK( wcerr.rdbuf() && wcerr.rdbuf()->in_avail() == 0 );
 #endif
 }
 

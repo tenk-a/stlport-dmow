@@ -41,9 +41,9 @@ void main()
 
         const ctype<char>& char_type=use_facet<ctype<char> >(cout.getloc());
         if(char_type.is(ctype_base::upper, 'è')) puts("Upper");
-        if(char_type.is(ctype_base::lower, 'Ø')) puts("Lower");
-        puts("Next");
-        if(isupper('è', cout.getloc())) puts("Upper");
+		if(char_type.is(ctype_base::lower, 'Ø')) puts("Lower");
+		puts("Next");
+		if(isupper('è', cout.getloc())) puts("Upper");
         if(islower('Ø', cout.getloc())) puts("Lower");
         /*for(int ch=128; ch<256; ch++)
           printf("Character %c (%d) - upper %c, lower %c\n",(char)ch, ch,toupper((char)ch, cout.getloc()), tolower((char)ch, cout.getloc()));*/

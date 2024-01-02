@@ -49,14 +49,14 @@ _STLP_BEGIN_NAMESPACE
   static const float float_limit = float(M_LN2 * FLT_MAX_EXP);
   static const double double_limit = M_LN2 * DBL_MAX_EXP;
 #  else
-  static const float float_limit = ::log(FLT_MAX);
-  static const double double_limit = ::log(DBL_MAX);
+  static const float float_limit = _STLP_CMATH_FUNC_NAMESPACE::log(FLT_MAX);
+  static const double double_limit = _STLP_CMATH_FUNC_NAMESPACE::log(DBL_MAX);
 #  endif
 #  if !defined (_STLP_NO_LONG_DOUBLE)
 #    if defined (M_LN2l)
   static const long double ldouble_limit = M_LN2l * LDBL_MAX_EXP;
 #    else
-  static const long double ldouble_limit = ::log(LDBL_MAX);
+  static const long double ldouble_limit = _STLP_CMATH_FUNC_NAMESPACE::log(LDBL_MAX);
 #    endif
 #  endif
 #endif
@@ -66,8 +66,8 @@ _STLP_BEGIN_NAMESPACE
 // sin
 template <class _Tp>
 static complex<_Tp> sinT(const complex<_Tp>& z) {
-  return complex<_Tp>(::sin(z._M_re) * ::cosh(z._M_im),
-                      ::cos(z._M_re) * ::sinh(z._M_im));
+  return complex<_Tp>(_STLP_CMATH_FUNC_NAMESPACE::sin(z._M_re) * _STLP_CMATH_FUNC_NAMESPACE::cosh(z._M_im),
+                      _STLP_CMATH_FUNC_NAMESPACE::cos(z._M_re) * _STLP_CMATH_FUNC_NAMESPACE::sinh(z._M_im));
 }
 
 _STLP_DECLSPEC complex<float> _STLP_CALL sin(const complex<float>& z)
@@ -85,8 +85,8 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL sin(const complex<long double>& z
 // cos
 template <class _Tp>
 static complex<_Tp> cosT(const complex<_Tp>& z) {
-  return complex<_Tp>(::cos(z._M_re) * ::cosh(z._M_im),
-                     -::sin(z._M_re) * ::sinh(z._M_im));
+  return complex<_Tp>(_STLP_CMATH_FUNC_NAMESPACE::cos(z._M_re) * _STLP_CMATH_FUNC_NAMESPACE::cosh(z._M_im),
+                     -_STLP_CMATH_FUNC_NAMESPACE::sin(z._M_re) * _STLP_CMATH_FUNC_NAMESPACE::sinh(z._M_im));
 }
 
 _STLP_DECLSPEC complex<float> _STLP_CALL cos(const complex<float>& z)
@@ -107,11 +107,11 @@ static complex<_Tp> tanT(const complex<_Tp>& z, const _Tp& Tp_limit) {
   _Tp re2 = 2.f * z._M_re;
   _Tp im2 = 2.f * z._M_im;
 
-  if (::abs(im2) > Tp_limit)
+  if (_STLP_CMATH_FUNC_NAMESPACE::abs(im2) > Tp_limit)
     return complex<_Tp>(0.f, (im2 > 0 ? 1.f : -1.f));
   else {
-    _Tp den = ::cos(re2) + ::cosh(im2);
-    return complex<_Tp>(::sin(re2) / den, ::sinh(im2) / den);
+    _Tp den = _STLP_CMATH_FUNC_NAMESPACE::cos(re2) + _STLP_CMATH_FUNC_NAMESPACE::cosh(im2);
+    return complex<_Tp>(_STLP_CMATH_FUNC_NAMESPACE::sin(re2) / den, _STLP_CMATH_FUNC_NAMESPACE::sinh(im2) / den);
   }
 }
 
@@ -130,8 +130,8 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL tan(const complex<long double>& z
 // sinh
 template <class _Tp>
 static complex<_Tp> sinhT(const complex<_Tp>& z) {
-  return complex<_Tp>(::sinh(z._M_re) * ::cos(z._M_im),
-                      ::cosh(z._M_re) * ::sin(z._M_im));
+  return complex<_Tp>(_STLP_CMATH_FUNC_NAMESPACE::sinh(z._M_re) * _STLP_CMATH_FUNC_NAMESPACE::cos(z._M_im),
+                      _STLP_CMATH_FUNC_NAMESPACE::cosh(z._M_re) * _STLP_CMATH_FUNC_NAMESPACE::sin(z._M_im));
 }
 
 _STLP_DECLSPEC complex<float> _STLP_CALL sinh(const complex<float>& z)
@@ -149,8 +149,8 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL sinh(const complex<long double>& 
 // cosh
 template <class _Tp>
 static complex<_Tp> coshT(const complex<_Tp>& z) {
-  return complex<_Tp>(::cosh(z._M_re) * ::cos(z._M_im),
-                      ::sinh(z._M_re) * ::sin(z._M_im));
+  return complex<_Tp>(_STLP_CMATH_FUNC_NAMESPACE::cosh(z._M_re) * _STLP_CMATH_FUNC_NAMESPACE::cos(z._M_im),
+                      _STLP_CMATH_FUNC_NAMESPACE::sinh(z._M_re) * _STLP_CMATH_FUNC_NAMESPACE::sin(z._M_im));
 }
 
 _STLP_DECLSPEC complex<float> _STLP_CALL cosh(const complex<float>& z)
@@ -170,11 +170,11 @@ template <class _Tp>
 static complex<_Tp> tanhT(const complex<_Tp>& z, const _Tp& Tp_limit) {
   _Tp re2 = 2.f * z._M_re;
   _Tp im2 = 2.f * z._M_im;
-  if (::abs(re2) > Tp_limit)
+  if (_STLP_CMATH_FUNC_NAMESPACE::abs(re2) > Tp_limit)
     return complex<_Tp>((re2 > 0 ? 1.f : -1.f), 0.f);
   else {
-    _Tp den = ::cosh(re2) + ::cos(im2);
-    return complex<_Tp>(::sinh(re2) / den, ::sin(im2) / den);
+    _Tp den = _STLP_CMATH_FUNC_NAMESPACE::cosh(re2) + _STLP_CMATH_FUNC_NAMESPACE::cos(im2);
+    return complex<_Tp>(_STLP_CMATH_FUNC_NAMESPACE::sinh(re2) / den, _STLP_CMATH_FUNC_NAMESPACE::sin(im2) / den);
   }
 }
 

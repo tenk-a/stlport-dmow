@@ -32,12 +32,13 @@ static void test_supported_locale(LocaleTest &inst, _Test __test) {
   for (size_t i = 0; i < n; ++i) {
     locale loc;
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-    try {
+    try
 #  endif
+    {
       locale tmp(tested_locales[i]);
       loc = tmp;
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     }
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     catch (runtime_error const&) {
       //This locale is not supported.
       continue;
@@ -189,14 +190,15 @@ void LocaleTest::_locale_init_problem( const locale& loc)
   }
 
 #      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-  try {
+  try
 #      endif
+  {
     ostringstream os("test") ;
     locale loc2( loc, new my_facet() );
     CPPUNIT_ASSERT( has_facet<my_facet>( loc2 ) );
     os.imbue( loc2 );
-#      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   }
+#      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   catch ( runtime_error& ) {
     CPPUNIT_FAIL;
   }
@@ -206,11 +208,12 @@ void LocaleTest::_locale_init_problem( const locale& loc)
 #      endif
 
 #      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-  try {
+  try
 #      endif
+  {
     ostringstream os2("test2");
-#      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   }
+#      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   catch ( runtime_error& ) {
     CPPUNIT_FAIL;
   }
@@ -236,7 +239,8 @@ locale::id dummy_facet::id;
 void LocaleTest::combine()
 {
 #  if (!defined (STLPORT) || \
-       (defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)))
+       (defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)) && \
+       !(defined(__DMC__) && defined(_STLP_USE_DYNAMIC_LIB)) )
   {
     try {
       locale loc("");
@@ -318,7 +322,7 @@ void LocaleTest::combine()
       }
 
       {
-        // Check auto combination do not result in weird reference counting behavior 
+        // Check auto combination do not result in weird reference counting behavior
         // (might generate a crash).
         loc1.combine<numpunct<char> >(loc1);
       }

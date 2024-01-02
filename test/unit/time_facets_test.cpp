@@ -192,7 +192,7 @@ void LocaleTest::_time_put_get( const locale& loc )
 }
 
 typedef void (LocaleTest::*_Test) (const locale&);
-static void test_supported_locale(LocaleTest& inst, _Test __test) {
+static void test_supported_locale_by_time_facets(LocaleTest& inst, _Test __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
   for (size_t i = 0; i < n; ++i) {
     locale loc;
@@ -230,7 +230,7 @@ static void test_supported_locale(LocaleTest& inst, _Test __test) {
 }
 
 void LocaleTest::time_put_get()
-{ test_supported_locale(*this, &LocaleTest::_time_put_get); }
+{ test_supported_locale_by_time_facets(*this, &LocaleTest::_time_put_get); }
 
 void LocaleTest::time_by_name()
 {

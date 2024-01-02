@@ -185,7 +185,7 @@ struct V {
   bool f( int _v ) const { return (v == _v); }
 
   int v;
-#if defined (__DMC__)
+#if defined (__STLP_KKKK_OLD_DMC__)
   V(){}
 #endif
 };

@@ -1,6 +1,9 @@
 #include <bitset>
 #include <algorithm>
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+
+#if (defined (STLPORT) && defined (_STLP_USE_NO_IOSTREAMS)) || defined(__WATCOMC__) || defined(__DMC__)
+#define NO_IOSTREAM_CHECK
+#else
 #  include <sstream>
 #endif
 
@@ -17,7 +20,7 @@ class BitsetTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(BitsetTest);
   CPPUNIT_TEST(bitset1);
-#if defined (STLPORT) && defined (_STLP_USE_NO_IOSTREAMS)
+#if defined(NO_IOSTREAM_CHECK)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(iostream);
@@ -42,7 +45,7 @@ void BitsetTest::bitset1()
   CPPUNIT_ASSERT(b2.size() == 13);
   CPPUNIT_ASSERT(b2 == 0x1111);
 
-#if !defined (STLPORT) || !defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
+#if !defined (STLPORT) || !defined (_STLP_NON_TYPE_TMPL_PARAM_BUG) && (!defined (__WATCOMC__) || __WATCOMC__ >= 1290)
   b1 = b1 ^ (b2 << 2);
   CPPUNIT_ASSERT(b1 == 0x1BBB);
 
@@ -63,7 +66,7 @@ void BitsetTest::bitset1()
 #  endif
 #endif
 
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
+#if (!defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)) && !defined(__WATCOMC__)
   string representation = b2.to_string<char, char_traits<char>, allocator<char> >();
   CPPUNIT_ASSERT( representation == "1000100010001" );
 #  if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
@@ -77,7 +80,7 @@ void BitsetTest::bitset1()
 
 void BitsetTest::iostream()
 {
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+#if !defined (NO_IOSTREAM_CHECK)
   {
     stringstream sstr;
     bitset<13U> b(0x1111);

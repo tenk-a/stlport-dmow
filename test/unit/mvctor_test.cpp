@@ -645,7 +645,7 @@ void MoveConstructorTest::vector_test()
 
   {
     //deque move contructor:
-#  if !defined (__DMC__)
+#  if !defined (__STLP_KKKK_OLD_DMC__)
     vector<deque<string> > vect(10, deque<string>(10, long_str));
 #  else
     deque<string> deq_str = deque<string>(10, long_str);
@@ -751,7 +751,7 @@ void MoveConstructorTest::vector_test()
   }
 
 #if defined (STLPORT)
-#  if !defined (__DMC__)
+#  if !defined (__STLP_KKKK_OLD_DMC__)
   {
     //hash container move contructor:
     unordered_multiset<string> ref;

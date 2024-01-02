@@ -12,6 +12,9 @@
  * modified is included with the above copyright notice.
  *
  */
+#if defined(__cplusplus) && defined(_STLP_KKKK_H_INCLUDE_NEW_C_HEADERS) && !defined(_STLP_INTERNAL_CSETJMP)
+#  include <csetjmp>
+#endif
 
 #ifndef _STLP_SETJMP_H
 

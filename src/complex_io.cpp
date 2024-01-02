@@ -18,6 +18,8 @@
 
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <complex>
 #include <istream>
 
@@ -150,6 +152,7 @@ operator<<(basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<double>
 
 _STLP_END_NAMESPACE
 
+#endif
 
 // Local Variables:
 // mode:C++

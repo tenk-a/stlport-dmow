@@ -1,0 +1,249 @@
+==================================================
+STLport README for Microsoft Visual C++ compilers.
+==================================================
+
+by: Francois Dumont, dums@stlport.com, last edited 08/02/2005
+
+
+=====================
+イントロダクション
+=====================
+
+このドキュメントは MicrosoftVisual C++ 6 SP5 で STLport を
+どのようにコンパイルしてどのように使うかを記す.
+同様に MSVC++ ファミリーについても当てはまる.
+
+さらなるコメントや質問は STLport のメーリングリストへ.
+
+	http://stlport.sourceforge.net/Maillists.shtml or forums
+	https://sourceforge.net/forum/?group_id=146814
+
+
+
+=====================
+必要条件
+=====================
+
+STLport をビルドして使うために、以下のツールとライブラリが必要.
+
+	- Microsoft Visual C++ 6.0 + SP5(最新のサービスパック)
+	  あるいは、それよりも新しいバージョン.
+
+
+
+=====================
+STLport の設定
+=====================
+
+コンソール窓で、 STLportの build/lib フォルダへ移動.
+
+	configue --help
+
+を実行すれば、利用可能なビルド・オプションを表示される.
+ニーズにあった STLport 設定の指定する.
+
+唯一必須の設定は、使用するコンパイラを宣言することで、
+MSVC6 を使うならば、
+
+	configure -c msvc6
+
+
+
+=====================
+STLport のビルド
+=====================
+
+STLport ライブラリをビルドするための手順.
+
+１．コンソール窓を開ける.
+　　Windows OS上で cmd.exe か command.exe を実行.
+
+
+２．MSVC++ の Bin/ ディレクトリへ移動.
+　　MSVC6のデフォルトのインストールの場合は
+	cd "C:\Program Files\Microsoft Visual Studio\VC98\Bin"
+
+
+３. vcvars32.bat を実行.
+　　MSVC++ の実行に必要な環境変数の設定が行われる.
+    MSVC++のコマンドライン・コンパイラの cl.exe コマンドを
+    呼び出せるようにするため、PATH変数が重要.
+   （もし Microsoft Visual Studio インストール時に
+   　“コマンドラインツールのアクセスPATHを設定”していた
+   　のならば、この手順はなくてよい）
+
+
+４．STLport の build/lib フォルダへ移動.
+	cd C:\STLport\build\lib
+
+５．以下のコマンドを実行
+	nmake /fmsvc.mak install
+
+　　nmake はマイクロソフトのmakeユーティリティ.
+　　/f は使用する make スクリプト・ファイルを指定する.
+
+    msvc.mak の部分は、実際に利用するコンパイラに
+    近いものを指定しないといけない.
+
+　　コマンドの実行がおわれば、STLport libフォルダに
+　　必要なライブラリが全て出来ているだろう.
+
+　　生成されたライブラリについては、srcフォルダの
+　　README をチェックのこと.
+
+
+
+=====================
+STLport のテスト
+=====================
+
+ＳＴＬport が正しく動作するか確かめるためにユニットテストが
+利用できる.
+
+STLport の 'build/test/unit' に移動して以下を実行.
+	nmake /fmsvc.mak install
+
+ユニットテストがビルドされたら、一度実行する必要がある.
+ものは STLport の bin フォルダに作られている.
+
+
+
+=====================
+STLport の使用方法
+=====================
+
+MSVC IDE の include と link のパスを調整する.
+(MSVC6のIDE の場合: Tools → Options → Directories)
+
+include ディレクトリとして、STLportの "stlport"フォルダを
+ディレクトリ一覧の先頭に追加すること.
+
+libディレクトリとして、STLportの "lib"フォルダを追加.
+(こちらのパスの順番は重要ではない)
+
+MSVCプロジェクトでのSTLportの利用方法を制御する
+プリプロセッサ・マクロ定義がいくつかある.
+STLportライブラリの iostreams 部分を使いたくないなら
+_STLP_NO_IOSTREAMS を定義する.
+このモードなら、ライブラリをリンクする必要がない.
+
+STLport は適切な .lib ファイルを見つけてるために自動リンクを使う.
+_STLP_VERBOSE_AUTO_LINK を定義すれば、STLportが使うimportライブラリを
+表示する.
+
+STLP_DONT_USE_AUTO_LINK を指定すれば自動リンクしなくなる.
+この場合はプロジェクトの設定のリンク・タブに
+適切な .lib ファイルを指定しなければならない.
+
+
+.lib のファイル名は以下のルールで命名される:
+
+   stlport[d|stld][_x,_static,_statix].<STLport-Version>.lib
+
+   d       : デバッグ・ビルド
+   stld    : _STLP_DEBUG (STL safe)モードでコンパイルしたデバッグビルド.
+   _x      : STLportはdllビルドだが、ネイティブランタイム側はスタティック.
+   _static : static ライブラリ
+   _statix : static ライブラリだが、ネイティブランタイム側はダイナミック.
+
+  例:
+   stlport_static.5.0.lib - static release version, Version 5.0.0
+   stlportd.5.0.lib       - dll debug version, Version 5.0.0
+
+
+MFCとSTLportを併用する場合、たとえば Stdafx.h で
+STLportヘッダーをincludeする前にMFCヘッダを最初にincludeすること.
+こうすれば STLport は MFC が利用されていることを認識できる.
+
+同様に、プロジェクト設定か stlport/stl/config/user_config.h
+で STLP_USE_MFC を定義することで、認識させられる.
+
+
+STLport を使ったときのデバッギングを強化するために、
+Visual Studio フォルダにある autoexp.dat ファイルに、
+STLportの etc/autoexp.dat の内容をオプションとして
+追加することができる.
+
+
+これで STLport を使えるだろう.
+
+
+
+=====================
+周知の問題
+=====================
+
+１． InterlockedIncrement
+
+Win32 API の InterlockedIncrement ファンクションを使った場合
+以下のようなメッセージにわずらうかもしれない.
+
+C:\Program Files\Microsoft SDK\Include\.\winbase.h(1392) : error C2733: second C
+linkage of overloaded function 'InterlockedIncrement' not allowed
+C:\Program Files\Microsoft SDK\Include\.\winbase.h(1390) : see declaration of
+'InterlockedIncrement'
+
+これは新しい Microsoft platform SDK を使った場合におきる.
+
+STLport側で判別できないので、stlport/stl/config/user_config.h
+ファイルで指定する必要がある.
+(このファイルの _STLP_NEW_PLATFORM_SDK のコメントを外す).
+
+
+２．ネイティブC/C++ ライブラリヘッダの場所.
+
+Platform SDK 付きのコンパイラを使って STLport をビルドしたり
+使ったりするとき、ctimeや他の標準ライブラリでトラブルが
+あるかもしれない.
+
+もしそうなら、
+	stlport/stl/config/user_config.h
+	STLP_USING_PLATFORM_SDK_COMPILER
+のコメントをはずすといいだろう.
+
+それでも、まだネイティブヘッダを見つけられないようならば、
+たぶん STLport を使った相対パスでネイティブヘッダを書き換
+える必要がある.
+この場合、
+	stlport/stl/config/host.h の STLP_NATIVE_INCLUDE_PATH
+マクロが関連付けられている.
+
+
+４．std ネームスペースでのＣシンボル
+
+using宣言 や usingディレクティブ を用いて、グローバルスコープ
+と namespace スコープの両方に同じシンボルがあるとき、
+MSVC++6 コンパイラはバグる.
+オーバーロードされた関数の呼び出しがあいまい(エラー C2668)、だと.
+
+たとえば
+
+	void function();
+	namespace ns {
+	   void function();
+	   // または:
+	   // using ::function;
+	}
+
+	using ns::function;
+	// または:
+	// using namespace ns;
+
+	void call() {
+	   function();
+	}
+
+とくに fopen()やabs()のような C標準関数の場合、グローバル名前空間
+と std 名前空間の双方におくために using宣言 や using ディレクティブ
+を使うのは普通だろう.
+STLportのデフォルトでは、両方に置くような指定やラップをしない
+ようにしている.
+(int,long,float,double,long doubleでオーバーロードされる) 
+abs() のよう関数の、グローバル名前空間でのオーバーロードの
+追加についても同様.
+
+STLport では、_STLP_DO_IMPORT_CSTD_FUNCTIONS マクロを定義する
+ことでグローバル名前空間と std 名前空間の両方に名前をおく
+ようになる.
+定義すれば、std::abs()のように明示的に呼び出すして使うことになり、
+そうでない場合は Cライブラリのabs(int) のみがグローバルで使える.

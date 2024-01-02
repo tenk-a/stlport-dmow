@@ -1,0 +1,589 @@
+STLport ver.5.2.1 for Open Watcom v1.9, Digitalmars C++ v8.56
+                                         by Masashi KITAMURA(tenka@6809.net)
+
+
+今更ながら STLport ver.5.2.1 を 主に Open Watcom C++ v1.9 や Digitalmars C++
+v8.56 の windows版 でコンパイルできるようにしてみました。といっても、きっちり
+修正できているというわけでもないので、注意。実験品の類で当然無保証。
+
+(なるべく付属のtest/unitが実行できるようにしてみましたが、test/unit自体が
+ わりとザルぽく……. test/eh はコンパイルは通したけどマトモに実行できず)
+
+使うためというより STL(Port) の理解を深めるために本気でソースを追っかける口実
+として移植作業してみた、といったところですが、全くの徒労も寂しいので、最新版
+では c++ としてよくなってきているのに付属 STL のサポートがいまいちで stlport 
+対応も古い版しかない dm,ow を対象に選んだのですが……
+案の定 STL よりもコンパイラの暗黒面を知る機会のほうが多く(泣)。
+(dm はどちらかといえば負けた状態)
+
+
+
+■配布ファイル＆ディレクトリ
+
+・ 元からあるファイル・ディレクトリ
+  doc/            元のドキュメント関係の一部(v5 以前のままの情報も多く)
+  etc/            VSに対する設定ファイルとかチェンジログとか細々
+  src/            ライブラリ・ソース
+  stlport/        ヘッダ（ヘッダでincludeするソース)
+  test/           テスト関係
+    Compiler/     コンパイラの文法(のごく一部)確認用
+    unittest/     ユニットテスト
+    eh/           エラーハンドリングテスト
+
+・追加したディレクトリ＆ファイル
+  orig_files/     元配布に入っていたファイルで今回の版では使わなかったり
+                  事情がかわったりしているファイルやディレクトリを入れたもの.
+  docjp/          STLport関係ドキュメントの一部和訳.
+  sample/         作成した stlport ライブラリを使うサンプル.
+  setcc_stlp.bat  コンパイラ環境設定バッチ
+  mk_stlp.bat     stlport コンパイル・バッチ (ライブラリ＆テスト)
+  build_all.bat   mk_stlp.bat で主要なバージョンをひと通り生成するバッチ.
+  readme.txt      真っ先に読んでもらうテキスト.
+  stlport521dmow.txt  このテキスト.
+
+・バッチの実行で作られるディレクトリ
+  bin/????/      実行ファイルを入れる
+  lib/????/      生成したライブラリ
+  obj/????/      コンパイル途中のobj等のためのフォルダ
+  ※???? は dmc_x86 のように コンパイラ名"_"CPUタイプ のようになる。
+
+
+
+■ ライセンス
+
+元の README より
+ --------------------------------------------------------------------------
+ Copyright (c) 1994
+ Hewlett-Packard Company
+ Copyright (c) 1996-1999
+ Silicon Graphics Computer Systems, Inc.
+ Copyright (c) 1997
+ Moscow Center for SPARC Technology
+ Copyright (c) 1999-2003
+ Boris Fomitchev
+
+ This material is provided "as is", with absolutely no warranty expressed
+ or implied. Any use is at your own risk.
+
+ Permission to use or copy this software for any purpose is hereby granted 
+ without fee, provided the above notices are retained on all copies.
+ Permission to modify the code and to distribute modified code is granted,
+ provided the above notices are retained, and a notice that the code was
+ modified is included with the above copyright notice.
+ --------------------------------------------------------------------------
+
+今回修正した部分のソースのライセンスについても当然元と同じです。
+（書くほどのことじゃないが、かかないと気にする人いるかもで一応）
+
+
+
+■ STLPort について
+
+サイトは
+http://www.stlport.org/  ( http://www.stlport.com/ )
+あたり。
+
+標準化の土台になった HP-SGI版STL の派生(後継)版で、もともと移植性のあったもの
+だけど、STLPortではさらに対応コンパイラが多くなっています（た）。
+
+v4(00年代前半)の頃まではわりと勢いがあった、と思われます（よくはしらない）。
+C++03対応コンパイラ＆付属stlの準拠度＆性能が上がってきたのと、古いコンパイラ
+を使う機会(人)が減ってきたため、stlportの出番も減っているでしょう。
+(C++11に突入した最新コンパイラでは C++03 止まりの stlport のほぼ出番はなく...)
+
+サイトをみてると4.5.3あたりが古いコンパイラでも利用できる最後の安定版らしい。
+4.6x代は混沌とした時期(代物)で、v5で仕切り直し、namespaceも無いような古すぎる
+コンパイラのサポートを打ち切り、代わりに tr1(c++11)を視野にいれた模様。
+ただ更新頻度は少なく、現在(2013-5)の最終リリース版は v5.2.1 (2008-12) 。
+unorderd 等若干あるけど tr1 対応もままならずで、trunk をみると c++11 対応等
+行われているけれど更新はゆっくりのようで……。
+
+
+□ 仕組等
+
+includeの(システム)パスの順番を、コンパイラ付属のディレクトリより先に stlport
+のディレクトリが読み込まれるように設定することで、ヘッダを乗っ取っています。
+ヘッダはC標準ヘッダ C++標準ヘッダをひと通り用意し、STL部分は置き換え、C++コア
+機能(new,typeinfo)やC標準ライブラリ等は元のモノを使うようにバイパス。
+
+stlの無い環境に追加するだけならば話は早いのだけど、コンパイラ付属ライブラリの
+一部(STL+α)分のみの置換というのが、コンパイラごとの癖(仕様)の違いもあり、
+いやらしいトリッキーな対応が増える原因になっています。
+
+大半テンプレートなこともあり、ヘッダのみで使用出来る機能は多いです。
+が、iostream や locale はそういうわけにもいかないので普段はバイナリ・ライブ
+ラリを使うことになります。
+vcのように #pragma で暗黙にリンク対象にする機能があるので利便性を落とさなく
+てもすむコンパイラがある一方、g++ のように コンパイラ付属の c++ ライブラリの
+リンクを回避するため デフォルトライブラリのリンクをoffにして自分で入用な
+ライブラリをひと通り指定しなければいけないコンパイラもあります。
+
+※ v5.2.1 時点ではまだ c99 の stdint.h 等の対応が入っていないので、そういうもの
+を使う場合は include 順番等注意する必要ありでしょう。
+
+
+
+■ライブラリの作成とテスト
+
+□環境
+  作業環境は Windows2000以降（のはず、windows8でしか試していない）
+
+  今回のは、元配布にある Makefile を使った build/環境は使わずに、新規にバッチ
+  ファイルを用意してビルドするようになっています。
+  （STLPort v5 のネックは このbuild システムだと思う）
+
+  バッチのみで日付チェックしておらず、毎度、コンパイルする状態です。
+  今時のPCの速さと、ヘッダをいじる作業が大半なので、我慢する……です。
+  (気力があれば pure なMakefileを生成しようかとも考えてましたが...してません)
+
+  （元のMakefileの複雑さが嫌でバッチのみにしましたが、ググりながらコンパイラ
+    個別対応入れてたらやっぱり複雑怪奇に……）
+
+
+□ コンパイラ環境設定バッチの修正
+  setcc_stlp.bat は複数のコンパイラ環境を切り替えるためのバッチです。
+  環境変数 COMPILER と TargetArch の設定もします（mk_stlp.batで参照します)
+  setcc_stlp.bat をあなたの環境にあわせて修正してください。とりあえず
+      ow 1.9,
+      dmc 8.56(+最新optlink),
+      vc(7.1以降) 
+      TDM版MinGW(32&64) v4.7.1, 
+      Borland C++5.5.1(フリー版)
+  の設定がありますがディレクトリが標準と違うのもあるので気をつけてください。
+    たとえば ow の設定については、
+    :L_OW
+	set COMPILER=ow
+	set "WATCOM=C:\tools\watcom1.9"
+  となっている部分の set "WATCOM=……" の部分をあなたの環境のOWのフォルダ
+  にしてください.
+  VC については 2005 以降のデフォルト設定なら、そのままでいいはず。
+
+
+□ コンパイル実行
+
+・stlport521dmow.zip を適当なディレクトリに展開.
+　  とりあえず、X:\stlport521dmow とします。
+　  (ドライブ直下の必要は全くない。ただし、パスの名前は英数_のみで空白や
+　   多バイト文字は含まないこと）
+
+・カレントを X:\stlport521dmow として コマンドプロンプト(DOS窓) をあけます。
+
+・とりあえず Open Watcom 用を試すことにし
+  > setcc_stlp.bat ow
+  で ow 環境にします。
+
+・> mk_stlp.bat ow dbg sta rtsta lib
+  で debugコンパイル staticランタイムライブラリ使用の staticライブラリ
+  が作られます。
+
+・> mk_stlp.bat ow dbg sta rtsta unittest
+  で 先のライブラリを使った unittest プログラムが作られます。
+
+  出力は bin\ow_x86\unittest_dbg_rel_sta_rtsta.exe です。
+  setcc_stlp.bat にて bin\ow_x86\ のパスを通してるので
+  コンパイルに成功していたら、
+  > unittest_dbg_rel_sta_rtsta.exe
+  を実行してみてください。
+
+  説明のため２回にわけひと通り設定しましたが、デフォルト設定を利用すると
+  > mk_stlp dbg lib unittest
+  のように指定できます。ehtestも作るなら
+  > mk_stlp dbg
+  だけ.
+
+・build_all.bat は、release版,dbg版 の ライブラリ,ユニットテスト,ehテスト
+  をひと通りコンパイルするバッチです。(結構時間がかかるので注意)
+
+
+□mk_stlp.bat の指定
+  コンパイラ名      ow,dmc,vc71,vc8,vc9,vc10,vc11,mingw,bcc
+                    setcc_stlp.bat を実行していれば省略可能.
+
+  x86 / x64         主に vc で x86用か x64 用か
+                    setcc_stlp.bat を実行していれば省略可能.
+
+  rel/dbg/stldbg    release版 /debug版 / stldbg版
+                    のいずれかを選択. 無指定だと rel が指定されたことになる.
+                    ※ stldbg は _STLP_DEBUGを定義したdebugコンパイル。
+                       現状 dm,ow ではstldbgのコンパイルが通らない状態です。
+
+  ターゲット
+    lib             stlport バイナリライブラリ作成
+    unittest        ユニットテスト生成
+    ehtest          エラーハンドルテスト生成. (dm,owではマトモに動かない)
+    all             lib/unittest/ehtest を生成.
+                    ターゲットが無指定だと all になる.
+
+    CompilerTest    test/Compiler/ フォルダのソースのコンパイル.
+                    コンパイルが成功するかどうかを試すだけ. allに含まない.
+    kkkk            今回追加したチェック用プログラム生成
+
+ ライブラリ形態
+    sta             staticライブラリ
+    dll             dll(shared)ライブラリ
+    rtsta           cランタイムライブラリとして static 版を用いる
+    rtdll           cランタイムライブラリとして dll 版を用いる
+
+ オプション
+    --no-mt         マルチスレッド非対応（シングルスレッド）にする (_nmt)
+    --no-except     例外を使わない                                 (_necept)
+    --no-rtti       RTTI・例外を使わない                           (_nrtti)
+    --no-ios        iostream&locale を使わない                     (_nios)
+  ※ user_config.h でなくこのオプションで設定すると、生成するファイル名に
+     上記の最後の(...)の部分の文字列が付加されるようになる.
+
+
+□生成されるライブラリ名のルール
+  gcc以外は VC 版に合わせています. ※ 名前的にはdll版が基本のようです。
+
+  stlport_static.lib       releaseコンパイル staticランタイム使用の static版.
+  stlport_statix.lib       releaseコンパイル cランタイムdll使用の static版.
+  stlport_x.5.2.lib (.dll) releaseコンパイル static cランタイム使用の dll版.
+  stlport.5.2.lib (.dll)   releaseコンパイル cランタイムdll使用の dll版.
+
+  debug コンパイル版は 上記で stlport_ の部分が stlportd_ に、
+  stldbg コンパイル版は、stlportstld_ になります。
+
+  ※ dmc では 複数'.'が入ったファイル名の拡張子の扱いがよろしくなかったので
+     stlport_5_2.lib
+     のように '.' でなく'_'を用いるようにしています。
+
+  ※ gcc の場合は libstlport.5.2.a のように 頭に lib がつき拡張子は.a、
+     またデバッグ版を表す一文字が d でなく g.
+
+□生成されるテストプログラム名
+  ??? を unittest,ehtest とするとき
+  relaseコンパイル         デバッグコンパイル
+  ???_rel_sta_rtsta.exe    ???_dbg_sta_rtsta.exe  static-crt用 staticライブラリ
+  ???_rel_dll_rtsta.exe    ???_dbg_dll_rtsta.exe  static-crt用 dllライブラリ
+  ???_rel_sta_rtdll.exe    ???_dbg_sta_rtdll.exe  dll-crt 用 static ライブラリ
+  ???_rel_dll_rtdll.exe    ???_dbg_dll_rtdll.exe  dll-crt 用 dll ライブラリ
+
+  ???? が上記のファイル名として
+  ????_nmt.exe     シングルスレッド
+  ????_nexcept.exe 例外無
+  ????_nrtti.exe   rtti&例外無
+  ????_nios.exe    iostreams&locale無.
+
+  上記を組み合わせると unittest_rel_sta_rtsta_nmt_nrtti.exe のようにもなる。
+
+
+
+■ソース変更関係
+
+まず vc9 でコンパイルできるバッチを作ってコンパイル通してから、ow 対応をして
+いきました。ある程度 ow で動いてから dmc や他のコンパイラの対応をしました。
+
+今回の修正用に追加したマクロ名は _STLP_KKKK_???? のような名前をつけています。
+
+小さめの修正なら直接書き換えたりもしてますが、コンパイラ(主に ow,dmc) のバグ
+回避で行った部分は _STLP_KKKK_DMOW マクロで切り替ています。
+
+□ コンパイラ共通の変更
+・dll_main.cpp から各種変数定義を s_????.cpp に分離しました。
+　リンク時に未使用バイナリを取り除いてくれるようなコンパイラならマシでしょう
+　が、そうでない古いコンパイラの場合バイナリが太りやすいので..
+　(iostreams を使ってなくてもリンクされるのは嫌だった、と）
+
+・iostreams, locale の初期化関係の調整。
+  グローバル・インスタンスのコンストラクト順の問題もありますが、ow ではグロー
+  バル インスタンスの初期化に不具合がでることがあるようで、それの回避もあり。
+
+  cin,cout,cerr の初期化は少し特殊になっています。いえ もともと特殊ですが...
+  元々の処理が、vc 等一部は #pragmaでコンストラクタが発動しない設定にし、それ
+  以外は iostream宣言のあるヘッダをincludeせずに cin,cout,cerr を istream,
+  ostream 型でなくバッファで用意して iostreams の初期化で placement new で
+  cin,cout,cerrの初期化をしています。dmcやowは型が違う変数だとマングル名が
+  違うものになるようで、 #pragma 等でマングル名の辻褄あわせをしていました。
+
+  今回のdmc,ow 向けの修正では、cin,cout,cerr を本来の型で定義しておき、それら
+  の直後に iostreams の初期化を発動するグローバルインスタンスを配置することで
+  cin,cout,cerr がまずダミー値でコンストラクトしたのち iostreamsの初期化で
+  cin,cout,cerrの本当の初期化が行われるようにしました。
+  ２回コンストラクタ（デストラクタ）が走るのは非常によろしくないですが、
+  とりあえず、動いているようです。
+  なお、2回コンストラクタを回避するため、istream& cin, ostream& cout のように
+  参照定義にしてバッファを使う設定(_STLP_KKKK_USE_CINCOUTCERR_REF) も用意して
+  ます。
+
+・auto_ptr の実装を自前のモノに変更。
+  ow の不具合に対処するため用意したのですが、その確認もあり他のコンパイラでも
+  そのバージョンを使っています。
+
+・_STLP_NO_IOSTREAMS, _STLP_USE_NO_IOSTREAMS, の挙動を若干変更.
+  この２つはほぼ同じ挙動でしたが
+  _STLP_NO_IOSTREAMS     ヘッダのみでバイナリのライブラリをリンクしない設定。
+  _STLP_USE_NO_IOSTREAMS バイナリのライブラリを作る状態でiostreams(locale)関係
+                         を使わない
+  のようにわけました。
+  ※作業初期にハングを起こしていたのが主にiostreams(locale)関係だったため
+
+  なお _STLP_NO_IOSTREAMS は実際には _STLP_KKKK_HEADER_ONLY というマクロを用意
+  して、内部ではそちらを主に使っています。
+
+・ライブラリを作らず、アプリと一緒にライブラリもコンパイル＆リンクというような
+  使い方をする場合、
+    _STLP_KKKK_NO_BUILD_LIB
+  を定義すれば、ライブラリをつくること前提の部分をスキップします。
+
+・_STLP_NO_LOCALE_SUPPORT の修正.
+  stlport v5.2.1 では localeの日本語(CJK)対応が不十分のようです。
+  (unittest で vc でも failed になる)
+
+  日本語環境対応はたいへんそうなのでそれはせず、かわりになるべくlocale 関係を
+  off にできるよう、_STLP_NO_LOCALE_SUPPORT 関係を修正しました。
+  _STLP_NO_LOCALE_SUPPORT を定義すれば、win32用ロケールを使わず dummyロケール
+  のほうをコンパイルするようになります。(デフォルトでは未定義)
+
+
+□ Open Watcom C++ 関係
+
+・Open Watcom C++ 1.9 を対象にしてます。(運がよければ1.8でも通るかもですが)
+
+・グローバル・コンストラクタ関係の生成がおかしいことがあります。
+  たぶんテンプレートを使った型だけかもですが、グローバルで
+     static const string _S_empty_string;
+  これがあるだけでも、起動時 main()くるまでにハングしていました。
+  極力グローバルに変数定義を置かないようにして回避しました。
+
+  ものによっては関数内の static 変数で確保されたバッファがおかしく、
+  関数外のファイルstatic変数にすることで治るものもありました。
+
+・foo<T>::bar(...) のようなクラステンプレートのメンバー参照でエラーになること
+  がありました。とりあえず
+    typedef foo<T> foo_t;
+    foo_t::bar(...)
+  のようにtypedef を１クッションかませると回避できました。
+
+・ _IsConvertible 等 型判定関係が意図通りに働かない。(swapやcopy等に影響)
+  __BORLANDC__ と同じ対処にすることで対応できました。Borland C++サマサマです:)
+
+・暗黙のコピーコンストラクタが必ず定義され使われてしまう模様。
+  auto_ptr 関係でコンパイルが通らなかったり、挙動が変だったのですが、どうも
+  auto_ptr(auto_ptr&) や auto_ptr(auto_ptr_ref const&) 等定義してコピーコンス
+  トラクタは定義していないのに、暗黙で生成されるコピーコンストラクタが使われ
+  ている感じでした。 乗っ取りたくても乗っ取れないので、かなり無作法ですが、
+  auto_ptr(auto_ptr const&) を auto_ptr(auto_ptr&) の挙動で定義しています。
+  このため、誤った代入を (コンパイル時に)エラーにすることができません。
+
+・オプティマイズ無しのデバッグコンパイルでも inline 定義されたものは 
+  inline展開されているようです。class定義内に実装した関数はinline扱いなので
+  それらも inline 展開されてしまうのですが、_STLP_alloc_proxy の swap で
+  inlineネストが深すぎるか何かわかりませんがコード生成がおかしくなることが
+  ありました(コンパイル通るけど実行時にabort)。クラス内のメンバー関数定義を
+  クラス外に移してinlineでない状態にしたところ不具合が回避できました。
+  (外においてもinlineだと駄目). (inlineネストだけでなくクラスネストやちょっ
+  と複雑？なクラステンプレートだから？？？)
+
+・c標準ヘッダで c++形式のcヘッダを読込
+  stlport はどうもコンパイラ側ライブラリで stdio.h をincludeすれば cstdio が
+  読み込まれるような実装を期待しているようなのですが、ow ではそのようになって
+  いません。
+  このため stdio.h をincludeした場合、stlportのstl/_cstdio.h が読み込まれず、
+  辻褄合わせが破綻しました。
+
+  stdio.h 等 c標準ヘッダ側で対応する c++形式のcヘッダを先に読み込むように
+  して対処しました。(_STLP_KKKK_H_INCLUDE_NEW_C_HEADERS でon/off)
+
+・8.3形式のヘッダファイルを用意.
+  ow は開発環境としても dos を対象にしているようで、ヘッダファイルは
+  8.3形式で収まる短い名前になっています。
+  ソース側で長い名前が使われた場合は _ialias.h の pargma のエイリアス定義を
+  もとに 短い名前に変換して include、できなければ 長い名前のまま include 
+  しているようです。
+
+  この、長い名前より先に 短い名前で検索されるのがミソで、一部ヘッダが
+  stlport のでなく watcom 本来のヘッダが直接includeされてしまう原因でした。
+
+  対策としては watcom 用の 8.3 形式ファイルを用意しました。
+
+  また、_ialias.h は暗黙に最初に include されているようなのですが、
+  コンパイラのコマンドラインオプションで -D__IALIAS_H_INCLUDED とすることで
+  読み込み済み扱いにして、ヘッダのエイリアスを無効化することもできます。
+
+・ノードアロケータをちゃんと修正していないので、_STLP_USE_NEWALLOC か 
+  _STLP_USE_MALLOC を定義する必要があります。
+
+・返り値にのみテンプレートパラメータのあるメンバー関数テンプレートがうまく
+  働かないようで bitset の to_string は諦めて string to_string() const に。
+  bitset はストリーム関係もちゃんと動作してません.
+
+・wcin,wcout,wcerr が機能しません。
+　初期化からうまくいっていないようですが、ハング(NULLポインタアクセス)だけ
+　回避して、放置状態です。
+
+・ehtest はコンパイルは通したけれど実行するとハングする状態です。
+
+・その他もろもろ...
+
+
+□ Digitalmars C++ 関係
+
+・コンパイラとして v8.56 (dm856c.zip）を対象にしています。
+  また optlink については それより新しいバージョンが必要です。
+
+  2013-05現在、公開されている optlink のソースをコンパイルする必要があります。
+  最新にすると optlink のハングやデバッグ用の -g オプションの不具合がマシに
+  なります。
+  ただ最新にしても、-gオプションを指定した場合 (量的に緩和されてる感じですが)
+  大量の名前が使われていると
+     Error 168: >64K Global Types 
+  等のエラーが出るのは変わりません（ああやっぱりハングも有りでした）
+  ※ unittest関係は、ファイル別に exe を作るのは容易いので、そのようにして
+    デバッガを使っていました。
+
+・dmc でコンパイルできるのは、static-crt・staticライブラリの release、
+  debug版です。dll 版や、stldbg版 のコンパイルは通せてません。
+  また unittest は debug 版ではリンクでエラーになります。-gをやめれば
+  debug版もコンパイル＆実行できますが現状-g付にしてます。
+  ehtest はコンパイルを無理やり通したけれど実行するとハングする状態。
+  ※ dllのライブラリは実はコンパイル通るかもですが、dll のunittest は例
+     によって link がエラー履いたりハングしたりで放置.
+  ※ unittest をデバッグ-g付で試すときは、mk_stlp.bat のunittestの対象
+    ファイルを減らして試していました。
+
+・コンパイルが通っていても、unittestでスキップしていたり結果のおかしい
+  項目も少なからず残っている状態です。(watcomも同様だけど）
+  (bitset のストリーム関係とかばっさりスキップ)
+
+・もともと __DMC__ を用いて結構対処入ってたのですが、もう不要そうなのも多そう
+  だったので一旦それらを __STLP_KKKK_OLD_DMC__ に置換し、必要に応じて__DMC__
+  に戻したりしました。(dll対応するなら、もっと戻さないと駄目なのかも)
+
+・hashtable にメンバー関数テンプレート
+    size_type _M_bkt_num_key(const _KT& __key) const;
+    size_type _M_bkt_num_key(const _KT& __key, size_type __n) const;
+  がありますが、_M_bkt_num_key(__key) が使われると なぜか適当な値の第二引数で
+  _M_bkt_num_key(__key, __n) のほうが直接呼び出されてしまうようでした。
+
+  とりあえず、_M_bkt_num_key(__key) の呼び出しを
+    _M_bkt_num_key(__key, bucket_count())
+  にすることで回避しました。
+
+・ノードアロケータをちゃんと修正していないので、_STLP_USE_NEWALLOC か 
+  _STLP_USE_MALLOC を定義する必要があります。
+
+・ -gg オプションでファイル static 関数をグローバル化してみたりしてた都合、
+  名前の衝突した static 関数を適当に変名しています。
+
+
+○ optlinkのコンパイル
+  まず
+    https://github.com/DigitalMars/optlink
+  より ソースを入手 (私はzipをダウンロード).
+  また 
+    http://www.robpol86.com/index.php/ImageCFG
+  より imagecfg.exe というツールをダウンロードして下さい。
+
+  コンパイルには dmc と vc(9) が必要。(express版 でいけるかは未確認）。
+  vc の nmake と ml(マクロアセンブラ) を使っているようです。
+  dmc は必ず ドライブのルートに
+    \dm
+  としてインストールされていること.
+  ※ \dm にインストールしていない場合は、別途インストールするか、
+    win7以降ならば mklink /d \dm \hoge\hage\dm でリンクするなりして.
+
+  dmcとvcのパスを通してください。
+  (vcvars32.bat 実行後 set path=x:\dm\bin;%path% をするなり）
+  また imagecfg.exe をパスの通ったところにおいてください。
+  ※ 用途的に dm\bin に入れちゃうのが楽かも...
+
+  ダウンロードしたzip を \dm があるドライブの適当なフォルダに解凍。
+  一応 開発者と同じ状態にするならば
+    \cbx
+  というフォルダを用意してそこに展開.
+
+  その中の
+    build_optlink.bat
+  を実行。コンパイルに成功していれば
+    optlinkc\os2link\objnt\link.exe
+  ができているので、dm\bin に上書きコピーしてください。
+  (一応古い link.exe は退避しておいたほうがいいとは思います）
+
+
+□ VC 関係
+  vc9を主に使っていますが、他のバージョンでもコンパイルできます。
+  本家で動いていたものだし、一番、制限が少ないです。
+  他では動かないことも多い stldbg や ehtest が動きます。
+
+  unittest はvcでエラーになるものは他でもエラーになってても放置。
+  stlport v5.2.1は localeの日本語(CJK)対応が不十分のようです。
+
+  VC で問題なくても watcomやdm対応部分のチェックのため、そちらを
+  コンパイルするように設定しています。
+  ので、効率を落としているかもしれません。
+
+
+□ MinGW 関係
+  これも本家で動いていたものなので、比較的楽でしたが、
+  ・vcのCランタイムライブラリdllを使うので、static RT版ライブラリは作れない。
+  ・デフォルトの C++ライブラリの使用をオフにする必要があるので
+    必要なライブラリを自分で指定しなきゃいけない
+  というもともとの制限があるので、stlport を使う敷居が高めです。
+
+  自分が試した MinGW は TDM 版のみです。
+  32ビット用ライブラリの作成に TDMの32bit版を
+  64ビット用ライブラリの作成に TDMの64bit版を
+  使用しています。TDM64はオプションで64ビットexeだけでなく32ビットexeも生成
+  できますが、バッチ設定が面倒になりそうだったのでそれは利用していないです。
+
+  64ビット版は atomic 関係をビルドイン命令使って対処。(書いてはみたがあってる
+  かは未確認。test関係で怒られてなさそうなので多分大丈夫、と思いたい）
+
+  わりとすんなりだった印象ですが、ちょっとハマったのは リンクでのライブラリ
+  指定。なるべくプリミティブ（低レベル）なライブラリほど後ろに記述しなきゃ
+  いけないようですが、ライブラリ同志が互いに相手に所属する名前を使っている
+  場合、どちらを後先にしてもエラーになってしまい…… 解法は片方のライブラリ
+  をもう片方の前後に(-lfoo -lbar -lfoo のように)記述するだけ、でした。
+  （hello.cpp を --verbose でコンパイルしてなるほど、と）
+
+
+□ Borland C++ v5.5.1
+・Watcom 対応していて 古い Borland C++ 向けの対応ソースが非常にありがたかった
+  のでついつい ... 5.5.1 はさすがに古すぎるようで細々修正が必要でしたが。
+
+  release, debug版だけでなくstldbg 版もコンパイル通るようだし、ehtest も 
+  debug版だと動く模様。(ehtestはrelease版だと実行途中にハング)
+
+  ただターゲットは static cランタイム使用の staticライブラリ版のみです。
+  dll版は成功してません。(もとよりdll版crtがないバージョンだし）。
+
+  コンパイラとしては古くいろいろC++(文法)としては問題を抱えていますが、stlport
+  側でわりと問題回避の対応がなされていて、とりあえずコンパイルは通しやすいよう
+  です。
+
+  修正は watcom 側修正の後だったこともありあまりせずにすみましたが
+  ・5.5.1ではまだ メンバー変数配列で要素0の指定ができないため、
+    bitset のメンバーの配列変数 _M_w の添字に +1 して(メモリーを無駄使いして)
+    無理やり回避してます。
+  ・wchar_t系のcライブラリ関数が不足してます。
+  ・wchar_t 系 iostreams は watcom 同様まともに動かなさそう。
+   （wcin,wcout,wcerrでオープンできていない）。
+  ・fstream のシーク関係がunittestで失敗している模様.
+
+  5.5.1はソースよりもコマンドライン指定が古いタイプだったりで面倒でした。
+
+  デバッグするときは、ソースを相対パスでしていた都合、カレントディレクトリを
+  obj\bcc_x86\unitest_dbg_sta_rtsta にしてそこのexeを td32 で動かせば
+  ソース付きでみれました（がもうデバッガの使い方ろくに覚えてなく）
+  (絶対パスにしたらも少し楽になるかな）
+
+
+
+■その他
+
+□ sample/
+  作成した stlport ライブラリを使ってみるサンプルです。
+  ソースはただの hello world プログラム。
+  本題は各コンパイラ別のバッチのほう。
+
+
+□ test/KKKK/stlp_macname_chk.cpp について
+  コンパイル時に stlport 関係のマクロがどう設定されているか確認するために
+  用意したプログラムです（他のツールで生成したもの）。
+
+  注意としては、このソースのコンパイル時点で、ヘッダ状態を抜けているので
+  std の置換が行われるため、_STLP_VENDOR_STD, _STLP_VENDOR_CSTD 等一部
+  定義については実際にヘッダで使われるときとは異なる内容になっています。
+  まあ、その程度のものだと思って見てください。
+

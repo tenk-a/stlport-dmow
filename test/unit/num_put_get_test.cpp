@@ -408,7 +408,7 @@ void NumPutGetTest::num_put_float()
       complete_digits(digits);
       CPPUNIT_CHECK(output == string("1.23457e+") + digits );
     }
-    
+
     {
       ostringstream ostr;
       ostr << setprecision(200) << 1.23457e+17f;
@@ -416,7 +416,7 @@ void NumPutGetTest::num_put_float()
       output = reset_stream(ostr);
       CPPUNIT_CHECK( output.size() < 200 );
     }
-    
+
     {
       ostringstream ostr;
       ostr << setprecision(200) << numeric_limits<float>::min();
@@ -424,7 +424,7 @@ void NumPutGetTest::num_put_float()
       output = reset_stream(ostr);
       CPPUNIT_CHECK( output.size() < 200 );
     }
-    
+
     {
       ostringstream ostr;
       ostr << fixed << 1.23457e+17f;
@@ -1065,7 +1065,7 @@ void NumPutGetTest::pointer()
     void *p = (void *)0xff00;
     sprintf( buf, "%p", p );
     // cerr << buf << endl;
-    // Hmmm, I see 0xff00 on box with 32-bits address; pointer like 'unsigned hex'? 
+    // Hmmm, I see 0xff00 on box with 32-bits address; pointer like 'unsigned hex'?
     if ( sizeof( p ) == 2 ) {
       CPPUNIT_ASSERT( strcmp( buf, "0xff00" ) == 0 );
     } else if ( sizeof( p ) == 4 ) {
@@ -1145,7 +1145,13 @@ void NumPutGetTest::fix_float_long()
     double f;
     istr >> f;
     CPPUNIT_CHECK( !istr.fail() );
-    if ( int(numeric_limits<double>::digits10) < 83 ) {
+ #ifdef __WATCOMC__
+    typedef numeric_limits<double>  numeric_limits_double;
+    if ( int(numeric_limits_double::digits10) < 83 )
+ #else
+    if ( int(numeric_limits<double>::digits10) < 83 )
+ #endif
+    {
       double delta = 1.0;
       for ( int ee = 83 - int(numeric_limits<double>::digits10); ee > 0; --ee ) {
         delta *= 10.0;
@@ -1191,7 +1197,13 @@ void NumPutGetTest::fix_float_long()
     double f;
     istr >> f;
     CPPUNIT_CHECK( !istr.fail() );
-    if ( int(numeric_limits<double>::digits10) < int(numeric_limits<double>::max_exponent10) ) {
+ #ifdef __WATCOMC__
+    typedef numeric_limits<double>  numeric_limits_double;
+    if ( int(numeric_limits_double::digits10) < int(numeric_limits_double::max_exponent10) )
+ #else
+    if ( int(numeric_limits<double>::digits10) < int(numeric_limits<double>::max_exponent10) )
+ #endif
+    {
       double delta = 9.0;
       for ( int ee = int(numeric_limits<double>::max_exponent10) - int(numeric_limits<double>::digits10); ee > 0; --ee ) {
         delta *= 10.0;

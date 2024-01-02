@@ -1,0 +1,96 @@
+STLport ビルド・システム
+========================
+
+STLport ビルド・システムの基本的な概要.
+
+
+
+今のところ、使い慣れているのは nmake 関係だけ。
+なので MSVC,eVC, ICC/win32 用. 他の環境では違うかもしれない.
+
+
+概要：
+
+ビルドで注意すべき基本は3点.
+１．使用する make ツール. (現時点では make(GNU make) か nmake(Microsoft))
+２．使用するコンパイラ.
+３．ターゲット・タイプ、アプリケーションかライブラリか
+
+それ以外もに、３つの STLport モード "release","debug","STLdebug"、
+そして、それぞれが"スタティック"リンクか"ダイナミック"リンクかの2モード.
+
+ビルドシステム全体はソースツリーのbuild/ディレクトリ下に配置.
+
+そこに、
+  Makefile/ (ビルドシステムの基本がある)
+  lib/      (STLportライブラリをビルドするためのファイルがある)
+  test/     (テストをビルドするためのファイルがある)
+
+ (TODO: misc/ フォルダは何?).
+
+
+
+nmake ：
+
+nmake/ 下に、各コンパイラ共通のサポートファイルと
+一般的なルールを定義したファイルがある.
+
+さらにその下に app/ と lib/ があり、中身は nmake/直下と
+同様の構成を持つ.
+
+それぞれのディレクトリには、アプリケーションまたはライブラリに
+特化した各コンパイラ別の設定ファイルが置かれている.
+
+
+３つの STLport モードとstatic/dinamicリンクの違いについては
+nmake変数が使われ、ファイル構成には現れない.
+
+たとえば、eVC4向けに STLportライブラリをコンパイルするとき
+コンパイル手順は
+  nmake /f evc4.mak
+を build/lib フォルダ下で実行する.
+そこから 以下のようなinclude treeが作られる:
+
+build/lib/evc.mak
+  build/Makefiles/config.mak               ; configure.bat が作ったもの.
+  build/Makefiles/nmake/top.mak
+    build/Makefiles/config.mak
+    build/Makefiles/nmake/sysid.mak
+    build/Makefiles/nmake/sys.mak
+      build/Makefiles/nmake/evc4.mak       ; evc4 from config
+        build/Makefiles/nmake/evc-common.mak
+    build/Makefiles/nmake/targetdirs.mak
+    build/Makefiles/nmake/extern.mak
+    build/Makefiles/nmake/targets.mak
+      build/Makefiles/nmake/rules-o.mak
+    build/Makefiles/nmake/clean.mak
+    build/Makefiles/nmake/lib/top.mak      ; アプリケーション用ビルドでは app/top.mak
+      build/Makefiles/nmake/lib/macro.mak
+      build/Makefiles/nmake/lib/evc4.mak   ; evc4 from config
+        build/Makefiles/nmake/lib/evc-common.mak
+      build/Makefiles/nmake/lib/rules-so.mak
+      build/Makefiles/nmake/lib/rules-a.mak
+      build/Makefiles/nmake/lib/rules-install-so.mak
+      build/Makefiles/nmake/lib/rules-install-a.mak
+      build/Makefiles/nmake/lib/clean.mak
+
+TODO ： build/Makefiles/config.mak は build/lib/evc.mak と
+        build/Makefiles/nmake/top.mak からincludeされる.
+
+
+
+周知の問題：
+
+・nmake:
+    MSC はメイクファイル用の依存関係情報の生成をサポートしない.
+    オブジェクトファイルの直接のソースファイルを修正しない限り
+    再コンパイルがおきない!
+    ので、再コンパイルされるべきオブジェクトファイルを削除するか
+    'make clean' をすることになる.
+
+・There are targets to only install e.g. the shared STLdebug version
+ but there is no such thing for making clean. This would be useful 
+ in the context of above issue for making a selective clean only.
+ (例えば共有ライブラリ(DLL) STLdebug バージョンのみをインストール
+  できるが、クリーンはされない. これ(make clean)は選択的に削除するのに
+  するのに比べれば有用だろう.)

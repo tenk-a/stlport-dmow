@@ -180,7 +180,7 @@ struct iterator_traits<_Tp*> {
   typedef _Tp&                        reference;
 };
 
-#  if defined (__BORLANDC__)
+#  if defined (__BORLANDC__) || defined(__WATCOMC__)
 template <class _Tp>
 struct iterator_traits<_Tp* const> {
   typedef random_access_iterator_tag  iterator_category;

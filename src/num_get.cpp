@@ -17,9 +17,11 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <locale>
-#include <istream>
 #include <algorithm>
+#include <istream>
 
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -114,6 +116,8 @@ template class num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t
 #endif
 
 _STLP_END_NAMESPACE
+
+#endif
 
 // Local Variables:
 // mode:C++

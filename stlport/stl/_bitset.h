@@ -72,7 +72,7 @@ class _STLP_CLASS_DECLSPEC _Bs_G
   public:
     //returns the number of bit set within the buffer between __beg and __end.
     static size_t _S_count(const unsigned char *__beg, const unsigned char *__end)
-#if defined (_STLP_USE_NO_IOSTREAMS)
+#if defined (_STLP_KKKK_USE_HEADER_ONLY) // #if defined (_STLP_USE_NO_IOSTREAMS)
     {
       size_t __result = 0;
       for (; __beg != __end; ++__beg) {
@@ -87,7 +87,7 @@ class _STLP_CLASS_DECLSPEC _Bs_G
 #endif
     // Mapping from 8 bit unsigned integers to the index of the first one bit set:
     static unsigned char _S_first_one(unsigned char __x)
-#if defined (_STLP_USE_NO_IOSTREAMS)
+#if defined (_STLP_KKKK_USE_HEADER_ONLY) // #if defined (_STLP_USE_NO_IOSTREAMS)
     {
       for (unsigned char i = 0; i < (sizeof(unsigned char) * 8); ++i) {
         if ((__x & (1 << i)) != 0) { return i; }
@@ -107,7 +107,11 @@ template<size_t _Nw>
 struct _Base_bitset {
   typedef unsigned long _WordT;
 
+ #if defined (__BORLANDC__) && __BORLANDC__ < 0x560
+  _WordT _M_w[_Nw+1];
+ #else
   _WordT _M_w[_Nw];                // 0 is the least significant word.
+ #endif
 
   _Base_bitset() { _M_do_reset(); }
 
@@ -563,7 +567,7 @@ public:
 
   unsigned long to_ulong() const { return this->_M_do_to_ulong(); }
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS) && !defined(__WATCOMC__)
   template <class _CharT, class _Traits, class _Alloc>
   basic_string<_CharT, _Traits, _Alloc> to_string() const {
     basic_string<_CharT, _Traits, _Alloc> __result;
@@ -649,12 +653,12 @@ public:
     }
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
+# if defined (_STLP_MEMBER_TEMPLATES)
   template <class _CharT, class _Traits, class _Alloc>
   void _M_copy_to_string(basic_string<_CharT, _Traits, _Alloc>& __s) const
-#else
+# else
   void _M_copy_to_string(string& __s) const
-#endif
+# endif
   {
     __s.assign(_Nb, '0');
 
@@ -664,7 +668,7 @@ public:
     }
   }
 
-#if !defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_WCHAR_T)
+# if !defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_WCHAR_T)
   void _M_copy_to_string(wstring& __s) const {
     __s.assign(_Nb, '0');
 
@@ -673,7 +677,7 @@ public:
         __s[_Nb - 1 - __i] = '1';
     }
   }
-#endif
+# endif
 
 #if defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
   bitset<_Nb> operator&(const bitset<_Nb>& __y) const {
@@ -740,6 +744,7 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
+#   if  defined (_STLP_LINK_TIME_INSTANTIATION)
 template <class _CharT, class _Traits, size_t _Nb>
 basic_istream<_CharT, _Traits>&  _STLP_CALL
 operator>>(basic_istream<_CharT, _Traits>& __is, bitset<_Nb>& __x);
@@ -747,6 +752,7 @@ operator>>(basic_istream<_CharT, _Traits>& __is, bitset<_Nb>& __x);
 template <class _CharT, class _Traits, size_t _Nb>
 basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os, const bitset<_Nb>& __x);
+#   endif
 
 #  else
 

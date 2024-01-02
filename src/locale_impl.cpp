@@ -17,6 +17,8 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <locale>
 #include <algorithm>
 #include <typeinfo>
@@ -28,7 +30,11 @@
 
 _STLP_BEGIN_NAMESPACE
 
+# if defined (_STLP_KKKK_DMOW)
+static char const* const _Nameless = "*";
+#else
 static const string _Nameless("*");
+#endif
 
 static inline bool is_C_locale_name (const char* name)
 { return ((name[0] == 'C') && (name[1] == 0)); }
@@ -52,45 +58,57 @@ size_t locale::id::_S_max = 27;
 
 static void _Stl_loc_assign_ids();
 
-static _Stl_aligned_buffer<_Locale_impl::Init> __Loc_init_buf;
+# if defined (_STLP_KKKK_DMOW)
+static long _S_Locale_impl_count = 0;
+#define _LOCALE_IMPL_INIT()     do { if (_STLP_ATOMIC_INCREMENT(&_S_Locale_impl_count) == 1) _Locale_impl::_S_initialize(); } while (0)
+#define _LOCALE_IMPL_UNINIT()   do { if (_STLP_ATOMIC_DECREMENT(&_S_Locale_impl_count) == 0) _Locale_impl::_S_uninitialize(); } while (0)
+_Locale_impl::_Init::_Init() { _LOCALE_IMPL_INIT(); }
+_Locale_impl::_Init::~_Init() { _LOCALE_IMPL_UNINIT(); }
+void _Locale_impl::_Init::init() { static _Locale_impl::_Init s_locale_init; }
+#else
+static _Stl_aligned_buffer<_Locale_impl::_Init> __Loc_init_buf;
 
-_Locale_impl::Init::Init() {
+_Locale_impl::_Init::_Init() {
   if (_M_count()._M_incr() == 1) {
     _Locale_impl::_S_initialize();
   }
 }
 
-_Locale_impl::Init::~Init() {
+_Locale_impl::_Init::~_Init() {
   if (_M_count()._M_decr() == 0) {
     _Locale_impl::_S_uninitialize();
   }
 }
 
-_Refcount_Base& _Locale_impl::Init::_M_count() const {
+_Refcount_Base& _Locale_impl::_Init::_M_count() const {
   static _Refcount_Base _S_count(0);
   return _S_count;
 }
 
+#define _LOCALE_IMPL_INIT()     new (&__Loc_init_buf) _Init()
+#define _LOCALE_IMPL_UNINIT()   (&__Loc_init_buf)->~_Init()
+#endif
+
 _Locale_impl::_Locale_impl(const char* s)
   : _Refcount_Base(0), name(s), facets_vec() {
+  _LOCALE_IMPL_INIT();
   facets_vec.reserve( locale::id::_S_max );
-  new (&__Loc_init_buf) Init();
 }
 
 _Locale_impl::_Locale_impl( _Locale_impl const& locimpl )
   : _Refcount_Base(0), name(locimpl.name), facets_vec() {
+  _LOCALE_IMPL_INIT();
   for_each( locimpl.facets_vec.begin(), locimpl.facets_vec.end(), _get_facet);
   facets_vec = locimpl.facets_vec;
-  new (&__Loc_init_buf) Init();
 }
 
 _Locale_impl::_Locale_impl( size_t n, const char* s)
   : _Refcount_Base(0), name(s), facets_vec(n, 0) {
-  new (&__Loc_init_buf) Init();
+  _LOCALE_IMPL_INIT();
 }
 
 _Locale_impl::~_Locale_impl() {
-  (&__Loc_init_buf)->~Init();
+  _LOCALE_IMPL_UNINIT();
   for_each( facets_vec.begin(), facets_vec.end(), _release_facet);
 }
 
@@ -98,6 +116,9 @@ _Locale_impl::~_Locale_impl() {
 // any locales are constructed.  (Meaning that it must be called when
 // the I/O library itself is initialized.)
 void _STLP_CALL _Locale_impl::_S_initialize() {
+# if defined (_STLP_KKKK_DMOW)
+  _Locale_init();
+# endif
   _Stl_loc_assign_ids();
   make_classic_locale();
 }
@@ -197,7 +218,7 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* &name, char *bu
         wct  = new ctype_byname<wchar_t>(__lwct);
       }
       _STLP_UNWIND(_STLP_PRIV __release_ctype(__lwct));
-      
+
       _Locale_codecvt *__lwcvt = _STLP_PRIV __acquire_codecvt(name, buf, hint, &__err_code);
       if (__lwcvt) {
         _STLP_TRY {
@@ -478,7 +499,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* &name, char 
           wpunct  = new moneypunct_byname<wchar_t, false>(__wmon);
         }
         _STLP_UNWIND(_STLP_PRIV __release_monetary(__wmon));
-      
+
         _Locale_monetary *__wimon = _STLP_PRIV __acquire_monetary(name, buf, hint, &__err_code);
         if (!__wimon) {
           delete wpunct;
@@ -596,12 +617,20 @@ static locale *_Stl_classic_locale = 0;
 static locale *_Stl_global_locale = 0;
 
 locale* _Stl_get_classic_locale() {
-  static _Locale_impl::Init init;
+# if defined (_STLP_KKKK_DMOW)
+  _Locale_impl::_Init::init();
+# else
+  static _Locale_impl::_Init init;
+# endif
   return _Stl_classic_locale;
 }
 
 locale* _Stl_get_global_locale() {
-  static _Locale_impl::Init init;
+# if defined (_STLP_KKKK_DMOW)
+  _Locale_impl::_Init::init();
+# else
+  static _Locale_impl::_Init init;
+# endif
   return _Stl_global_locale;
 }
 
@@ -618,14 +647,22 @@ locale* _Stl_get_global_locale() {
 #  pragma init_seg(lib)
 #endif
 
-static ios_base::Init _IosInit;
+#if ! defined(_STLP_KKKK_DMOW) // to iostream.cpp
+static ios_base::_Init  _S_ios_base_Init;
+#endif
+
+#if defined(_STLP_KKKK_DMOW)
+// The classic locale contains every facet that belongs to a category.
+static _Stl_aligned_buffer<_Locale_impl> _Locale_classic_impl_buf = {0};
+#endif
 
 void _Locale_impl::make_classic_locale() {
   // This funcion will be called once: during build classic _Locale_impl
-
   // The classic locale contains every facet that belongs to a category.
+#if !defined(_STLP_KKKK_DMOW)
   static _Stl_aligned_buffer<_Locale_impl> _Locale_classic_impl_buf;
-  _Locale_impl *classic = new(&_Locale_classic_impl_buf) _Locale_impl("C");
+#endif
+  _Locale_impl *classic = new((void*)&_Locale_classic_impl_buf) _Locale_impl("C");
 
   locale::facet* classic_facets[] = {
     0,
@@ -763,3 +800,4 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 
+#endif

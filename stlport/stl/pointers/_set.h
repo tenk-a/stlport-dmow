@@ -25,7 +25,7 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined (__BORLANDC__) || defined (__DMC__)
+#if defined (__BORLANDC__) || defined (__STLP_KKKK_OLD_DMC__)
 #  define typename
 #endif
 
@@ -551,7 +551,7 @@ public:
   }
 };
 
-#if defined (__BORLANDC__) || defined (__DMC__)
+#if defined (__BORLANDC__) || defined (__STLP_KKKK_OLD_DMC__)
 #  undef typename
 #endif
 

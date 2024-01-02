@@ -359,7 +359,7 @@ struct _TrivialNativeTypeCopy {
 
   typedef typename __bool2type<(sizeof(_Src) == sizeof(_Dst))>::_Ret _SameSize;
 
-#if !defined (__BORLANDC__) || (__BORLANDC__ < 0x564)
+#if (!defined (__BORLANDC__) || (__BORLANDC__ < 0x564)) && !defined (__WATCOMC__)
   typedef typename _IsIntegral<_Src>::_Ret _Int1;
 #else
   typedef typename _UnQual<_Src>::_Type _UnQuSrc;
@@ -373,7 +373,7 @@ struct _TrivialNativeTypeCopy {
   typedef typename _Land2<_Rat1, _Rat2>::_Ret _BothRats;
 
   typedef typename _Lor2<_BothInts, _BothRats>::_Ret _BothNatives;
-#if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)
+#if (!defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)) && !defined (__WATCOMC__)
   typedef typename _Land2<_BothNatives, _SameSize>::_Ret _Trivial2;
 #else
   typedef typename _IsUnQual<_Dst>::_Ret _UnQualDst;
@@ -385,7 +385,7 @@ struct _TrivialNativeTypeCopy {
 template <class _Src, class _Dst>
 struct _TrivialCopy {
   typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
-#  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+#  if (!defined (__BORLANDC__) || (__BORLANDC__ != 0x560)) && !defined (__WATCOMC__)
   typedef typename __type_traits<_Src>::has_trivial_assignment_operator _Tr1;
 #  else
   typedef typename _UnConstPtr<_Src*>::_Type _UnConstSrc;
@@ -400,7 +400,7 @@ struct _TrivialCopy {
 template <class _Src, class _Dst>
 struct _TrivialUCopy {
   typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
-#  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+#  if (!defined (__BORLANDC__) || (__BORLANDC__ != 0x560)) && !defined (__WATCOMC__)
   typedef typename __type_traits<_Src>::has_trivial_copy_constructor _Tr1;
 #  else
   typedef typename _UnConstPtr<_Src*>::_Type _UnConstSrc;
@@ -422,7 +422,7 @@ struct _DefaultZeroValue {
 
 template <class _Tp>
 struct _TrivialInit {
-#  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+#  if (!defined (__BORLANDC__) || (__BORLANDC__ != 0x560)) && !defined (__WATCOMC__)
   typedef typename __type_traits<_Tp>::has_trivial_default_constructor _Tr1;
 #  else
   typedef typename _UnConstPtr<_Tp*>::_Type _Tp1;
@@ -506,7 +506,7 @@ inline _TrivialUCopy<_Src, _Dst> _UseTrivialUCopy(_Src*, _Dst*)
 { return _TrivialUCopy<_Src, _Dst>(); }
 
 #if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (__BORLANDC__) || \
-    defined (__DMC__)
+    defined (__STLP_KKKK_OLD_DMC__) //|| defined (__WATCOMC__)
 struct _NegativeAnswer {
   typedef __false_type _Ret;
   static _Ret _Answer() { return _Ret(); }
@@ -574,7 +574,7 @@ struct __stlport_class
 template <class _Tp>
 struct _IsSTLportClass {
   typedef typename _IsConvertible<_Tp, __stlport_class<_Tp> >::_Ret _Ret;
-#if defined (__BORLANDC__)
+#if defined (__BORLANDC__) || defined (__WATCOMC__)
   enum { _Is = _IsConvertible<_Tp, __stlport_class<_Tp> >::value };
 #endif
 };
@@ -583,7 +583,7 @@ struct _IsSTLportClass {
 template <class _Tp>
 struct _SwapImplemented {
   typedef typename _IsSTLportClass<_Tp>::_Ret _Ret;
-#  if defined (__BORLANDC__)
+#  if defined (__BORLANDC__) || defined (__WATCOMC__)
   enum { _Is = _IsSTLportClass<_Tp>::_Is };
 #  endif
 };
@@ -610,7 +610,7 @@ _STLP_END_NAMESPACE
       defined (__SUNPRO_CC) ||  \
      (defined (__MWERKS__) && (__MWERKS__ <= 0x2303)) || \
      (defined (__sgi) && defined (_COMPILER_VERSION)) || \
-      defined (__DMC__)
+      defined (__STLP_KKKK_OLD_DMC__)
 #    define _STLP_IS_POD_ITER(_It, _Tp) __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()
 #  else
 #    define _STLP_IS_POD_ITER(_It, _Tp) typename __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()

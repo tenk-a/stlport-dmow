@@ -236,17 +236,17 @@ public:
   // prescribed by the standard.  The static initializer object (on
   // implementations where such a thing is required) is declared in
   // <iostream>
-  class _STLP_CLASS_DECLSPEC Init
+  class _STLP_CLASS_DECLSPEC _Init
   {
     public:
-      Init();
-      ~Init();
+      _Init();
+      ~_Init();
     private:
       static long _S_count;
       friend class ios_base;
   };
 
-  friend class Init;
+  friend class _Init;
 
 public:
 # ifndef _STLP_NO_ANACHRONISMS

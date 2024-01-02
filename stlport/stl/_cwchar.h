@@ -61,6 +61,9 @@ typedef long int wint_t;
 #    if defined(__OpenBSD__)
 typedef _BSD_WINT_T_ wint_t;
 #    endif /* __OpenBSD__ */
+#    if defined (__BORLANDC__) && __BORLANDC__ < 0x560
+#      include _STLP_NATIVE_C_HEADER(wchar.h)
+#    endif
 #  else
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <wchar.h>
@@ -264,10 +267,10 @@ using _STLP_VENDOR_CSTD::wcstok;
 
 #      endif
 
-#      if !defined (_STLP_WCE_NET)
+#        if !defined (_STLP_WCE_NET)
 using _STLP_VENDOR_CSTD::wcscoll;
 using _STLP_VENDOR_CSTD::wcsxfrm;
-#      endif
+#        endif
 using _STLP_VENDOR_CSTD::wcscat;
 using _STLP_VENDOR_CSTD::wcsrchr;
 using _STLP_VENDOR_CSTD::wcscmp;
@@ -291,7 +294,9 @@ using _STLP_VENDOR_CSTD::wcstol;
 
 #      if !(defined (_STLP_WCHAR_SUNPRO_EXCLUDE) || defined (_STLP_WCHAR_HPACC_EXCLUDE) )
 using _STLP_VENDOR_CSTD::wcsstr;
+#        if ! defined (__BORLANDC__) || __BORLANDC__ > 0x551
 using _STLP_VENDOR_CSTD::wmemchr;
+#        endif
 
 #        if !defined (_STLP_WCHAR_BORLAND_EXCLUDE)
 #            if !defined (_STLP_WCE_NET)
@@ -306,16 +311,23 @@ using _STLP_VENDOR_CSTD::wscanf;
 #        endif
 
 #        if defined (__BORLANDC__) && !defined (__linux__)
+#          if __BORLANDC__ > 0x551
 inline wchar_t* _STLP_wmemcpy(wchar_t* __wdst, const wchar_t* __wsrc, size_t __n)
 { return __STATIC_CAST(wchar_t*, _STLP_VENDOR_CSTD::wmemcpy(__wdst, __wsrc, __n)); }
 inline wchar_t* _STLP_wmemset(wchar_t* __wdst, wchar_t __wc, size_t __n)
-{ return __STATIC_CAST(wchar_t*, _STLP_VENDOR_CSTD::memset(__wdst, __wc, __n)); }
-#          undef wmemcpy
-#          undef wmemset
+{ return __STATIC_CAST(wchar_t*, _STLP_VENDOR_CSTD::wmemset(__wdst, __wc, __n)); }
+#            undef wmemcpy
+#            undef wmemset
 inline wchar_t* wmemcpy(wchar_t* __wdst, const wchar_t* __wsrc, size_t __n)
 { return _STLP_wmemcpy(__wdst, __wsrc, __n); }
 inline wchar_t* wmemset(wchar_t* __wdst, wchar_t __wc, size_t __n)
 { return _STLP_wmemset(__wdst, __wc, __n); }
+#          else
+inline wchar_t* wmemcpy(wchar_t* __wdst, const wchar_t* __wsrc, size_t __n)
+{ return __STATIC_CAST(wchar_t*, memcpy(__wdst, __wsrc, __n * sizeof(wchar_t))); }
+inline wchar_t* wmemset(wchar_t* __wdst, wchar_t __wc, size_t __n)
+{ return __STATIC_CAST(wchar_t*, memset(__wdst, __wc, __n * sizeof(wchar_t))); }
+#          endif
 #        elif defined (__DMC__)
 inline wchar_t* wmemcpy(wchar_t* __RESTRICT __wdst, const wchar_t* __RESTRICT __wsrc, size_t __n)
 { return __STATIC_CAST(wchar_t*, memcpy(__wdst, __wsrc, __n * sizeof(wchar_t))); }

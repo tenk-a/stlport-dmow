@@ -16,6 +16,7 @@
 #include <string>
 
 #include "cppunit/cppunit_proxy.h"
+#include <cstdio>
 
 #if defined (__MVS__)
 const char star = 92;
@@ -301,50 +302,42 @@ void HashTest::hset2()
   hash_set<int, hash<int>, equal_to<int> > s;
   pair<hash_set<int, hash<int>, equal_to<int> >::iterator, bool> p = s.insert(42);
   CPPUNIT_ASSERT( p.second );
-  CPPUNIT_ASSERT( *(p.first) == 42 );
+  CPPUNIT_CHECK( *(p.first) == 42 );
 
   p = s.insert(42);
-  CPPUNIT_ASSERT( !p.second );
+  CPPUNIT_CHECK( !p.second );
 #endif
 }
 
 void HashTest::insert_erase()
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-  typedef hash_map<string, size_t, hash<string>, equal_to<string> > hmap;
-  typedef hmap::value_type val_type;
   {
+    typedef hash_map<string, size_t, hash<string>, equal_to<string> > hmap;
+    typedef hmap::value_type val_type;
     hmap values;
-#  if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)
-    CPPUNIT_ASSERT( values.insert(val_type("foo", 0)).second );
-    CPPUNIT_ASSERT( values.insert(val_type("bar", 0)).second );
-    CPPUNIT_ASSERT( values.insert(val_type("abc", 0)).second );
-#  else
-    CPPUNIT_ASSERT( values.insert(hmap::value_type("foo", 0)).second );
-    CPPUNIT_ASSERT( values.insert(hmap::value_type("bar", 0)).second );
-    CPPUNIT_ASSERT( values.insert(hmap::value_type("abc", 0)).second );
+#  if defined (__BORLANDC__) && (__BORLANDC__ < 0x564)
+#   define val_type  hmap::value_type
 #  endif
-
-    CPPUNIT_ASSERT( values.erase("foo") == 1 );
-    CPPUNIT_ASSERT( values.erase("bar") == 1 );
-    CPPUNIT_ASSERT( values.erase("abc") == 1 );
+    CPPUNIT_CHECK( values.insert(val_type("foo", 0)).second );
+    CPPUNIT_CHECK( values.insert(val_type("bar", 0)).second );
+    CPPUNIT_CHECK( values.insert(val_type("abc", 0)).second );
+    CPPUNIT_CHECK( values.erase("abc") == 1 );
+    CPPUNIT_CHECK( values.erase("bar") == 1 );
+    CPPUNIT_CHECK( values.erase("foo") == 1 );
+#  if defined (__BORLANDC__) && (__BORLANDC__ < 0x564)
+#    undef val_type
+#  endif
   }
-
   {
-    hmap values;
-#  if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)
-    CPPUNIT_ASSERT( values.insert(val_type("foo", 0)).second );
-    CPPUNIT_ASSERT( values.insert(val_type("bar", 0)).second );
-    CPPUNIT_ASSERT( values.insert(val_type("abc", 0)).second );
-#  else
-    CPPUNIT_ASSERT( values.insert(hmap::value_type("foo", 0)).second );
-    CPPUNIT_ASSERT( values.insert(hmap::value_type("bar", 0)).second );
-    CPPUNIT_ASSERT( values.insert(hmap::value_type("abc", 0)).second );
-#  endif
-
-    CPPUNIT_ASSERT( values.erase("abc") == 1 );
-    CPPUNIT_ASSERT( values.erase("bar") == 1 );
-    CPPUNIT_ASSERT( values.erase("foo") == 1 );
+    typedef hash_set<string, hash<string>, equal_to<string> > hset;
+    hset values;
+    CPPUNIT_CHECK( values.insert("foo").second );
+    CPPUNIT_CHECK( values.insert("bar").second );
+    CPPUNIT_CHECK( values.insert("abc").second );
+    CPPUNIT_CHECK( values.erase("abc") == 1 );
+    CPPUNIT_CHECK( values.erase("bar") == 1 );
+    CPPUNIT_CHECK( values.erase("foo") == 1 );
   }
 #endif
 }
@@ -412,7 +405,7 @@ void HashTest::allocator_with_state()
 
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && \
    (!defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION))
-#  if !defined (__DMC__)
+#  if !defined (__DMC__) && !defined (__WATCOMC__) && !(defined (__BORLANDC__) && __BORLANDC__ < 0x560)
 
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not

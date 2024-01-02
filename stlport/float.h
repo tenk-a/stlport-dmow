@@ -12,6 +12,9 @@
  * modified is included with the above copyright notice.
  *
  */
+#if defined(__cplusplus) && defined(_STLP_KKKK_H_INCLUDE_NEW_C_HEADERS) && !defined(_STLP_CFLOAT)
+#  include <cfloat>
+#endif
 
 #if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x203

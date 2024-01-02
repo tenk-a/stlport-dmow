@@ -80,7 +80,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _Tp>
 inline void swap(_Tp& __a, _Tp& __b) {
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-#  if !defined(__BORLANDC__)
+#  if !defined(__BORLANDC__) && !defined(__WATCOMC__)
   typedef typename _SwapImplemented<_Tp>::_Ret _Implemented;
 #  else
   enum { _Is = _SwapImplemented<_Tp>::_Is };

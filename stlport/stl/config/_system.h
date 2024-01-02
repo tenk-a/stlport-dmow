@@ -129,11 +129,12 @@
 #  if defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
-#elif defined (__MINGW32__)
+#elif defined (__MINGW32__) || defined (__MINGW64__)
 #  define _STLP_PLATFORM "MinGW"
 #  if defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
+#  include <errno.h>
 #  include <stl/config/_windows.h>
 #elif defined (_WIN32) || defined (__WIN32) || defined (WIN32) || defined (__WIN32__) || \
       defined (__WIN16) || defined (WIN16) || defined (_WIN16)
@@ -143,7 +144,7 @@
 #    include <stl/config/_watcom.h>
 #  elif defined (__COMO__) || defined (__COMO_VERSION_)
 #    include <stl/config/_como.h>
-#  elif defined (__DMC__)   /* Digital Mars C++ */
+#  elif defined (__DMC__)    /* Digital Mars C++ */
 #    include <stl/config/_dm.h>
 #  elif defined (__ICL) /* Intel reference compiler for Win */
 #    include <stl/config/_intel.h>
@@ -158,6 +159,9 @@
 #  endif
 
 #  include <stl/config/_windows.h>
+#elif defined (__WATCOM_CPLUSPLUS__) || defined (__WATCOMC__)
+  /* Watcom C++ */
+#  include <stl/config/_watcom.h>
 #else
 #  error Unknown platform !!
 #endif

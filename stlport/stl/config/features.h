@@ -80,6 +80,9 @@
 #  if defined (_STLP_NO_IOSTREAMS)
 #    error If you do not use iostreams you do not need to build the STLport library.
 #  endif
+#  if defined (_STLP_KKKK_USE_HEADER_ONLY)
+#    error defined _STLP_KKKK_USE_HEADER_ONLY, you do not need to build the STLport library.
+#  endif
 #endif
 
 /* ========================================================= */
@@ -151,9 +154,17 @@
 #  error Sorry but the verbose mode is not implemented for your compiler.
 #endif
 
-#if defined (_STLP_NO_IOSTREAMS) && \
+#if defined (_STLP_NO_IOSTREAMS)
+#  define _STLP_USE_NO_IOSTREAMS
+#  define _STLP_KKKK_USE_HEADER_ONLY
+#endif
+#if defined (_STLP_KKKK_USE_HEADER_ONLY) && !defined (_STLP_USE_NO_IOSTREAMS)
+#  define _STLP_USE_NO_IOSTREAMS
+#endif
+
+#if defined (_STLP_KKKK_USE_HEADER_ONLY) && \
    !defined (_STLP_USE_NEWALLOC) && !defined (_STLP_USE_MALLOC)
-#  define _STLP_USE_NEWALLOC
+#  define _STLP_USE_NEWALLOC 1
 #endif
 
 #if !defined (_STLP_BIG_ENDIAN) && !defined (_STLP_LITTLE_ENDIAN)
@@ -176,6 +187,10 @@
 #  endif
 #endif /* _STLP_BIG_ENDIAN */
 
+#if !defined (_STLP_KKKK_X64) && (defined (__amd64__) || defined (_M_AMD64) || defined (__x86_64__) || defined (__ia64__))
+#  define  _STLP_KKKK_X64 1
+#endif
+
 /* ==========================================================
  * final workaround tuning based on given flags
  * ========================================================== */
@@ -195,10 +210,6 @@
 #    undef _STLP_USE_NAMESPACES
 #    define _STLP_USE_NAMESPACES 1
 #  endif
-#endif
-
-#if defined (_STLP_NO_IOSTREAMS)
-#  define _STLP_USE_NO_IOSTREAMS
 #endif
 
 /* Operating system recognition (basic) */
@@ -1052,7 +1063,8 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
 #define _STLP_ARRAY_AND_SIZE(A) A, sizeof(A) / sizeof(A[0])
 
 #if !defined (_STLP_MARK_PARAMETER_AS_UNUSED)
-#  define _STLP_MARK_PARAMETER_AS_UNUSED(X) (void*)X;
+//#  define _STLP_MARK_PARAMETER_AS_UNUSED(X) (void*)X;
+#  define _STLP_MARK_PARAMETER_AS_UNUSED(X) (void)X;
 #endif
 
 #if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
@@ -1065,6 +1077,10 @@ extern "C"
 #endif
 void _STLP_DECLSPEC _STLP_CALL _STLP_CHECK_RUNTIME_COMPATIBILITY();
 #  endif
+#endif
+
+#if defined (_STLP_NO_LOCALE_SUPPORT) && !defined (_STLP_KKKK_USE_LOCALE_DUMMY)
+#define _STLP_KKKK_USE_LOCALE_DUMMY
 #endif
 
 /* some cleanup */

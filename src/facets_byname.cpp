@@ -17,6 +17,8 @@
  */
 #include "stlport_prefix.h"
 
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+
 #include <hash_map>
 #include <vector>
 
@@ -35,7 +37,7 @@ _STLP_BEGIN_NAMESPACE
 //----------------------------------------------------------------------
 // ctype_byname<char>
 
-#if defined (__DMC__)
+#if defined (__KKKK_OLD_DMC__)
 _STLP_DECLSPEC
 #endif
 ctype_byname<char>::ctype_byname(const char* name, size_t refs)
@@ -106,7 +108,7 @@ struct _Ctype_byname_w_is_mask : public unary_function<wchar_t, bool> {
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-#if defined (__DMC__)
+#if defined (__KKKK_OLD_DMC__)
 _STLP_DECLSPEC
 #endif
 ctype_byname<wchar_t>::ctype_byname(const char* name, size_t refs)
@@ -178,7 +180,7 @@ ctype_byname<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const {
 #endif /* WCHAR_T */
 
 // collate_byname<char>
-#if defined (__DMC__)
+#if defined (__KKKK_OLD_DMC__)
 _STLP_DECLSPEC
 #endif
 collate_byname<char>::collate_byname(const char* name, size_t refs)
@@ -225,7 +227,7 @@ collate_byname<char>::do_transform(const char* low, const char* high) const {
 
 // collate_byname<wchar_t>
 
-#if defined (__DMC__)
+#if defined (__KKKK_OLD_DMC__)
 _STLP_DECLSPEC
 #endif
 collate_byname<wchar_t>::collate_byname(const char* name, size_t refs)
@@ -418,7 +420,7 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_length(state_type&         state,
     __count += chars_read;
     from += chars_read;
   }
-  return int(__count); 
+  return int(__count);
 }
 
 int
@@ -1055,3 +1057,4 @@ int moneypunct_byname<wchar_t, false>::do_frac_digits() const
 
 _STLP_END_NAMESPACE
 
+#endif

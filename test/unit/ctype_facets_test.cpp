@@ -316,7 +316,7 @@ void LocaleTest::_ctype_facet_w( const locale& loc )
 
 
 typedef void (LocaleTest::*_Test) (const locale&);
-static void test_supported_locale(LocaleTest& inst, _Test __test) {
+static void test_supported_locale_by_ctype(LocaleTest& inst, _Test __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
   for (size_t i = 0; i < n; ++i) {
     locale loc;
@@ -357,9 +357,9 @@ static void test_supported_locale(LocaleTest& inst, _Test __test) {
 
 void LocaleTest::ctype_facet()
 {
-  test_supported_locale(*this, &LocaleTest::_ctype_facet);
+  test_supported_locale_by_ctype(*this, &LocaleTest::_ctype_facet);
 #ifndef _STLP_NO_WCHAR_T
-  test_supported_locale(*this, &LocaleTest::_ctype_facet_w);
+  test_supported_locale_by_ctype(*this, &LocaleTest::_ctype_facet_w);
 #endif
 }
 
@@ -427,7 +427,7 @@ void LocaleTest::ctype_by_name()
     locale loc(locale::classic(), new ctype_byname<char>("fr_FR"));
     CPPUNIT_ASSERT( has_facet<ctype<char> >(loc) );
     ctype<char> const& ct = use_facet<ctype<char> >(loc);
-    CPPUNIT_ASSERT( ct.is(ctype_base::mask(ctype_base::print | ctype_base::lower | ctype_base::alpha), 'ç') );
+    CPPUNIT_ASSERT( ct.is(ctype_base::mask(ctype_base::print | ctype_base::lower | ctype_base::alpha), '\xe7') );   /* 'ç'=0xe7 */
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
