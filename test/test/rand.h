@@ -4,12 +4,10 @@
 class MyRandomGenerator
 {
   public:
-    unsigned long operator()(unsigned long n_);
+    unsigned long operator()(unsigned long n_)
+      {
+      return rand() % n_;
+      }
 };
 
-unsigned long
-MyRandomGenerator::operator()(unsigned long n_)
-{
-  return rand() % n_;
-}
 #endif // _rand_h

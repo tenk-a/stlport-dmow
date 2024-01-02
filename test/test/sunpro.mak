@@ -6,7 +6,9 @@ srcdir = .
 VPATH = .
 
 # point this to proper location
-STL_INCL=-I../../stl/SC5 -I../../stl
+
+STL_INCL=-I../../stlport -I../../stlport/old_hp
+
 
 LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \
@@ -124,9 +126,11 @@ TEST  = stl_test.out
 CC = CC
 CXX = $(CC)
 # DEBUG_FLAGS=-g
-# DEBUG_FLAGS=-O
+DEBUG_FLAGS=-O
 # DEBUG_FLAGS=-O4
-DEBUG_FLAGS=-D__STL_DEBUG -pta
+DEBUG_FLAGS=-D__STL_DEBUG -D__STL_USE_SGI_ALLOCATORS
+DEBUG_FLAGS=
+
 
 CXXFLAGS = +w2 ${STL_INCL} ${DEBUG_FLAGS} -I.
 

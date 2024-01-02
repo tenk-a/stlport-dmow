@@ -16,11 +16,11 @@ int istmit1_test(int, char**)
   cin.unsetf(ios::skipws); // Disable white-space skipping.
   cout << "Please enter a string: ";
 #ifndef __STL_LIMITED_DEFAULT_TEMPLATES
-  istream_iterator<char> s(cin),eos;		//*TY 01/10/1999 - added eos()
+  istream_iterator<char> s(cin),meos;		//*TY 01/10/1999 - added eos()
 #else
-  istream_iterator<char, ptrdiff_t> s(cin),eos;		//*TY 01/10/1999 - added eos()
+  istream_iterator<char, ptrdiff_t> s(cin),meos;		//*TY 01/10/1999 - added eos()
 #endif
-  while(!(s == eos)  &&		
+  while(!(s == meos)  &&		
 	//*TY 01/10/1999 - added end of stream check 
 	// NOTE operator!= should not be used here ifndef __STL_FUNCTION_TMPL_PARTIAL_ORDER
   		*s != '\n' &&

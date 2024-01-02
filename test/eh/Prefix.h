@@ -37,6 +37,8 @@
 //	STL. They have no effect when testing other STL implementations.
 //=========================================================================
 
+# define __STL_NODE_ALLOC_USE_MALLOC 1
+
 // Just include something to get whatever configuration header we're using.
 # include <stl_config.h>
 
@@ -47,7 +49,7 @@
 # define EH_BEGIN_NAMESPACE __STL_BEGIN_NAMESPACE
 # define EH_END_NAMESPACE __STL_END_NAMESPACE
 
-# if defined (__STL_USE_NEW_STYLE_HEADERS)
+# if 1 // defined (__STL_USE_NEW_STYLE_HEADERS) 
 #  define EH_NEW_HEADERS 1
 # endif
 
@@ -67,7 +69,9 @@
 #  define EH_MULTI_CONST_TEMPLATE_ARG_BUG __STL_MULTI_CONST_TEMPLATE_ARG_BUG
 # endif
 
-# if defined(__STD)
+# if defined (__STLPORT_STD)
+#  define EH_STD __STLPORT_STD
+# elif defined(__STD)
 #  define EH_STD __STD
 # endif
 
@@ -77,10 +81,14 @@
 #  define EH_CSTD std
 # endif
 
-# if defined(__STL_CLASS_PARTIAL_SPECIALIZATION) && defined(__STL_BOOL_KEYWORD)
+# if defined(__STL_CLASS_PARTIAL_SPECIALIZATION) && !defined(__STL_NO_BOOL)
 #  define EH_BIT_VECTOR EH_STD::vector<bool>
 # else
-#  define EH_BIT_VECTOR EH_STD::bit_vector
+#  ifdef __STL_NO_BOOL
+#   define EH_BIT_VECTOR bit_vector
+#  else
+#   define EH_BIT_VECTOR EH_STD::vector<bool, __STL_DEFAULT_ALLOCATOR(bool) >
+#  endif
 # endif
 
 
@@ -151,6 +159,7 @@
 # define EH_NEW_HEADERS 1
 # define EH_USE_NAMESPACES 1
 # define EH_NEW_IOSTREAMS 1
+# define EH_ASSERT assert
 # else
 # define stl_destroy destroy
 #endif
@@ -172,6 +181,10 @@
 #  define EH_END_NAMESPACE
 #  define EH_STD
 #  define EH_USE_STD
+# endif
+
+# ifndef EH_CSTD
+#  define EH_CSTD EH_STD
 # endif
 
 #endif // !USE_SGI_STL

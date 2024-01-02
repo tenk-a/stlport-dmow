@@ -14,7 +14,7 @@ int list3_test(int, char**)
 char array [] = { 'x', 'l', 'x', 't', 's', 's' };
 
   list<char> str(array, array + 6);
-  __STD::list<char>::iterator i;
+  STLPORT::list<char>::iterator i;
   cout << "original: ";
   for(i = str.begin(); i != str.end(); i++)
     cout << *i;

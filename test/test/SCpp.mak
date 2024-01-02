@@ -5,7 +5,7 @@
 
 MAKEFILE     = SCpp.make
 _MondoBuild_ = # {MAKEFILE}  # Make blank to avoid rebuilds when makefile is modified
-Includes     = -i : -i "{CIncludes}" -i "{STL}" # -i "{STL}supplement:"		#*TY 01/19/1999 - removed supplement:
+Includes     = -i : -i "{CIncludes}" -i "{STL}" -i "{STL}old_hp:"		#*TY 05/24/1999 - added old_hp directory
 Sym_68K      = # -sym on 
 ObjDir_68K   = :	# objects under current directory. if separate directory is desired, create it before running make
 SCpp_Options = -ansi on -bool on -exceptions on  -rtti on -b2 -frames -mbg full -opt all -w 12
@@ -266,11 +266,18 @@ Objects_68K  = ¶
 	###########
 	echo Compiling:  file "'{default}.cpp'"
 	{CPlus} {depDir}{default}.cpp -o {targDir}{default}.cpp.o {CPlusOptions} -seg {default}
+	if "{status}"
+		set compile_status 1
+	end
 	echo 
 
 
 stl_test.68K ÄÄ {_MondoBuild_} {Objects_68K}
 	###########
+	if "{compile_status}"
+		echo "### Link not performed due to compile error"
+		exit "{compile_status}"
+	end
 	echo Linking:    "{Targ}"
 	Link ¶
 		-o {Targ} -d -sym 3.2 -cSym Alar ¶
@@ -291,5 +298,7 @@ stl_test.68K ÄÄ {_MondoBuild_} {Objects_68K}
 		"{Libraries}Interface.o" ¶
 		# end
 	echo ¶# Finished Building "'{Targ}'"
+
+
 
 

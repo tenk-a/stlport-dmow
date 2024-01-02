@@ -8,7 +8,9 @@
 
 
 # point this to proper location
-STL_INCL=-I../../stl/SC5 -I../../stl
+STL_INCL= -I../../stlport
+
+# STL_INCL= -DEH_NO_SGI_STL
 
 AUX_LIST=TestClass.cpp main.cpp nc_alloc.cpp random_number.cpp
 
@@ -33,11 +35,15 @@ TEST  = eh_test.out
 CC = CC
 CXX = $(CC)
 
-# CXXFLAGS = +w2 -O -xildoff ${STL_INCL} -D__STL_USE_NEWALLOC  -DNO_FAST_ALLOCATOR
+# < 5.x only
+CXXFLAGS = +w2 ${STL_INCL} -D__STL_USE_NEWALLOC
 
-# CXXFLAGS = +w2 -xildoff ${STL_INCL}  -I. -D__STL_USE_NEWALLOC
-CXXFLAGS = +w2 -pta -xildoff ${STL_INCL} -D__STL_USE_NEWALLOC -DNO_FAST_ALLOCATOR
-# CXXFLAGS = +w2 -xildoff -D__STL_USE_NEWALLOC -DNO_FAST_ALLOCATOR -DEH_NO_SGI_STL -DEH_NEW_HEADERS
+# >= 5.x only
+# CXXFLAGS = +w2 ${STL_INCL} -D__STL_USE_NEWALLOC -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
+
+# This is to test with native STL
+# CXXFLAGS = +w2 -xildoff -D__STL_USE_NEWALLOC -DEH_NO_SGI_STL -DEH_NEW_HEADERS -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
+
 
 LIBS = -lm 
 LIBSTDCXX = 
@@ -68,4 +74,4 @@ SUFFIXES: .cpp.o.out.res
 	$(CXX) $(CXXFLAGS) -O4 -S -pto $<  -o $@
 
 clean:
-	-rm -fr ${TEST_EXE} *.o *.rpo *.obj *.out core *~ Templates.DB
+	-rm -fr ${TEST_EXE} *.o *.rpo *.obj *.out core *~ Templates.DB SunWS_cache

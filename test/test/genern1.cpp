@@ -13,9 +13,14 @@
 #endif
 #endif
 
+#if defined(__IBMCPP__)  // hputman: Add for IBM VisualAge
+  #define CXXRAND_SCOPE static
+#endif  
+
 #if defined (__MVS__)	\
+ || defined(__IBMCPP__) \
  || (defined(__SC__) && __SC__ >= 0x882) || defined(__MRC__)		//*TY 07/18/98 - added  Apple SCpp and MrCpp
-  int cxxrand() { return rand();}
+CXXRAND_SCOPE int cxxrand() { return rand();}
 #endif
 
 int genern1_test(int, char**)
@@ -27,6 +32,7 @@ int genern1_test(int, char**)
 											// (see xfunction.h)
   vector <int> v1(10);
 #if defined (__MVS__)	\
+ || defined(__IBMCPP__) \
  || (defined(__SC__) && __SC__ >= 0x882) || defined(__MRC__)		//*TY 07/18/98 - added  Apple SCpp and MrCpp
   generate_n(v1.begin(), v1.size(), ptr_gen(cxxrand));
 #else

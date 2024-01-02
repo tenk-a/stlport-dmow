@@ -19,7 +19,8 @@ OUTDIR=.
 INTDIR=.
 
 # set this directories 
-STL_INCL=../../stl
+STL_INCL=-I../../stlport -I../../stlport/old_hp
+
 VC_INCL=.
 # d:/vc41/msdev/include
 
@@ -136,13 +137,14 @@ LINK32=link.exe
 F90_PROJ=/Ox /c /nologo
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
 # ADD CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
-CPP_PROJ=/nologo /W3 /MD /GX /Zd /D "WIN32" /D "__STL_DEBUG" /D "_CONSOLE" /I$(STL_INCL) /D__STL_NO_NEW_IOSTREAMS /I$(VC_INCL) /I.
+# CPP_PROJ=/nologo /W3 /MD /GX /Zd /D "WIN32" /D "__STL_DEBUG" /D "_CONSOLE" $(STL_INCL) /D__STL_NO_NEW_IOSTREAMS /I$(VC_INCL) /I.
+CPP_PROJ=/nologo /W3 /MD /GX /Zd /D "WIN32" /D "_CONSOLE" $(STL_INCL) /D__STL_NO_NEW_IOSTREAMS /I$(VC_INCL) /I.
 
 check: stl_test.out
 
 stl_test.out : $(Dep_stl)
 	$(CPP) $(CPP_PROJ) $(Dep_stl)
-	stl_test.exe > stl_test.out < stdin
+	stl_test > stl_test.out
 	echo done
 
 clean :

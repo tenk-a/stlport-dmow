@@ -17,7 +17,7 @@
 #if defined( EH_SLIST_IMPLEMENTED )
 #include "TestClass.h"
 #include "LeakCheck.h"
-# if defined (EH_NEW_HEADERS) && !__MSL__
+# if defined (EH_NEW_HEADERS) && (defined (EH_USE_SGI_STL) && ! defined (__MSL__))
 #include <slist>
 #else
 #include <slist.h>

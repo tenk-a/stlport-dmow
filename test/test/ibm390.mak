@@ -8,7 +8,7 @@ srcdir = .
 VPATH = .
 
 # point this to proper location
-STL_INCL=/stl
+STL_INCL=-I../../stlport -I../../stlport/old_hp
 
 LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \
@@ -129,7 +129,7 @@ CXX = $(CC)
 DEBUG_FLAGS=
 # DEBUG_FLAGS=-O
 # DEBUG_FLAGS=-O4
-CXXFLAGS = -I${STL_INCL} ${DEBUG_FLAGS} -I.
+CXXFLAGS = ${STL_INCL} ${DEBUG_FLAGS} -I.
 
 # CXXFLAGS = -O +w2 -Qoption iropt -R,-Ml30,-Ms30,-Mi1000000,-Mm1000000,-Mr1000000,-Ma1000000,-Mc1000000,-Mt1000000 -I${STL_INCL} ${DEBUG_FLAGS} -I.
 

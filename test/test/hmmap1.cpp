@@ -15,6 +15,10 @@
 //  size_t operator()(const string& s) const { return __stl_hash_string(s.c_str()); }
 //};
 
+// typedef _Hashtable_node< pair< const char, int > >* nodeptr;
+// __STL_TYPE_TRAITS_POD_SPECIALIZE(nodeptr);
+
+
 int hmmap1_test(int, char**)
 {
   cout<<"Results of hmmap1_test:"<<endl;

@@ -12,7 +12,7 @@ int string1_test(int, char**)
 {
   cout<<"Results of string1_test:"<<endl;
   char* array = "Hello, World!";
-  __STD::string v(array);
+  STLPORT::string v(array);
   int i;
   cout << v << endl;
   v.erase(v.begin() + 1, v.end() - 1); // Erase all but first and last.

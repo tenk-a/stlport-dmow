@@ -6,8 +6,7 @@
 srcdir = .
 VPATH = .
 
-STL_INCL=../../stl
-# STL_INCL=.
+STL_INCL=-I../../stlport -I../../stlport/old_hp
 
 LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \
@@ -126,9 +125,9 @@ TEST  = stl_test.out
 CC = c++
 CXX = $(CC)
 
-# DEBUG_FLAGS= -D__STL_DEBUG
+# DEBUG_FLAGS= -D__STL_DEBUG -g
 
-CXXFLAGS = -Wall -O -I${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
+CXXFLAGS = -Wall ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
 
 LIBS = -lm 
 LIBSTDCXX = 

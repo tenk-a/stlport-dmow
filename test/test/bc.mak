@@ -7,7 +7,7 @@
 
 # set this variables to your locations
 BCROOT = D:\BC5
-STLINCL = C:\HOME\FBP\STL\SGI\DEV
+STLINCL = ..\..\STL\OLD_HP;..\..\STL
 
 IMPLIB  = Implib
 BCC=bcc32 +BccW32.cfg

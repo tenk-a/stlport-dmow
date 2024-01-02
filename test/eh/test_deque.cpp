@@ -16,7 +16,11 @@
 
 #include "Tests.h"
 # if defined (EH_NEW_HEADERS)
+# ifdef __SUNPRO_CC
+# include <stdio.h>
+# else
 #include <cstdio>
+# endif
 #include <deque>
 #else
 #include <stdio.h>

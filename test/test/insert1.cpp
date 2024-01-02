@@ -16,9 +16,9 @@ char* array1 [] = { "laurie", "jennifer", "leisa" };
 char* array2 [] = { "amanda", "saskia", "carrie" };
 
   deque<char*> names(array1, array1 + 3);
-  __STD::deque<char*>::iterator i = names.begin() + 2;
+  __STLPORT_STD::deque<char*>::iterator i = names.begin() + 2;
   copy(array2, array2 + 3, insert_iterator<deque <char*> >(names, i));
-  __STD::deque<char*>::iterator j;
+  __STLPORT_STD::deque<char*>::iterator j;
   for(j = names.begin(); j != names.end(); j++)
     cout << *j << endl;
   return 0;

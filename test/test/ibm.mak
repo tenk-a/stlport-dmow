@@ -1,173 +1,180 @@
-# ;;; -*- Mode:makefile;-*- 
-# Generated automatically from Makefile.in by configure.
-# This requires GNU make.
+# Makefile for IBM nmake, VisualAge C++ 3.6.5 for OS/2 and windows
 
-# Modified version of sunpro.mak
-
-srcdir = .
-VPATH = .
 
 # point this to proper location
-STL_INCL=stl
+STL_INCL=..\..\stl;..\..\stl\old_hp
 
-LIST  = stl_test.cpp accum1.cpp accum2.cpp \
-	adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \
-	adjfind0.cpp adjfind1.cpp adjfind2.cpp \
-	advance.cpp \
-	alg1.cpp alg2.cpp alg3.cpp alg4.cpp alg5.cpp \
-	bcompos1.cpp bcompos2.cpp \
-	bind1st1.cpp bind1st2.cpp \
-	bind2nd1.cpp bind2nd2.cpp \
-	binsert1.cpp binsert2.cpp \
-	binsrch1.cpp binsrch2.cpp \
-	bnegate1.cpp bnegate2.cpp bvec1.cpp \
-	copy1.cpp copy2.cpp copy3.cpp copy4.cpp \
-	copyb.cpp copyb0.cpp \
-	count0.cpp count1.cpp \
-	countif1.cpp \
-	deque1.cpp \
-	divides.cpp \
-	eqlrnge0.cpp eqlrnge1.cpp eqlrnge2.cpp \
-	equal0.cpp equal1.cpp equal2.cpp \
-	equalto.cpp \
-	fill1.cpp filln1.cpp \
-	find0.cpp find1.cpp \
-	findif0.cpp findif1.cpp \
-	finsert1.cpp finsert2.cpp \
-	foreach0.cpp foreach1.cpp \
-	func1.cpp func2.cpp func3.cpp \
-	gener1.cpp gener2.cpp \
-	genern1.cpp genern2.cpp \
-	greateq.cpp greater.cpp \
-	incl0.cpp incl1.cpp incl2.cpp \
-	inplmrg1.cpp inplmrg2.cpp \
-	inrprod0.cpp inrprod1.cpp inrprod2.cpp \
-	insert1.cpp insert2.cpp \
-	iota1.cpp \
-	istmit1.cpp \
-	iter1.cpp iter2.cpp iter3.cpp iter4.cpp \
-	iterswp0.cpp iterswp1.cpp \
-	less.cpp \
-	lesseq.cpp \
-	lexcmp1.cpp lexcmp2.cpp \
-	list1.cpp list2.cpp list3.cpp list4.cpp \
-	logicand.cpp logicnot.cpp \
-	logicor.cpp \
-	lwrbnd1.cpp lwrbnd2.cpp \
-	map1.cpp \
-	max1.cpp max2.cpp \
-	maxelem1.cpp maxelem2.cpp \
-	merge0.cpp merge1.cpp merge2.cpp \
-	min1.cpp min2.cpp \
-	minelem1.cpp minelem2.cpp \
-	minus.cpp \
-	mismtch0.cpp mismtch1.cpp mismtch2.cpp \
-	mkheap0.cpp mkheap1.cpp \
-	mmap1.cpp mmap2.cpp \
-	modulus.cpp \
-	mset1.cpp mset3.cpp mset4.cpp mset5.cpp \
-	negate.cpp nequal.cpp \
-	nextprm0.cpp nextprm1.cpp nextprm2.cpp \
-	nthelem0.cpp nthelem1.cpp nthelem2.cpp \
-	ostmit.cpp \
-	pair0.cpp pair1.cpp pair2.cpp \
-	parsrt0.cpp parsrt1.cpp parsrt2.cpp \
-	parsrtc0.cpp parsrtc1.cpp parsrtc2.cpp \
-	partsrt0.cpp \
-	partsum0.cpp partsum1.cpp partsum2.cpp \
-	pheap1.cpp pheap2.cpp \
-	plus.cpp \
-	pqueue1.cpp \
-	prevprm0.cpp prevprm1.cpp prevprm2.cpp \
-	ptition0.cpp ptition1.cpp \
-	ptrbinf1.cpp ptrbinf2.cpp \
-	ptrunf1.cpp ptrunf2.cpp \
-	queue1.cpp \
-	rawiter.cpp \
-	remcopy1.cpp \
-	remcpif1.cpp \
-	remif1.cpp \
-	remove1.cpp \
-	repcpif1.cpp \
-	replace0.cpp replace1.cpp replcpy1.cpp replif1.cpp \
-	revbit1.cpp revbit2.cpp \
-	revcopy1.cpp reverse1.cpp reviter1.cpp reviter2.cpp \
-	rndshuf0.cpp rndshuf1.cpp rndshuf2.cpp \
-	rotate0.cpp rotate1.cpp rotcopy0.cpp rotcopy1.cpp \
-	search0.cpp search1.cpp search2.cpp \
-	set1.cpp set2.cpp \
-	setdiff0.cpp setdiff1.cpp setdiff2.cpp \
-	setintr0.cpp setintr1.cpp setintr2.cpp \
-	setsymd0.cpp setsymd1.cpp setsymd2.cpp \
-	setunon0.cpp setunon1.cpp setunon2.cpp \
-	sort1.cpp sort2.cpp \
-	stack1.cpp stack2.cpp \
-	stblptn0.cpp stblptn1.cpp \
-	stblsrt1.cpp stblsrt2.cpp \
-	swap1.cpp \
-	swprnge1.cpp \
-	times.cpp \
-	trnsfrm1.cpp trnsfrm2.cpp \
-	ucompos1.cpp ucompos2.cpp \
-	unegate1.cpp unegate2.cpp \
-	uniqcpy1.cpp uniqcpy2.cpp \
-	unique1.cpp unique2.cpp \
-	uprbnd1.cpp uprbnd2.cpp \
-	vec1.cpp vec2.cpp vec3.cpp vec4.cpp vec5.cpp vec6.cpp vec7.cpp vec8.cpp \
-        hmap1.cpp hmmap1.cpp hset2.cpp hmset1.cpp slist1.cpp string1.cpp bitset1.cpp
+OBJECTS  = stl_test.obj accum1.obj accum2.obj \
+	adjdiff0.obj adjdiff1.obj adjdiff2.obj \
+	adjfind0.obj adjfind1.obj adjfind2.obj \
+	advance.obj \
+	alg1.obj alg2.obj alg3.obj alg4.obj alg5.obj \
+	bcompos1.obj bcompos2.obj \
+	bind1st1.obj bind1st2.obj \
+	bind2nd1.obj bind2nd2.obj \
+	binsert1.obj binsert2.obj \
+	binsrch1.obj binsrch2.obj \
+	bnegate1.obj bnegate2.obj bvec1.obj \
+	copy1.obj copy2.obj copy3.obj copy4.obj \
+	copyb.obj copyb0.obj \
+	count0.obj count1.obj \
+	countif1.obj \
+	deque1.obj \
+	divides.obj \
+	eqlrnge0.obj eqlrnge1.obj eqlrnge2.obj \
+	equal0.obj equal1.obj equal2.obj \
+	equalto.obj \
+	fill1.obj filln1.obj \
+	find0.obj find1.obj \
+	findif0.obj findif1.obj \
+	finsert1.obj finsert2.obj \
+	foreach0.obj foreach1.obj \
+	func1.obj func2.obj func3.obj \
+	gener1.obj gener2.obj \
+	genern1.obj genern2.obj \
+	greateq.obj greater.obj \
+	incl0.obj incl1.obj incl2.obj \
+	inplmrg1.obj inplmrg2.obj \
+	inrprod0.obj inrprod1.obj inrprod2.obj \
+	insert1.obj insert2.obj \
+	iota1.obj \
+	istmit1.obj \
+	iter1.obj iter2.obj iter3.obj iter4.obj \
+	iterswp0.obj iterswp1.obj \
+	less.obj \
+	lesseq.obj \
+	lexcmp1.obj lexcmp2.obj \
+	list1.obj list2.obj list3.obj list4.obj \
+	logicand.obj logicnot.obj \
+	logicor.obj \
+	lwrbnd1.obj lwrbnd2.obj \
+	map1.obj \
+	max1.obj max2.obj \
+	maxelem1.obj maxelem2.obj \
+	merge0.obj merge1.obj merge2.obj \
+	min1.obj min2.obj \
+	minelem1.obj minelem2.obj \
+	minus.obj \
+	mismtch0.obj mismtch1.obj mismtch2.obj \
+	mkheap0.obj mkheap1.obj \
+	mmap1.obj mmap2.obj \
+	modulus.obj \
+	mset1.obj mset3.obj mset4.obj mset5.obj \
+	negate.obj nequal.obj \
+	nextprm0.obj nextprm1.obj nextprm2.obj \
+	nthelem0.obj nthelem1.obj nthelem2.obj \
+	ostmit.obj \
+	pair0.obj pair1.obj pair2.obj \
+	parsrt0.obj parsrt1.obj parsrt2.obj \
+	parsrtc0.obj parsrtc1.obj parsrtc2.obj \
+	partsrt0.obj \
+	partsum0.obj partsum1.obj partsum2.obj \
+	pheap1.obj pheap2.obj \
+	plus.obj \
+	pqueue1.obj \
+	prevprm0.obj prevprm1.obj prevprm2.obj \
+	ptition0.obj ptition1.obj \
+	ptrbinf1.obj ptrbinf2.obj \
+	ptrunf1.obj ptrunf2.obj \
+	queue1.obj \
+	rawiter.obj \
+	remcopy1.obj \
+	remcpif1.obj \
+	remif1.obj \
+	remove1.obj \
+	repcpif1.obj \
+	replace0.obj replace1.obj replcpy1.obj replif1.obj \
+	revbit1.obj revbit2.obj \
+	revcopy1.obj reverse1.obj reviter1.obj reviter2.obj \
+	rndshuf0.obj rndshuf1.obj rndshuf2.obj \
+	rotate0.obj rotate1.obj rotcopy0.obj rotcopy1.obj \
+	search0.obj search1.obj search2.obj \
+	set1.obj set2.obj \
+	setdiff0.obj setdiff1.obj setdiff2.obj \
+	setintr0.obj setintr1.obj setintr2.obj \
+	setsymd0.obj setsymd1.obj setsymd2.obj \
+	setunon0.obj setunon1.obj setunon2.obj \
+	sort1.obj sort2.obj \
+	stack1.obj stack2.obj \
+	stblptn0.obj stblptn1.obj \
+	stblsrt1.obj stblsrt2.obj \
+	swap1.obj \
+	swprnge1.obj \
+	times.obj \
+	trnsfrm1.obj trnsfrm2.obj \
+	ucompos1.obj ucompos2.obj \
+	unegate1.obj unegate2.obj \
+	uniqcpy1.obj uniqcpy2.obj \
+	unique1.obj unique2.obj \
+	uprbnd1.obj uprbnd2.obj \
+	vec1.obj vec2.obj vec3.obj vec4.obj vec5.obj vec6.obj vec7.obj vec8.obj \
+  hmap1.obj hmmap1.obj hset2.obj hmset1.obj slist1.obj string1.obj bitset1.obj
 
-# STAT_MODULE=stat.o
-OBJECTS = $(LIST:%.cpp=%.o) $(STAT_MODULE)
-EXECS = $(LIST:%.cpp=%.exe)
-TESTS = $(LIST:%.cpp=%.out)
+#STAT_MODULE=stat.o
 TEST_EXE  = stl_test.exe
 TEST  = stl_test.out
 
-CC = xlC
+CC = icc.exe
 CXX = $(CC)
 DEBUG_FLAGS=
-# DEBUG_FLAGS=-O
-# DEBUG_FLAGS=-O4
-CXXFLAGS = -I${STL_INCL} ${DEBUG_FLAGS} -I.
+# Use this for a Debug version
+#DEBUG_FLAGS=-O- -Ti+
+CXXFLAGS = -Q -I$(STL_INCL) $(DEBUG_FLAGS) -I. -Tdp
+# Use this for no link time instantiation of templates
+#CXXFLAGS = -Q -I$(STL_INCL) $(DEBUG_FLAGS) -I. -Tdp -Ft-
 
-# CXXFLAGS = -O +w2 -Qoption iropt -R,-Ml30,-Ms30,-Mi1000000,-Mm1000000,-Mr1000000,-Ma1000000,-Mc1000000,-Mt1000000 -I${STL_INCL} ${DEBUG_FLAGS} -I.
-
-LIBS = -lm 
-LIBSTDCXX = 
+LIBS = 
 
 all:
 
-check: $(TEST)
+check: stl_test.out
 
-$(TEST) : $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) $(LIBS) -o $(TEST_EXE)
-	echo 'a string' | $(TEST_EXE) > $(TEST)
+$(TEST) : $(TEST_EXE)
+	echo a string| $(TEST_EXE) > $@
 
-SUFFIXES: .cpp.o.exe.out.res
+$(TEST_EXE) : $(OBJECTS)
+  $(CXX) $(CXXFLAGS) @<<
+$(OBJECTS)
+$(LIBS)
+-Fe$@
+<<
+  
+.SUFFIXES: .cpp .obj .i .exe .out
 
-%.o : %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -o $@
+.cpp.i:
+  $(CXX) $(CXXFLAGS) -P $<
 
-%.out: %.cpp
-	$(CXX) $(CXXFLAGS)-g $< -c -USINGLE -DMAIN -o $*.o
-	$(CXX) $(CXXFLAGS) $*.o $(LIBS) -o $*.exe
+.cpp.obj:
+	$(CXX) $(CXXFLAGS) -c $<
+
+.cpp.out: 
+	$(CXX) $(CXXFLAGS) -c -USINGLE -DMAIN $< 
+	$(CXX) $(CXXFLAGS) $*.obj $(LIBS) -Fe$*.exe
 	./$*.exe > $@
-	-rm -f $*.exe
+	del $*.exe
+  
+.cpp.exe:
+	$(CXX) $(CXXFLAGS) -c -USINGLE -DMAIN $< 
+	$(CXX) $(CXXFLAGS) $*.obj $(LIBS) -Fe$*.exe
 
-istmit1.out: istmit1.cpp
-	$(CXX) $(CXXFLAGS) $< $(STAT_MODULE) $(LIBSTDCXX) -lstdc++ $(LIBS) -o istmit1
-	echo 'a string' | ./istmit1 > istmit1.out
-	-rm -f ./istmit1
-
-$(STAT_MODULE): stat.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-%.s: %.cpp
-	$(CXX) $(CXXFLAGS) -O5 -D__STL_USE_MALLOC -S -pto $<  -o $@
+#istmit1.out: istmit1.cpp
+#	$(CXX) $(CXXFLAGS) $< $(STAT_MODULE) $(LIBSTDCXX) -lstdc++ $(LIBS) -o 
+#istmit1 echo 'a string' | ./istmit1 > istmit1.out
+#	-rm -f ./istmit1
+#
+#$(STAT_MODULE): stat.cpp
+#	$(CXX) $(CXXFLAGS) -c $< -o $@
+#
+#%.s: %.cpp
+#	$(CXX) $(CXXFLAGS) -O5 -D__STL_USE_MALLOC -S -pto $<  -o $@
 
 #	$(CXX) $(CXXFLAGS) -O5 -D__STL_USE_MALLOC -noex -D__STL_NO_EXCEPTIONS -S -pto $<  -o $@
 
 #	$(CXX) $(CXXFLAGS) -O4 -noex -D__STL_NO_EXCEPTIONS -D__STL_NO_EXCEPTIONS -S -pta $<  -o $@
 
 clean:
-	-rm -fr *.exe *.o *.rpo *.obj *.out tempinc
+  del *.exe
+  del *.obj
+  del *.out
+  del tempinc
+	

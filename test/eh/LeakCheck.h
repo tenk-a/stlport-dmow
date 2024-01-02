@@ -189,13 +189,15 @@ void StrongCheck( const Value& v, const Operation& op, long max_iters = 2000000 
                 
                 if ( !unchanged )
                 {
+#if 0
                     typedef typename Value::value_type value_type;
                     EH_STD::ostream_iterator<value_type> o(EH_STD::cerr, " ");
-                    EH_STD::cerr<<"EH test FAILED:\nStrong guaranee failed, copy is:\n";
+                    EH_STD::cerr<<"EH test FAILED:\nStrong guaranee failed !\n";
                     EH_STD::copy(dup.begin(), dup.end(), o);
                     EH_STD::cerr<<"\nOriginal is:\n";
                     EH_STD::copy(v.begin(), v.end(), o);
                     EH_STD::cerr<<EH_STD::endl;
+#endif
                     failed = true;
                 }
             }	// Just try again.

@@ -16,7 +16,7 @@ char* array [] = { "laurie", "jennifer", "leisa" };
 
   vector<char*> names;
   copy(array, array + 3, back_inserter(names));
-  __STD::vector<char*>::iterator i;
+  __STLPORT_STD::vector<char*>::iterator i;
   for(i = names.begin(); i != names.end(); i++)
     cout << *i << endl;
   return 0;

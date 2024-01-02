@@ -14,21 +14,23 @@
 
 ***********************************************************************************/
 #include "Tests.h"
-#include "LeakCheck.h"
 
 # if defined (EH_NEW_HEADERS)
+# ifdef __SUNPRO_CC
+# include <stdio.h>
+# endif
 #include <vector>
 # else
 #include <bvector.h>
 # endif
-
+#include "LeakCheck.h"
 #include "test_construct.h"
 #include "test_assign_op.h"
 #include "test_push_back.h"
 #include "test_insert.h"
 #include "test_push_front.h"
 
-typedef EH_BIT_VECTOR BitVector;
+#define BitVector EH_BIT_VECTOR
 
 inline sequence_container_tag
 container_category(const BitVector&)

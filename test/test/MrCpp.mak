@@ -5,7 +5,7 @@
 
 MAKEFILE     = MrCpp.make
 _MondoBuild_ = # {MAKEFILE}  # Make the definition blank to avoid rebuilding when makefile is modified
-Includes     = -i : -i "{CIncludes}" -i "{STL}" #-i "{STL}supplement:"		#*TY 01/19/1999 - removed supplement:
+Includes     = -i : -i "{CIncludes}" -i "{STL}" -i "{STL}old_hp:"		#*TY 05/24/1999 - added old_hp directory
 Sym_PPC      = # -sym big # turning on sym makes link time extremely long.
 ObjDir_PPC   = :	# objects under current directory. if separate directory is desired, create it before running make
 MrCpp_Options = -align power -exceptions on -rtti on -bool on -ansi on -ansifor -j0
@@ -263,12 +263,19 @@ Objects_PPC  = ¶
 .cpp.x Ä .cpp {_MondoBuild_}
 	###########
 	echo Compiling:  file "'{default}.cpp'"
-	{PPCCPlus} {depDir}{default}.cpp -o {targDir}{default}.cpp.x {PPCCPlusOptions}
+	{MrCpp} {depDir}{default}.cpp -o {targDir}{default}.cpp.x {PPCCPlusOptions}
+	if "{status}"
+		set compile_status 1
+	end
 	echo 
 
 
 stl_test.PPC ÄÄ {_MondoBuild_} {Objects_PPC}
 	###########
+	if "{compile_status}"
+		echo "### Link not performed due to compile error"
+		exit "{compile_status}"
+	end
 	echo Linking:    "{Targ}"
 	if "`exists {Targ}`" 
 		delete {Targ}		#*TY 01/14/1999 - it is faster to generate executable from the ground up than modifying the existing ones.
@@ -293,6 +300,7 @@ stl_test.PPC ÄÄ {_MondoBuild_} {Objects_PPC}
 		"{SharedLibraries}MrCExceptionsLib_4.1d1" ¶
 		# end
 	echo ¶# Finished Building "'{Targ}'"
+
 
 
 

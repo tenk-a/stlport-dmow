@@ -7,8 +7,12 @@
 #include <iostream.h>
 #include <hash_map.h>
 #include <rope.h>
-
 #endif
+
+
+// typedef STLPORT::_Hashtable_node< pair< const char, crope > >* nodeptr;
+// __STL_TYPE_TRAITS_POD_SPECIALIZE(nodeptr);
+
 int hmap1_test(int, char**)
 {
   cout<<"Results of hmap1_test:"<<endl;

@@ -1,6 +1,6 @@
 *************************************************************
-*                 STLport 3.12.3 README file
-*                Last updated : April 18, 1999.
+*                 STLport 3.2 README file
+*                Last updated : June 27, 1999.
 *************************************************************
 
 Copyright (c) 1999 Boris Fomitchev
@@ -14,8 +14,8 @@ Permission to modify the code and to distribute modified code is granted,
 provided the above notices are retained, and a notice that the code was
 modified is included with the above copyright notice.
 
-STLport 3.12.2 corresponds to SGI STL public distribution
-v 3.13, which is:
+STLport 3.2 corresponds to SGI STL public distribution
+v 3.2, which is:
 
 Copyright (c) 1994 Hewlett-Packard Company 
 
@@ -38,14 +38,15 @@ Unpack the distribution.
 
 What's in there :
 
-stl                     - header files 
-test                    - test suites
-export                  - file list
+stlport                   - STLport header files 
+stlport/config            - configurataion files
+stlport/old_hp            - old HP-style STL header files
+stlport/SC5, stlport/BC50 - additional include directories for specific compilers
+test                      - test suites
 
-If your compiler is listed below as "auto-recognized", 
-you are ready to use STLport. 
+If your compiler is listed below as "auto-recognized", you are ready to use STLport. 
 Otherwise, run "config/configure" utility (if you are not on UNIX platform,
-get cygwin package from www.cygnus.com). 
+get "cygwin" package from www.cygnus.com). 
 Make sure you included STLport directory into the search path 
 for your compiler.
 
@@ -100,6 +101,10 @@ STLport was reported to work with the following compilers:
     Apple MRC compiler
 
     IBM TPF C++ compiler
+
+    INtel Reference C++ Compiler
+
+    Apogee C++ 4.0 compiler
 
 *************************************************************
 Known problems

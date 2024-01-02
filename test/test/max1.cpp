@@ -11,6 +11,6 @@
 int max1_test(int, char**)
 {
   cout<<"Results of max1_test:"<<endl;
-  cout << __STD::max(42, 100) << endl;
+  cout << STLPORT::max(42, 100) << endl;
   return 0;
 }

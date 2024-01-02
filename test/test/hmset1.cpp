@@ -22,6 +22,10 @@
 
 typedef hash_multiset<char, hash<char>, equal_to<char> > hmset;
 #endif
+
+// __STL_TYPE_TRAITS_POD_SPECIALIZE(_Hashtable_node<char>*);
+
+
 int hmset1_test(int, char**)
 {
   cout<<"Results of hmset1_test:"<<endl;

@@ -22,7 +22,7 @@ int func2_test(int, char**)
   v.push_back(1);
   v.push_back(5);
   sort(v.begin(), v.end(), bigger_than);
-  __STD::vector<int>::iterator i;
+  __STLPORT_STD::vector<int>::iterator i;
   for(i = v.begin(); i != v.end(); i++)
     cout << *i << endl;
   return 0;

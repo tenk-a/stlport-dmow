@@ -11,9 +11,9 @@
 int alg1_test(int, char**)
 {
   cout<<"Results of alg1_test:"<<endl;
-  int i = __STD::min(4, 7);
+  int i = __STLPORT_STD::min(4, 7);
   cout << "min(4, 7) = " << i << endl;
-  char c = __STD::max('a', 'z');
+  char c = __STLPORT_STD::max('a', 'z');
   cout << "max('a', 'z') = " << c << endl;
   return 0;
 }

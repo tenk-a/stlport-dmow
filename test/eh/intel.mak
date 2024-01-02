@@ -19,7 +19,7 @@ OUTDIR=.
 INTDIR=.
 
 # set this directories 
-STL_INCL=../../stl
+STL_INCL=../../stlport
 VC_INCL=.
 # d:/vc41/msdev/include
 
@@ -39,6 +39,8 @@ CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D_REENTRANT \
 /D "_CONSOLE"  /I$(STL_INCL) /I.
 
 CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D__STL_DEBUG_ALLOC /D "_CONSOLE"   /I$(STL_INCL) /I.
+CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D_NOTHREADS /D__STL_USE_NEWALLOC /D "_CONSOLE" /Zi  /I$(STL_INCL) /I.
+# CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D_NOTHREADS /D "_CONSOLE" /I$(STL_INCL) /I.
 
 check: eh_test.out
 

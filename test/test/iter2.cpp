@@ -11,7 +11,7 @@
 #endif
 static void print(const vector<const char*>& v_)
 {
-	__STD::vector<const char*>::const_iterator i;
+	__STLPORT_STD::vector<const char*>::const_iterator i;
   for(i = v_.begin(); i != v_.end(); i++)
     cout << *i << endl;
 }

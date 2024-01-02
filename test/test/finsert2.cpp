@@ -16,7 +16,7 @@ char* array [] = { "laurie", "jennifer", "leisa" };
 
   deque<char*> names;
   copy(array, array + 3, front_inserter(names));
-  __STD::deque<char*>::iterator i;
+  __STLPORT_STD::deque<char*>::iterator i;
   for(i = names.begin(); i != names.end(); i++)
     cout << *i << endl;
   return 0;

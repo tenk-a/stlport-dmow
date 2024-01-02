@@ -60,7 +60,7 @@ void TestController::maybe_fail(long)
         // reset and simulate an out-of-memory failure
         Failure_threshold() = kNotInExceptionTest;
 # ifndef EH_NO_EXCEPTIONS
-        throw (int)0;
+        throw EH_STD::bad_alloc();
 # endif
     }
 }
@@ -131,20 +131,21 @@ public:
 	
 	static void *Allocate( size_t s )
 	{
+	  void *result = 0;
+
 		if ( s <= sizeof( Block ) )
 		{
 			if ( mFree != 0 )
 			{
-				void *result = mFree;
+				result = mFree;
 				mFree = mFree->next;
-				return result;
 			}
 			else if ( mBlocks != 0 && mUsed < kBlockCount )
 			{
-				return (void*)&mBlocks[mUsed++];
+				result =  (void*)&mBlocks[mUsed++];
 			}
 		}
-	 	return (void*)0;
+	 	return result;
 	}
 	
 	static bool Free( void* p )
@@ -225,7 +226,10 @@ static void* OperatorNew( size_t s )
     return p;
 }
 
-void* operator new(size_t s)
+void* operator new(size_t s) 
+#ifdef EH_DELETE_HAS_THROW_SPEC
+throw(EH_STD::bad_alloc)
+#endif
 {
 	return OperatorNew( s );
 }
@@ -245,11 +249,12 @@ void* operator new(size_t size, const __STD::nothrow_t&) throw()
 #endif
 
 # if defined (EH_VECTOR_OPERATOR_NEW)
-void* operator new[]( __STD::size_t size )
+void* operator new[](size_t size ) throw(EH_STD::bad_alloc)
 {
 	return OperatorNew( size );
 }
 
+#ifdef EH_USE_NOTHROW
 void* operator new[](size_t size, const __STD::nothrow_t&) throw()
 {
 	try
@@ -261,6 +266,7 @@ void* operator new[](size_t size, const __STD::nothrow_t&) throw()
 		return 0;
 	}
 }
+#endif
 
 void operator delete[](void* ptr) throw()
 {
@@ -315,7 +321,8 @@ bool TestController::ReportLeaked()
 {
 	EndLeakDetection();
 	
-	EH_ASSERT( alloc_count == alloc_set().size() );
+	if (using_alloc_set)
+	  EH_ASSERT( alloc_count == alloc_set().size() );
 	
     if ( alloc_count!=0 || object_count!=0 )
     {
@@ -325,6 +332,7 @@ bool TestController::ReportLeaked()
             EH_STD::cerr<<"ERROR : "<<alloc_count<<" outstanding allocations."<<EH_STD::endl;
         if (object_count)
             EH_STD::cerr<<"ERROR : "<<object_count<<" non-destroyed objects."<<EH_STD::endl;
+	alloc_count = object_count = 0;
         return true;
     }
     return false; 

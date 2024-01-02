@@ -17,7 +17,7 @@ int iter4_test(int, char**)
   v.push_back(2);
   v.push_back(3);
   // Position immediately after last item.
-  __STD::vector<int>::iterator i = v.end(); 
+  STLPORT::vector<int>::iterator i = v.end(); 
   // Move back one and then access.
   cout << "last element is " << *--i << endl; 
   i -= 2; // Jump back two items.

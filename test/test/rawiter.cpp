@@ -8,22 +8,15 @@
 #ifdef MAIN 
 #define rawiter_test main
 #endif
-class X
-{
-  public:
-    X(int i_ = 0) : i(i_) {}
-    operator int() const { return i; }
- 
-  private:
-    int i;
-};
+#include "rawiter.hpp"
 #endif
+
 int rawiter_test(int, char**)
 {
   cout<<"Results of rawiter_test:"<<endl;
 
   allocator<X> a;
-  __STD::allocator<X>::pointer save_p, p = a.allocate(5); 
+  STLPORT::allocator<X>::pointer save_p, p = a.allocate(5); 
   save_p=p;
   raw_storage_iterator<X*, X> r(p);
   int i;

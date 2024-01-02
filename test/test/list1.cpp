@@ -16,9 +16,9 @@ int array2 [] = { 1, 4 };
 
   list<int> l1(array1, array1 + 3);
   list<int> l2(array2, array2 + 2);
-  __STD::list<int>::iterator i1 = l1.begin();
+  STLPORT::list<int>::iterator i1 = l1.begin();
   l1.splice(i1, l2);
-  __STD::list<int>::iterator i2 = l1.begin();
+  STLPORT::list<int>::iterator i2 = l1.begin();
   while(i2 != l1.end())
     cout << *i2++ << endl;
   return 0;

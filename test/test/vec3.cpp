@@ -2,7 +2,6 @@
 //  An adapted ObjectSpace example for use with SGI STL
 
 #include <iostream.h>
-#include <defalloc.h>
 #include <vector.h>
 #include <algo.h>
 #ifdef MAIN 

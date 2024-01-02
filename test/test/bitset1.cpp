@@ -12,8 +12,8 @@
 int bitset1_test(int, char**)
 {
   cout<<"Results of bitset1_test:"<<endl;
-  __STD::bitset<13U> b1(0xFFFF);
-  __STD::bitset<13U> b2(0x1111);
+  __STLPORT_STD::bitset<13U> b1(0xFFFF);
+  __STLPORT_STD::bitset<13U> b2(0x1111);
   cout << "b1 size = " << b1.size() << endl;
 # if !defined (__STL_NON_TYPE_TMPL_PARAM_BUG)
   cout << "b1 = "<<b1<<endl;

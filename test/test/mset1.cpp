@@ -19,7 +19,7 @@ int mset1_test(int, char**)
   cout << "count(42) = " << s.count(42) << endl;
   s.insert(42);
   cout << "count(42) = " << s.count(42) << endl;
-  __STD::set<int, less<int> >::iterator i = s.find(40);
+  STLPORT::set<int, less<int> >::iterator i = s.find(40);
   if(i == s.end())
     cout << "40 Not found" << endl;
   else

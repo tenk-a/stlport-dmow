@@ -14,7 +14,7 @@ int mset3_test(int, char**)
 int array [] = { 3, 6, 1, 2, 3, 2, 6, 7, 9 };
 
   multiset<int, less<int> > s(array, array + 9);
-  __STD::multiset<int, less<int> >::iterator i;
+  STLPORT::multiset<int, less<int> >::iterator i;
   i = s.lower_bound(3);
   cout << "lower bound = " << *i << endl;
   i = s.upper_bound(3);

@@ -15,7 +15,7 @@ int slist1_test(int, char**)
 char array [] = { 'x', 'l', 'x', 't', 's', 's' };
   ostream_iterator<char> o(cout,"");
   slist<char> str(array, array + 6);
-  __STD::slist<char>::iterator i;
+  STLPORT::slist<char>::iterator i;
   cout << "original: ";
   copy(str.begin(), str.end(),o);
   cout << endl;

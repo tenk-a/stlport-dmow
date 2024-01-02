@@ -18,7 +18,7 @@ int lwrbnd1_test(int, char**)
     v1[i] = i/4;
     cout << v1[i] << ' ';
   }
-  __STD::vector <int>::iterator location =  lower_bound(v1.begin(), v1.end(), 3);
+  STLPORT::vector <int>::iterator location =  lower_bound(v1.begin(), v1.end(), 3);
   cout
     << "\n3 can be inserted at index: "
     <<(location - v1.begin())

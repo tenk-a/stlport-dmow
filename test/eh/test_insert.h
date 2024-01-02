@@ -33,29 +33,24 @@
 
 // A classification system for containers, for verification
 struct container_tag {};
-struct sequence_container_tag /* : public container_tag */ {};
-struct associative_container_tag /* : public container_tag */ {}; 
-/*
-struct unique_container_tag : public container_tag {};
-struct multi_container_tag  : public container_tag {};
-struct set_container_tag : public container_tag {};
-struct map_container_tag : public container_tag {};
-*/
-struct set_tag /*: public set_container_tag, public unique_container_tag, 
-                 public associative_container_tag */ {};
-struct multiset_tag /* : public set_container_tag, public multi_container_tag, 
-                      public associative_container_tag */ {};
-struct map_tag /* : public map_container_tag, public unique_container_tag, 
-                 public associative_container_tag */ {};
-struct multimap_tag /* : public map_container_tag, public multi_container_tag, 
-                      public associative_container_tag  */ {};
+struct sequence_container_tag  {};
+struct associative_container_tag  {}; 
+
+struct set_tag  {};
+struct multiset_tag  {};
+struct map_tag {};
+struct multimap_tag {};
 
 template <class C, class Iter>
 size_t CountNewItems( const C&, const Iter& firstNew, 
                       const Iter& lastNew, sequence_container_tag )
 {
     size_t dist = 0;
+#if 0 //def __SUNPRO_CC
+    EH_DISTANCE( firstNew, lastNew, dist );
+#else
     EH_DISTANCE( Iter(firstNew), Iter(lastNew), dist );
+#endif
     return dist;
 }
 
@@ -75,7 +70,11 @@ size_t CountNewItems( const C& c, const Iter& firstNew,
 
 
 template <class C, class Iter, class KeyOfValue>
+#ifdef __BORLANDC__
+size_t CountUniqueItems_Aux( const C& original, const Iter& firstNew, 
+#else
 size_t CountUniqueItems_Aux( const C& original, Iter firstNew, 
+#endif
                              Iter lastNew, const KeyOfValue& keyOfValue )
 {
 	typedef typename C::key_type key;
@@ -84,7 +83,11 @@ size_t CountUniqueItems_Aux( const C& original, Iter firstNew,
 	typedef typename key_list::iterator key_iterator;
 	key_list keys;
 	size_t dist = 0;
+#ifdef __SUNPRO_CC
+	EH_DISTANCE( firstNew, lastNew, dist );
+#else
 	EH_DISTANCE( Iter(firstNew), Iter(lastNew), dist );
+#endif
 	keys.reserve( dist );
 	for ( Iter x = firstNew; x != lastNew; ++x )
 		keys.push_back( keyOfValue(*x) );
@@ -102,6 +105,7 @@ size_t CountUniqueItems_Aux( const C& original, Iter firstNew,
 }
 
 #if !__SGI_STL
+EH_BEGIN_NAMESPACE
 template <class T>
 struct identity
 {
@@ -113,6 +117,7 @@ struct select1st : public unary_function<_Pair, typename _Pair::first_type> {
     return __x.first;
   }
 };
+EH_END_NAMESPACE
 #endif
 
 template <class C, class Iter>
@@ -443,8 +448,8 @@ template <class C, class Position, class Iter>
 void do_insert_range( C& c_inst, Position offset, 
                       Iter first, Iter last, sequence_container_tag )
 {
-    typedef typename C::iterator Iter;
-    Iter pos = c_inst.begin();
+    typedef typename C::iterator CIter;
+    CIter pos = c_inst.begin();
     EH_STD::advance( pos, offset );
     c_inst.insert( pos, first, last );
 }

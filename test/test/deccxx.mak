@@ -6,7 +6,7 @@ srcdir = .
 VPATH = .
 
 # point this to proper location
-STL_INCL=../../sgi/dev
+STL_INCL=-I../../stlport -I../../stlport/old_hp
 
 LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \
@@ -123,7 +123,7 @@ TEST  = stl_test.out
 
 CC = cxx
 CXX = $(CC)
-CXXFLAGS = -O -w0 -I${STL_INCL}  -I.
+CXXFLAGS = -O -w0 ${STL_INCL}  -I.
 
 LIBS = -lm 
 LIBSTDCXX = 

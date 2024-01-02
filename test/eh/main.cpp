@@ -47,6 +47,7 @@ no
 # if defined ( EH_USE_SGI_STL ) 
 // Override assertion behavior
 #  include <cstdarg>
+#  include <stldebug.h>
 void __stl_debug_message(const char * format_str, ...)
 {
 	std::va_list args;

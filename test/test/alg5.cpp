@@ -17,7 +17,7 @@ int alg5_test(int, char**)
   years.push_back(1992);
   years.push_back(2001);
   years.push_back(1999);
-  __STD::deque<int>::iterator i;
+  __STLPORT_STD::deque<int>::iterator i;
   for(i = years.begin(); i != years.end(); i++)
     cout << *i << endl;
   return 0;

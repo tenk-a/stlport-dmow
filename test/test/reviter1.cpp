@@ -17,7 +17,7 @@ int array [] = { 1, 5, 2, 3 };
   vector<int> v(array, array + 4);
 //  typedef reverse_iterator<typename vector<int>::iterator, int, 
 //    typename vector<int>::reference, typename vector<int>::difference_type> reviter;
-  typedef __STD::vector<int>::reverse_iterator reviter;
+  typedef STLPORT::vector<int>::reverse_iterator reviter;
   reviter r(v.end());
   while(!(r ==v.rbegin()))
     cout << *r++ << endl;

@@ -11,6 +11,6 @@
 int min1_test(int, char**)
 {
   cout<<"Results of min1_test:"<<endl;
-  cout << __STD::min(42, 100) << endl;
+  cout << STLPORT::min(42, 100) << endl;
   return 0;
 }

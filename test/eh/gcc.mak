@@ -6,7 +6,7 @@ srcdir = .
 VPATH = .
 
 # point this to proper location
-STL_INCL=../../stl
+STL_INCL=../../stlport
 
 AUX_LIST=TestClass.cpp main.cpp nc_alloc.cpp random_number.cpp
 
@@ -33,7 +33,8 @@ REPO_FLAGS =
 
 # CXXFLAGS = -g -Wall -I${STL_INCL}  -I. -D__STL_USE_NEWALLOC -D__STL_DEBUG_ALLOC ${REPO_FLAGS} -DEH_NEW_HEADERS 
 
-CXXFLAGS = -Wall -ansi -I${STL_INCL}  -I. -D__STL_USE_NEWALLOC ${REPO_FLAGS} ${CXX_EXTRA_FLAGS}
+# CXXFLAGS = -Wall -ansi -I${STL_INCL}  -I. -D__STL_DEBUG ${REPO_FLAGS} ${CXX_EXTRA_FLAGS}
+CXXFLAGS = -Wall -D__STL_DEBUG -ansi -I${STL_INCL}  -I. ${REPO_FLAGS} ${CXX_EXTRA_FLAGS}
 # CXXFLAGS = -Wall -I${STL_INCL}  -I. -D__STL_USE_NEWALLOC ${REPO_FLAGS} ${CXX_EXTRA_FLAGS} -D__STL_DEBUG
 
 

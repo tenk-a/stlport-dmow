@@ -3,6 +3,7 @@
 
 #include <vector.h>
 #include <algo.h>
+#include <iterator.h>
 #include <iostream.h>
 
 #ifdef MAIN 

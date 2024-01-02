@@ -15,7 +15,7 @@ int revbit1_test(int, char**)
 int array [] = { 1, 5, 2, 3 };
 
   list<int> v(array, array + 4);
-  __STD::list<int>::reverse_iterator r(v.rbegin());
+  STLPORT::list<int>::reverse_iterator r(v.rbegin());
   while(!(r == v.rend()))
     cout << *r++ << endl;
   return 0;
