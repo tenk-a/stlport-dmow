@@ -26,25 +26,30 @@
 #ifndef __SGI_STL_HEAP_H
 #define __SGI_STL_HEAP_H
 
-#ifndef __STL_CONFIG_H
-# include <stl_config.h>
-#endif
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x12
+#  include <stl/_prolog.h>
+# endif
 
-#include <stl_heap.h>
+#include <stl/_heap.h>
 
 #ifdef __STL_USE_NAMESPACES
 
 # ifdef __STL_BROKEN_USING_DIRECTIVE
 using namespace std;
 # else
-using __STLPORT_STD::push_heap;
-using __STLPORT_STD::pop_heap;
-using __STLPORT_STD::make_heap;
-using __STLPORT_STD::sort_heap;
+using STLPORT::push_heap;
+using STLPORT::pop_heap;
+using STLPORT::make_heap;
+using STLPORT::sort_heap;
 # endif
 
 #endif /* __STL_USE_NAMESPACES */
 
+# if (__STL_OUTERMOST_HEADER_ID == 0x12)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_HEAP_H */
 

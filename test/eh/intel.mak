@@ -30,23 +30,15 @@ test_slist.obj test_vector.obj test_string.obj test_bitset.obj test_valarray.obj
 
 LINK32=link.exe
 
-# 5.0 won't work with NO_NEW_IOSTREAMS.  
+CPP_PROJ=/nologo /W3 /GX /D "WIN32" /MTd /Zi /Gm /Od /D "_CONSOLE"   /I$(STL_INCL) /I. /D_DEBUG
 
-CPP_PROJ=/nologo /W3 /GX /Zd /D "WIN32" \
-/D "_CONSOLE" /D "__STL_NO_NEW_IOSTREAMS" /D "__STL_USE_SGI_STRING" /I$(STL_INCL) /I.
-
-CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D_REENTRANT \
-/D "_CONSOLE"  /I$(STL_INCL) /I.
-
-CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D__STL_DEBUG_ALLOC /D "_CONSOLE"   /I$(STL_INCL) /I.
-CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D_NOTHREADS /D__STL_USE_NEWALLOC /D "_CONSOLE" /Zi  /I$(STL_INCL) /I.
-# CPP_PROJ=/nologo /MD /W3 /GX /D "WIN32" /D_NOTHREADS /D "_CONSOLE" /I$(STL_INCL) /I.
+CPP_LIBS = /link /libpath:"..\..\lib"
 
 check: eh_test.out
 
 eh_test.out : $(Dep_stl)
-	$(CPP) $(CPP_PROJ) $(Dep_stl) -o eh_test.exe
-	eh_test
+	$(CPP) $(CPP_PROJ) $(Dep_stl) -o eh_test.exe $(CPP_LIBS)
+	.\eh_test.exe
 	echo done
 
 clean :

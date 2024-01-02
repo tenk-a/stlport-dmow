@@ -2,10 +2,8 @@
 # Generated automatically from Makefile.in by configure.
 # This requires GNU make.
 
-# SHELL=/bin/sh
-# srcdir = .
-# VPATH = .
 
+SHELL=/bin/sh
 
 # point this to proper location
 STL_INCL= -I${PWD}/../../stlport/SC5
@@ -32,7 +30,7 @@ TEST  = eh_test.out
 CC = CC
 CXX = $(CC)
 
-CXXFLAGS = -g ${STL_INCL} -D__STL_USE_NEWALLOC -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
+CXXFLAGS = ${STL_INCL} -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
 
 # This is to test with native STL
 # CXXFLAGS = +w2 -xildoff -D__STL_USE_NEWALLOC -DEH_NO_SGI_STL -DEH_NEW_HEADERS -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
@@ -41,13 +39,14 @@ CXXFLAGS = -g ${STL_INCL} -D__STL_USE_NEWALLOC -DEH_VECTOR_OPERATOR_NEW -DEH_DEL
 LIBS = -lm 
 LIBSTDCXX = 
 
-all:
+LIBSTLPORT = -L../../lib -lstlport_sunpro
+
 
 check: $(TEST)
 
 $(TEST) : $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) $(LIBS) -o $(TEST_EXE)
-	$(TEST_EXE)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) ${LIBSTLPORT} $(LIBS) -o $(TEST_EXE)
+	LD_LIBRARY_PATH="../../lib;${LD_LIBRARY_PATH}" $(TEST_EXE)
 
 SUFFIXES: .cpp.o.out.res
 

@@ -13,42 +13,34 @@
  *
  */
 
-#ifndef __STLPORT_CSTD_stdio
-# define __STLPORT_CSTD_stdio
-
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x264
+#  include <stl/_prolog.h>
 # endif
 
 # if ! defined (__STL_WINCE)
-
-// GCC has some problems if this is being included 
-// before <stdarg.h>
-# ifdef __GNUC__
-#  include <stdarg.h>
-# endif
-
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_stdio
-#    define __STLPORT_NATIVE_PASS
-# endif
-
 # include __STL_NATIVE_C_HEADER(stdio.h)
 
 #if defined (__SUNPRO_CC) && !defined (_STRUCT_FILE)
 # define _STRUCT_FILE
 #endif
 
-# if defined ( __STL_RESUME_STD_FOR_stdio )
-#    undef __STL_RESUME_STD_FOR_stdio
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# ifdef __MWERKS__
+#  undef stdin
+#  undef stdout
+#  undef stderr
+
+#  define stdin  	(&__STL_VENDOR_CSTD::__files[0])
+#  define stdout	(&__STL_VENDOR_CSTD::__files[1])
+#  define stderr	(&__STL_VENDOR_CSTD::__files[2])
 # endif
 
 # endif /* WINCE */
 
-#endif /* __STLPORT_stdio */
+# if (__STL_OUTERMOST_HEADER_ID == 0x264)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 // Local Variables:
 // mode:C++

@@ -13,41 +13,31 @@
  *
  */
 
-#ifndef __STLPORT_CSTD_wchar
-# define __STLPORT_CSTD_wchar
-
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# if !defined (__STL_OUTERMOST_HEADER_ID)
+#  define __STL_OUTERMOST_HEADER_ID 0x278
+#  include <stl/_prolog.h>
+# elif (__STL_OUTERMOST_HEADER_ID == 0x278) && ! defined (__STL_DONT_POP_0x278)
+#  define __STL_DONT_POP_0x278
 # endif
 
 # if ! defined (__STL_WINCE)
 
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_wchar
-#    define __STLPORT_NATIVE_PASS
+# if defined ( __BORLANDC__ ) && (__BORLANDC__) >= 0x530
+#  include <cstring>
+using __STL_VENDOR_CSTD::strlen;
+using __STL_VENDOR_CSTD::strspn;
 # endif
-
-#if defined (__SUNPRO_CC) && (__SUNPRO_CC >= 0x500) && !defined (__STLPORT_NEW_IOSTREAMS)
-#if !defined(__SunOS_5_5_1) && !defined(__SunOS_5_6)
-#define _MBSTATE_T
-#define _STD_MBSTATE_T
-#define _MBSTATET_H
-#endif
-namespace std { class mbstate_t; }
-#endif
-
 # include __STL_NATIVE_C_HEADER(wchar.h)
-
-# if defined ( __STL_RESUME_STD_FOR_wchar )
-#    undef __STL_RESUME_STD_FOR_wchar
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
-# endif
 
 # endif /* WINCE */
 
-#endif /* __STLPORT_wchar */
+# if (__STL_OUTERMOST_HEADER_ID == 0x278)
+#  if ! defined (__STL_DONT_POP_0x278)
+#   include <stl/_epilog.h>
+#   undef  __STL_OUTERMOST_HEADER_ID
+#   endif
+#   undef  __STL_DONT_POP_0x278
+# endif
 
 // Local Variables:
 // mode:C++

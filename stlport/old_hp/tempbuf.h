@@ -23,12 +23,17 @@
 #ifndef __SGI_STL_TEMPBUF_H
 #define __SGI_STL_TEMPBUF_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa028
+#  include <stl/_prolog.h>
+# endif
+
 # ifndef __STLPORT_CLIMITS
 #  include <climits>
 # endif
 
 #ifndef __STLPORT_CSTDDEF
-# include <stddef>
+# include <cstddef>
 #endif
 
 #ifndef __STLPORT_CSTDLIB
@@ -40,7 +45,7 @@
 #endif
 
 #ifndef __TYPE_TRAITS_H
-#include <type_traits.h>
+#include <stl/type_traits.h>
 #endif
 
 #ifndef __SGI_STL_PAIR_H
@@ -48,19 +53,24 @@
 #endif
 
 #ifndef __SGI_STL_INTERNAL_TEMPBUF_H
-#include <stl_tempbuf.h>
+#include <stl/_tempbuf.h>
 #endif
 
 #ifdef __STL_USE_NAMESPACES
 
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
 using __STLPORT_STD::get_temporary_buffer;
 using __STLPORT_STD::return_temporary_buffer;
 using __STLPORT_STD::temporary_buffer;
 # endif
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa028)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_TEMPBUF_H */
 

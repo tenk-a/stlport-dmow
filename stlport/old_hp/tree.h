@@ -23,6 +23,11 @@
 #ifndef __SGI_STL_TREE_H
 #define __SGI_STL_TREE_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa030
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_ALGOBASE_H
 #include <algobase.h>
 #endif
@@ -32,16 +37,21 @@
 #endif
 
 #ifndef __SGI_STL_INTERNAL_TREE_H
-#include <stl_tree.h>
+#include <stl/_tree.h>
 #endif
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
 using __STLPORT_STD::rb_tree;
 # endif
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa030)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_TREE_H */
 

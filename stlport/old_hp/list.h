@@ -26,6 +26,11 @@
 #ifndef __SGI_STL_LIST_H
 #define __SGI_STL_LIST_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa014
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_ALGOBASE_H
 # include <algobase.h>
 #endif
@@ -34,16 +39,21 @@
 # include <alloc.h>
 #endif
 
-#include <stl_list.h>
+#include <stl/_list.h>
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
-using __STLPORT_STD::list;
-using __STLPORT_STD::__list__;
+using STLPORT::list;
+using STLPORT::__list__;
 # endif
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa014)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_LIST_H */
 

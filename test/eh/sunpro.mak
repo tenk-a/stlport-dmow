@@ -6,9 +6,10 @@
 # srcdir = .
 # VPATH = .
 
+SHELL=/bin/sh
 
 # point this to proper location
-STL_INCL= -I../../stlport
+STL_INCL= -I../../stlport/SC5
 
 # STL_INCL= -DEH_NO_SGI_STL
 
@@ -32,26 +33,21 @@ TEST  = eh_test.out
 CC = CC
 CXX = $(CC)
 
-# < 5.x only
-CXXFLAGS = +w2 ${STL_INCL} -D__STL_USE_NEWALLOC
+CXXFLAGS = +w2 -mt -features=rtti ${STL_INCL}
+# CXXFLAGS = +w2 ${STL_INCL}
 
-# >= 5.x only
-# CXXFLAGS = +w2 ${STL_INCL} -D__STL_USE_NEWALLOC -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
-
-# This is to test with native STL
-# CXXFLAGS = +w2 -xildoff -D__STL_USE_NEWALLOC -DEH_NO_SGI_STL -DEH_NEW_HEADERS -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
 
 
 LIBS = -lm 
-LIBSTDCXX = 
 
-all:
+LIBSTLPORT = -L../../lib -lstlport_sunpro
 
 check: $(TEST)
 
 $(TEST) : $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) $(LIBS) -o $(TEST_EXE)
-	$(TEST_EXE)
+	echo 'Info: For CC 4.x, warnings from ld in the form "symbol `XXX' has differing sizes" are normal.'
+	$(CXX) $(CXXFLAGS) $(OBJECTS) ${LIBSTLPORT} $(LIBS) -o $(TEST_EXE)
+	LD_LIBRARY_PATH="../../lib:$(LD_LIBRARY_PATH)" $(TEST_EXE) -s 100
 
 SUFFIXES: .cpp.o.out.res
 
@@ -72,3 +68,9 @@ SUFFIXES: .cpp.o.out.res
 
 clean:
 	-rm -fr ${TEST_EXE} *.o *.rpo *.obj *.out core *~ Templates.DB SunWS_cache
+
+
+
+
+
+

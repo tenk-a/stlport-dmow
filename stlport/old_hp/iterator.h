@@ -26,12 +26,13 @@
 #ifndef __SGI_STL_ITERATOR_H
 #define __SGI_STL_ITERATOR_H
 
-#ifndef __STL_CONFIG_H
-#include <stl_config.h>
-#endif
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa013
+#  include <stl/_prolog.h>
+# endif
 
 #if defined  (__STL_DEBUG) || defined (__STL_ASSERTIONS) && !defined (__STLPORT_DEBUG_H)
-# include <stldebug.h>
+# include <stl/debug/_debug.h>
 #endif
 
 #if defined (__STL_USE_NEW_STYLE_HEADERS)
@@ -45,7 +46,7 @@
 # endif
 
 # ifndef __TYPE_TRAITS_H
-#  include <type_traits.h>
+#  include <stl/type_traits.h>
 # endif
 
 #ifndef __SGI_STL_FUNCTION_H
@@ -57,81 +58,99 @@
 # endif
 
 # ifndef __SGI_STL_INTERNAL_ITERATOR_BASE_H
-#  include <stl_iterator_base.h>
+#  include <stl/_iterator_base.h>
 # endif
 
 # ifndef __SGI_STL_INTERNAL_ITERATOR_H
-#  include <stl_iterator.h>
+#  include <stl/_iterator.h>
 # endif
 
 #ifndef __SGI_STL_INTERNAL_CONSTRUCT_H
-#include <stl_construct.h>
+#include <stl/_construct.h>
 #endif
 
 #ifndef __SGI_STL_INTERNAL_RAW_STORAGE_ITERATOR_H
-#include <stl_raw_storage_iter.h>
+#include <stl/_raw_storage_iter.h>
 #endif
 
 # ifndef __SGI_STL_INTERNAL_STREAM_ITERATOR_H
-#  include <stl_stream_iterator.h>
+#  include <stl/_stream_iterator.h>
 # endif
 
 #ifdef __STL_USE_NAMESPACES
 
+
+# if 0 // defined (__STL_USE_OWN_NAMESPACE) && defined (__STL_IMPORT_VENDOR_STD) && !defined (__STL_BROKEN_USING_DIRECTIVE)
+
+__STL_BEGIN_NAMESPACE
+
+using __STL_VENDOR_STD::istream_iterator;
+using __STL_VENDOR_STD::ostream_iterator;
+
+__STL_END_NAMESPACE
+
+# endif
+
 // Names from stl_iterator.h
 
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
 
-using __STLPORT_STD::input_iterator_tag;
-using __STLPORT_STD::output_iterator_tag;
-using __STLPORT_STD::forward_iterator_tag;
-using __STLPORT_STD::bidirectional_iterator_tag;
-using __STLPORT_STD::random_access_iterator_tag;
+using STLPORT::input_iterator_tag;
+using STLPORT::output_iterator_tag;
+using STLPORT::forward_iterator_tag;
+using STLPORT::bidirectional_iterator_tag;
+using STLPORT::random_access_iterator_tag;
 
-using __STLPORT_STD::input_iterator;
-using __STLPORT_STD::output_iterator;
-using __STLPORT_STD::forward_iterator;
-using __STLPORT_STD::bidirectional_iterator;
-using __STLPORT_STD::random_access_iterator;
+using STLPORT::input_iterator;
+using STLPORT::output_iterator;
+using STLPORT::forward_iterator;
+using STLPORT::bidirectional_iterator;
+using STLPORT::random_access_iterator;
 
 #ifdef __STL_CLASS_PARTIAL_SPECIALIZATION
-using __STLPORT_STD::iterator_traits;
+using STLPORT::iterator_traits;
 #endif
 
-using __STLPORT_STD::iterator_category;
-using __STLPORT_STD::distance_type;
-using __STLPORT_STD::value_type;
+using STLPORT::iterator_category;
+using STLPORT::distance_type;
+using STLPORT::value_type;
 
-using __STLPORT_STD::distance; 
-using __STLPORT_STD::advance; 
+using STLPORT::distance; 
+using STLPORT::advance; 
 
-using __STLPORT_STD::insert_iterator;
-using __STLPORT_STD::front_insert_iterator;
-using __STLPORT_STD::back_insert_iterator;
-using __STLPORT_STD::inserter;
-using __STLPORT_STD::front_inserter;
-using __STLPORT_STD::back_inserter;
+using STLPORT::insert_iterator;
+using STLPORT::front_insert_iterator;
+using STLPORT::back_insert_iterator;
+using STLPORT::inserter;
+using STLPORT::front_inserter;
+using STLPORT::back_inserter;
 
-using __STLPORT_STD::reverse_iterator;
-using __STLPORT_STD::reverse_bidirectional_iterator;
+using STLPORT::reverse_iterator;
+using STLPORT::reverse_bidirectional_iterator;
 
-using __STLPORT_STD::istream_iterator;
-using __STLPORT_STD::ostream_iterator;
+using STLPORT::istream_iterator;
+using STLPORT::ostream_iterator;
 
 // Names from stl_construct.h
-using __STLPORT_STD::construct;
-using __STLPORT_STD::destroy;
+using STLPORT::construct;
+using STLPORT::destroy;
 
 // Names from stl_raw_storage_iter.h
-using __STLPORT_STD::raw_storage_iterator;
+using STLPORT::raw_storage_iterator;
 # endif
 
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa013)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_ITERATOR_H */
 
 // Local Variables:
 // mode:C++
 // End:
+

@@ -23,6 +23,11 @@
 #ifndef __SGI_STL_VECTOR_H
 #define __SGI_STL_VECTOR_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa031
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_ALGOBASE_H
 # include <algobase.h>
 #endif
@@ -32,26 +37,26 @@
 #endif
 
 # ifndef __STL_RANGE_ERRORS_H
-#  include <stl_range_errors.h>
+#  include <stl/_range_errors.h>
 # endif
 
-#if defined (__STL_DEBUG) && ! defined (__STLPORT_VEC_ITERATOR_H)
-// string uses the same debug iterator as vector
-#  include <stl_vec_iterator.h>
-#endif
-
 #ifndef __SGI_STL_INTERNAL_VECTOR_H
-# include <stl_vector.h>
+# include <stl/_vector.h>
 #endif
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
-using __STLPORT_STD::vector;
-using __STLPORT_STD::__vector__;
+using STLPORT::vector;
+using STLPORT::__vector__;
 # endif
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa031)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_VECTOR_H */
 

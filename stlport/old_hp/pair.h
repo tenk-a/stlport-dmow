@@ -26,30 +26,31 @@
 #ifndef __SGI_STL_PAIR_H
 #define __SGI_STL_PAIR_H
 
-#ifndef __STL_CONFIG_H
-#include <stl_config.h>
-#endif
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa020
+#  include <stl/_prolog.h>
+# endif
 
 #if defined  (__STL_DEBUG) || defined (__STL_ASSERTIONS) && !defined (__STLPORT_DEBUG_H)
-# include <stldebug.h>
+# include <stl/debug/_debug.h>
 #endif
 
 #ifndef __SGI_STL_INTERNAL_RELOPS
-#include <stl_relops.h>
+#include <stl/_relops.h>
 #endif
 
 #ifndef __TYPE_TRAITS_H
-# include <type_traits.h>
+# include <stl/type_traits.h>
 #endif
 
 #ifndef __SGI_STL_INTERNAL_PAIR_H
-#  include <stl_pair.h>
+#  include <stl/_pair.h>
 #endif
 
 #ifdef __STL_USE_NAMESPACES
 
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
 using __STLPORT_STD::pair;
 using __STLPORT_STD::make_pair;
@@ -57,8 +58,14 @@ using __STLPORT_STD::make_pair;
 
 #endif /* __STL_USE_NAMESPACES */
 
+# if (__STL_OUTERMOST_HEADER_ID == 0xa020)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
+
 #endif /* __SGI_STL_PAIR_H */
 
 // Local Variables:
 // mode:C++
 // End:
+

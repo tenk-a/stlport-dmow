@@ -16,15 +16,12 @@
 #ifndef __STLPORT_OLDSTD_typeinfo
 # define __STLPORT_OLDSTD_typeinfo
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x874
+#  include <stl/_prolog.h>
 # endif
 
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_typeinfo_H
-#    define __STLPORT_NATIVE_PASS
-# endif
+# ifndef __STL_NO_TYPEINFO
 
 # if defined (__GNUC__) && (__GNUC_MINOR__ >= 8 )
 #  include <../include/typeinfo.h>
@@ -36,18 +33,19 @@
 
 __STL_BEGIN_NAMESPACE
 
-using __STL_VENDOR_EXCEPT_STD::type_info;
-using __STL_VENDOR_EXCEPT_STD::bad_typeid;
-using __STL_VENDOR_EXCEPT_STD::bad_cast;
+using /* __STL_VENDOR_EXCEPT_STD */ ::type_info;
+using /* __STL_VENDOR_EXCEPT_STD */ ::bad_typeid;
+using /* __STL_VENDOR_EXCEPT_STD */ ::bad_cast;
 
 __STL_END_NAMESPACE
 
 #endif /* __STL_OWN_NAMESPACE */
 
-# if defined ( __STL_RESUME_STD_FOR_typeinfo_H )
-#    undef __STL_RESUME_STD_FOR_typeinfo_H
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# endif /* __STL_NO_TYPEINFO */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x874)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
 # endif
 
 #endif /* __STLPORT_OLDSTD_typeinfo */

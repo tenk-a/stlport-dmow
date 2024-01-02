@@ -29,6 +29,11 @@
 #ifndef __SGI_STL_HASHTABLE_H
 #define __SGI_STL_HASHTABLE_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa011
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_ALGO_H
 #include <algo.h>
 #endif
@@ -39,21 +44,25 @@
 #include <vector.h>
 #endif
 #ifndef __SGI_STL_HASH_FUN_H
-#include <stl_hash_fun.h>
+#include <stl/_hash_fun.h>
 #endif
 #ifndef __SGI_STL_INTERNAL_HASHTABLE_H
-#include <stl_hashtable.h>
+#include <stl/_hashtable.h>
 #endif
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
 using __STLPORT_STD::hash;
-using __STLPORT_STD::hashtable;
+using STLPORT::hashtable;
 # endif
 #endif /* __STL_USE_NAMESPACES */
 
+# if (__STL_OUTERMOST_HEADER_ID == 0xa011)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 #endif /* __SGI_STL_HASHTABLE_H */
 
 // Local Variables:

@@ -1,8 +1,17 @@
+# define __STL_HAS_SPECIFIC_PROLOG_EPILOG
 
 # define __STL_NATIVE_HEADER(header) <../cxx/##header>
 # define __STL_NATIVE_C_HEADER(x) <../include/##x>
 # define __STL_NATIVE_CPP_C_HEADER(header) <../cxx/##header>
+# define __STL_NATIVE_OLD_STREAMS_HEADER(header) <../cxx/##header>
 
+// Alpha is little-endian
+# define __STL_LITTLE_ENDIAN
+
+// collisions 
+# define __STL_DONT_PUT_STLPORT_IN_STD
+
+# define __STL_NAMESPACE_FUNCTION_AMBIGUITY_BUG 1
 
 #if (__DECCXX_VER < 60000000)
 
@@ -61,7 +70,7 @@
 
 # ifdef __IMPLICIT_INCLUDE_ENABLED
 
-#ifndef __STLPORT_IOSTREAMS
+#ifndef __SGI_STL_OWN_IOSTREAMS
 // implicit include introduces conflicts
 // between stlport and native lib.
 # undef __IMPLICIT_INCLUDE_ENABLED
@@ -85,8 +94,6 @@
 // unsigned 32-bit integer type
 #  define __STL_UINT32_T unsigned int
 #  define __STL_RAND48 1
-
-# define __STL_TYPENAME_ON_RETURN_TYPE typename
 
 #  define __STL_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 

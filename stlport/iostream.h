@@ -13,55 +13,103 @@
  *
  */
 
-#ifndef __STLPORT_OLDSTD_iostream
-# define __STLPORT_OLDSTD_iostream
+#ifndef __STLPORT_IOSTREAM_H
+# define __STLPORT_IOSTREAM_H
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x2035
+#  include <stl/_prolog.h>
 # endif
 
-# if ! defined (__STL_NO_IOSTREAMS)
+# ifdef __SGI_STL_OWN_IOSTREAMS
 
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_iostream_H
-#    define __STLPORT_NATIVE_PASS
+# include <iostream>
+
+// Those should be included all separately, as they do contain using declarations
+# include <streambuf.h>
+# include <ostream.h>
+# include <istream.h>
+
+
+# ifndef __STL_HAS_NO_NAMESPACES
+
+#  ifdef __STL_BROKEN_USING_DIRECTIVE
+using namespace __STLPORT_STD;
+#  else
+using __STLPORT_STD::cin;
+using __STLPORT_STD::cout;
+using __STLPORT_STD::clog;
+using __STLPORT_STD::cerr;
+using __STLPORT_STD::iostream;
+
+#   ifndef __STL_NO_WCHAR_T
+using __STLPORT_STD::wcin;
+using __STLPORT_STD::wcout;
+using __STLPORT_STD::wclog;
+using __STLPORT_STD::wcerr;
+#   endif
+
+#  endif
+
+# endif /* __STL_HAS_NO_NAMESPACES */
+
+// Obsolete classes for old-style backwards compatibility
+
+
+class istream_withassign : public istream {
+ public:
+  istream_withassign() : istream((streambuf*)0) {}
+  ~istream_withassign() {}
+  
+  istream_withassign& operator=(istream& __s) { 
+    ios::init(__s.rdbuf()); 
+    return *this; 
+  }
+  istream_withassign& operator=(streambuf* __s) {
+    ios::init(__s); 
+    return *this; 
+  }
+};
+
+class ostream_withassign : public ostream {
+ public:
+  ostream_withassign() : ostream((streambuf*)0) {}
+  ~ostream_withassign() {}
+  
+  ostream_withassign& operator=(ostream& __s) { 
+    ios::init(__s.rdbuf()); 
+    return *this; 
+  }
+  ostream_withassign& operator=(streambuf* __s) { 
+    ios::init(__s); 
+    return *this; 
+  }
+};
+
+class iostream_withassign : public iostream {
+ public:
+  iostream_withassign() : iostream((streambuf*)0) {}
+  ~iostream_withassign() {}
+  iostream_withassign & operator=(ios& __i) {
+    ios::init(__i.rdbuf());
+    return *this; 
+  }
+  iostream_withassign & operator=(streambuf* __s) {
+    ios::init(__s); 
+    return *this; 
+  }
+} ;
+
+# elif ! defined (__STL_USE_NO_IOSTREAMS)
+#  include <wrap_std/h/iostream.h>
 # endif
 
-# include __STL_NATIVE_HEADER(iostream.h)
-
-# if defined ( __STL_RESUME_STD_FOR_iostream_H )
-#    undef __STL_RESUME_STD_FOR_iostream_H
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# if (__STL_OUTERMOST_HEADER_ID == 0x2035)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
 # endif
 
-
-# if defined (__STL_USE_NAMESPACES) && !defined (__STL_BROKEN_USING_DIRECTIVE)
-
-__STL_BEGIN_NAMESPACE
-
-using ::istream;
-using ::ostream;
-using ::cin;
-using ::cout;
-using ::cerr;
-using ::clog;
-using ::endl;
-using ::ends;
-
-using ::ios;
-using ::flush;
-
-// using ::ws;
-
-__STL_END_NAMESPACE
-
-# endif /* __STL_USE_OWN_NAMESPACE */
-
-# endif /* WINCE */
-
-#endif /* __STLPORT_OLDSTD_iostream */
+#endif /* __STLPORT_IOSTREAM_H */
 
 // Local Variables:
 // mode:C++

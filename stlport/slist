@@ -15,9 +15,19 @@
 #ifndef __SGI_STL_SLIST
 #define __SGI_STL_SLIST
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x58
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_INTERNAL_SLIST_H
-# include <stl_slist.h>
+# include <stl/_slist.h>
 #endif
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x58)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_SLIST */
 

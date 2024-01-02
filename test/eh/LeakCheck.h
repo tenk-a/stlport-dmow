@@ -45,7 +45,9 @@
 EH_BEGIN_NAMESPACE
 
 template <class T1, class T2>
-inline ostream& operator << ( ostream& s, const EH_STD::pair <T1, T2>& p) {
+inline ostream& operator << ( 
+ostream& s, 
+const pair <T1, T2>& p) {
     return s<<'['<<p.first<<":"<<p.second<<']';
 }
 EH_END_NAMESPACE
@@ -163,8 +165,10 @@ void StrongCheck( const Value& v, const Operation& op, long max_iters = 2000000 
     for ( long count = 0; !succeeded && !failed && count < max_iters; count++ )
     {
         gTestController.BeginLeakDetection();
+
         {
             Value dup = v;
+            {
 # ifndef EH_NO_EXCEPTIONS
             try
 # endif
@@ -198,11 +202,14 @@ void StrongCheck( const Value& v, const Operation& op, long max_iters = 2000000 
 # endif
             CheckInvariant(v);
         }
-        bool leaked = gTestController.ReportLeaked();
-        EH_ASSERT( !leaked );
-        if ( leaked )
-        	failed = true;
-            
+
+        }
+
+	bool leaked = gTestController.ReportLeaked();
+	EH_ASSERT( !leaked );
+	if ( leaked )
+	  failed = true;
+    
         if ( succeeded )
 			gTestController.ReportSuccess(count);
     }

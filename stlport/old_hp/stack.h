@@ -26,6 +26,11 @@
 #ifndef __SGI_STL_STACK_H
 #define __SGI_STL_STACK_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa027
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_VECTOR_H
 #include <vector.h>
 #endif
@@ -39,22 +44,27 @@
 #endif
 
 #ifndef __SGI_STL_INTERNAL_STACK_H
-#include <stl_stack.h>
+#include <stl/_stack.h>
 #endif
 
 #ifndef __SGI_STL_INTERNAL_QUEUE_H
-#include <stl_queue.h>
+#include <stl/_queue.h>
 #endif
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
 using __STLPORT_STD::stack;
 using __STLPORT_STD::queue;
 using __STLPORT_STD::priority_queue;
 # endif
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa027)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_STACK_H */
 

@@ -13,28 +13,25 @@
  *
  */
 
-#ifndef __STLPORT_CSTD_setjmp
-# define __STLPORT_CSTD_setjmp
-
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# if !defined (__STL_OUTERMOST_HEADER_ID)
+#  define __STL_OUTERMOST_HEADER_ID 0x256
+#  include <stl/_prolog.h>
+# elif (__STL_OUTERMOST_HEADER_ID == 0x256) && ! defined (__STL_DONT_POP_0x256)
+#  define __STL_DONT_POP_0x256
 # endif
 
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_setjmp
-#    define __STLPORT_NATIVE_PASS
+
+# ifndef setjmp
+#  include __STL_NATIVE_C_HEADER(setjmp.h)
 # endif
 
-# include __STL_NATIVE_C_HEADER(setjmp.h)
-
-# if defined ( __STL_RESUME_STD_FOR_setjmp )
-#    undef __STL_RESUME_STD_FOR_setjmp
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# if (__STL_OUTERMOST_HEADER_ID == 0x256)
+#  if ! defined (__STL_DONT_POP_0x256)
+#   include <stl/_epilog.h>
+#   undef  __STL_OUTERMOST_HEADER_ID
+#   endif
+#   undef  __STL_DONT_POP_0x256
 # endif
-
-#endif /* __STLPORT_setjmp */
 
 // Local Variables:
 // mode:C++

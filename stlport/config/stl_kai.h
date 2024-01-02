@@ -2,6 +2,8 @@
 
 #  define __STL_RAND48 1
 
+#  define __STL_VENDOR_MB_NAMESPACE __STL_VENDOR_STD
+
 #  ifndef __KAI_STRICT /* _NO_LONGLONG */
 #   define __STL_LONG_LONG 1
 #  endif
@@ -9,8 +11,6 @@
 #  if !defined (__EXCEPTIONS) && ! defined (_EXCEPTIONS)
 #    define __STL_HAS_NO_EXCEPTIONS
 #  endif
-
-#  define __STL_TYPENAME_ON_RETURN_TYPE typename
 
 // #  define __STL_LINK_TIME_INSTANTIATION 1
 #  define __STL_VENDOR_GLOBAL_CSTD 1

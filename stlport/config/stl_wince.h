@@ -13,14 +13,21 @@
 // tell other parts no iostreams are desired
 #   define __STL_NO_IOSTREAMS 1
 
+// not all new-style headers are available...
+# define __STL_HAS_NO_NEW_C_HEADERS
+
 #     undef __STL_HAS_NO_EXCEPTIONS
 #     define __STL_HAS_NO_EXCEPTIONS
 #     undef __STL_NO_EXCEPTION_HEADER
 #     define __STL_NO_EXCEPTION_HEADER
 
-# ifdef __STL_MSVC
-#     pragma warning (disable: 4786)
-# endif
+// we have to use malloc instead of new
+# undef  __STL_USE_NEWALLOC
+# define __STL_USE_MALLOC
+
+//# ifdef __STL_MSVC
+//#     pragma warning (disable: 4786)
+//# endif
 
 #ifdef __STL_WINCE_USE_OUTPUTDEBUGSTRING
 #define __STL_WINCE_TRACE(msg)   OutputDebugString(msg)
@@ -51,6 +58,17 @@ typedef unsigned short wchar_t;
 #ifndef _PTRDIFF_T_DEFINED
 typedef int ptrdiff_t;
 #define _PTRDIFF_T_DEFINED
+#endif
+
+#ifndef _ABORT_DEFINED
+# define abort() TerminateProcess(GetCurrentProcess(), 0)
+# define _ABORT_DEFINED
+#endif
+
+
+#ifndef _ASSERT_DEFINED
+# define assert(expr) __STL_ASSERT(expr)
+# define _ASSERT_DEFINED
 #endif
 
 #endif /* __STL_WCE_H */

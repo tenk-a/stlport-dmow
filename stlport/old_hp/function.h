@@ -26,28 +26,29 @@
 #ifndef __SGI_STL_FUNCTION_H
 #define __SGI_STL_FUNCTION_H
 
-#ifndef __STL_CONFIG_H
-#include <stl_config.h>
-#endif
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa008
+#  include <stl/_prolog.h>
+# endif
 
 #ifndef __STLPORT_CSTDDEF
 # include <cstddef>
 #endif
 
 #ifndef __SGI_STL_INTERNAL_RELOPS
-#include <stl_relops.h>
+#include <stl/_relops.h>
 #endif
 
 #ifndef __SGI_STL_INTERNAL_FUNCTION_H
-#include <stl_function.h>
+#include <stl/_function.h>
 #endif
 
 #ifdef __STL_USE_NAMESPACES
 
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 #ifdef __STL_USE_NAMESPACE_FOR_RELOPS
-using namespace __STLPORT_STD_RELOPS;
+using namespace STLPORT_RELOPS;
 #endif /* __STL_USE_NAMESPACE_FOR_RELOPS */
 
 # else /* __STL_BROKEN_USING_DIRECTIVE */
@@ -112,6 +113,11 @@ using __STLPORT_STD::mem_fun1;
 using __STLPORT_STD::mem_fun1_ref; 
 # endif
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa008)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_FUNCTION_H */
 

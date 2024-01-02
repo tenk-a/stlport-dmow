@@ -13,31 +13,7 @@
  *
  */
 
-#ifndef __STLPORT_CSTD_cstring_H
-// recursive inclusion is possible !
-# define __STLPORT_CSTD_cstring_H 1
-
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
-# endif
-
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_string
-#    define __STLPORT_NATIVE_PASS
-# endif
-
 # include <cstring.>
-
-// # include __STL_NATIVE_C_HEADER(cstring.h)
-
-# if defined ( __STL_RESUME_STD_FOR_string )
-#    undef __STL_RESUME_STD_FOR_string
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
-# endif
-
-#endif /* __STLPORT_string */
 
 // Local Variables:
 // mode:C++

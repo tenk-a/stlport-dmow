@@ -12,6 +12,7 @@
 #  define __STL_HAS_NO_EXCEPTIONS
 #  define __STL_NO_EXCEPTION_SPEC
 #  define __SGI_STL_NO_ARROW_OPERATOR
+#  define __STL_NO_PROXY_ARROW_OPERATOR
 #  define __STL_NO_NEW_STYLE_CASTS
 
 #  define __STL_NEED_MUTABLE

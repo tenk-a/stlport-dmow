@@ -32,12 +32,13 @@
 #ifndef __SGI_STL_DEFALLOC_H
 #define __SGI_STL_DEFALLOC_H
 
-# ifndef __SGI_STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa005
+#  include <stl/_prolog.h>
 # endif
 
 # if defined (__STL_DEBUG) && ! defined ( __SGI_STL_DEBUG_H )
-#  include <stldebug.h>
+#  include <stl/debug/_debug.h>
 # endif
 
 #if defined (__STL_USE_NEW_STYLE_HEADERS)
@@ -55,7 +56,7 @@
 # include <new>
 
 #ifdef __STL_THREADS
-# include <stl_threads.h>
+# include <stl/_threads.h>
 #endif
 
 # if !defined (__THROW_BAD_ALLOC) && !defined(__STL_USE_EXCEPTIONS)
@@ -65,15 +66,22 @@
 #    include <stdio.h>
 #   endif
 # endif
-#  include <stl_alloc.h>
+#  include <stl/_alloc.h>
 
 // fbp: just for backwards compatibility,
 // hope this doesn't break anything.
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
-using __STLPORT_STD::allocator;
+using STLPORT::allocator;
 # endif /* __STL_BROKEN_USING_DIRECTIVE */
 #endif /*  __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa005)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
+
 #endif /* __SGI_STL_DEFALLOC_H */
+

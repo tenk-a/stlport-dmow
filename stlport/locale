@@ -1,4 +1,7 @@
 /*
+ * Copyright (c) 1999
+ * Silicon Graphics Computer Systems, Inc.
+ *
  * Copyright (c) 1999 
  * Boris Fomitchev
  *
@@ -11,104 +14,137 @@
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */
+ */ 
+#ifndef __SGI_STL_LOCALE
+#define __SGI_STL_LOCALE
 
-#ifndef __STLPORT_LOCALE
-# define __STLPORT_LOCALE
+// Basic framework: class locale and class locale::facet
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x1041
+#  include <stl/_prolog.h>
 # endif
 
-# ifndef __STLPORT_CSTDLIB
-#  include <cstdlib>
-# endif
+# if defined (__SGI_STL_OWN_IOSTREAMS)
 
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_LOCALE
-#    define __STLPORT_NATIVE_PASS
-#  endif
+#include <stl/_locale.h>
 
-# include __STL_NATIVE_HEADER(locale)
+#include <ios>                  // Some facets need basic_ios and/or ios_base
+#include <streambuf>                         // Needed by <iterator>
+#include <stl/_stream_iterator.h>             // Needed for [io]streambuf_iterator
+#include <limits>               // Needed by numeric facets
+#include <ctime>                // Needed (for struct tm) by time facets
 
-# if defined ( __STL_RESUME_STD_FOR_LOCALE )
-#    undef __STL_RESUME_STD_FOR_LOCALE
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
-# endif
+// Individual facets
+#include <stl/_ctype.h>
+#include <stl/_codecvt.h>
+#include <stl/_collate.h>
+#include <stl/_numeric_facets.h>
+#include <stl/_monetary.h>
+#include <stl/_time_facets.h>
+#include <stl/_messages_facets.h>
 
-# ifdef __STL_USE_OWN_NAMESPACE
+// Convenience interfaces
+#undef isspace
+#undef isprint
+#undef iscntrl
+#undef isupper
+#undef islower
+#undef isalpha
+#undef isdigit
+#undef ispunct
+#undef isxdigit
+#undef isalnum
+#undef isgraph
+#undef toupper
+#undef tolower
+
 __STL_BEGIN_NAMESPACE
 
-// from <cwchar>
-#if !defined (__STL_NO_MBSTATE_T)
-using __STL_VENDOR_MB_NAMESPACE::mbstate_t;
-#endif
+template <class _CharT> 
+inline bool isspace (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::space, c);
+}
 
-// _lib.locale_, locale:
-using __STL_VENDOR_STD::locale;
-using __STL_VENDOR_STD::use_facet;
-using __STL_VENDOR_STD::has_facet;
+template <class _CharT> 
+inline bool isprint (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::print, c);
+}
 
-// _lib.locale.convenience_, convenience interfaces:
-using __STL_VENDOR_STD::isspace;
-using __STL_VENDOR_STD::isprint;
-using __STL_VENDOR_STD::iscntrl;
-using __STL_VENDOR_STD::isupper;
-using __STL_VENDOR_STD::islower;
-using __STL_VENDOR_STD::isalpha;
-using __STL_VENDOR_STD::isdigit;
-using __STL_VENDOR_STD::ispunct;
-using __STL_VENDOR_STD::isxdigit;
-using __STL_VENDOR_STD::isalnum;
-using __STL_VENDOR_STD::isgraph;
-using __STL_VENDOR_STD::toupper;
-using __STL_VENDOR_STD::tolower;
+template <class _CharT> 
+inline bool iscntrl (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::cntrl, c);
+}
 
-// _lib.category.ctype_ and _lib.facet.ctype.special_, ctype:
-using __STL_VENDOR_STD::ctype_base;
-using __STL_VENDOR_STD::ctype;
-using __STL_VENDOR_STD::ctype_byname;
-using __STL_VENDOR_STD::codecvt_base;
-using __STL_VENDOR_STD::codecvt;
-using __STL_VENDOR_STD::codecvt_byname;
+template <class _CharT> 
+inline bool isupper (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::upper, c);
+}
 
-// _lib.category.numeric_ and _lib.facet.numpunct_, numeric:
-using __STL_VENDOR_STD::num_get;
-using __STL_VENDOR_STD::num_put;
-using __STL_VENDOR_STD::numpunct;
-using __STL_VENDOR_STD::numpunct_byname;
+template <class _CharT> 
+inline bool islower (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::lower, c);
+}
 
-// _lib.category.collate_, collation:
-using __STL_VENDOR_STD::collate;
-using __STL_VENDOR_STD::collate_byname;
+template <class _CharT> 
+inline bool isalpha (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::alpha, c);
+}
 
-// _lib.category.time_, date and time:
-using __STL_VENDOR_STD::time_base;
-using __STL_VENDOR_STD::time_get;
-using __STL_VENDOR_STD::time_get_byname;
-using __STL_VENDOR_STD::time_put;
-using __STL_VENDOR_STD::time_put_byname;
+template <class _CharT> 
+inline bool isdigit (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::digit, c);
+}
 
-// _lib.category.monetary_, money:
-using __STL_VENDOR_STD::money_base;
-using __STL_VENDOR_STD::money_get;
-using __STL_VENDOR_STD::money_put;
-using __STL_VENDOR_STD::moneypunct;
-using __STL_VENDOR_STD::moneypunct_byname;
+template <class _CharT> 
+inline bool ispunct (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::punct, c);
+}
 
-#if !defined (__STL_NO_NATIVE_MESSAGE_FACET)
-using __STL_VENDOR_STD::messages_base;
-using __STL_VENDOR_STD::messages;
-using __STL_VENDOR_STD::messages_byname;
-#endif // _MSL_NO_MESSAGE_FACET
+template <class _CharT> 
+inline bool isxdigit (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::xdigit, c);
+}
+
+template <class _CharT> 
+inline bool isalnum (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::alnum, c);
+}
+
+template <class _CharT> 
+inline bool isgraph (_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::graph, c);
+}
+
+template <class _CharT>
+inline _CharT toupper(_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).toupper(c);
+}
+
+template <class _CharT>
+inline _CharT tolower(_CharT c, const locale& loc) {
+  return (use_facet<ctype<_CharT> >(loc)).tolower(c);
+}
+
+# ifndef __IOS_BASE_INITIALIZED
+#  define __IOS_BASE_INITIALIZED
+// Global initializer object, to ensure construction of static objects.
+static ios_base::Init __initializer;
+# endif
 
 __STL_END_NAMESPACE
 
-#endif /* __STL_OWN_NAMESPACE */
+# elif !defined (__STL_USE_NO_IOSTREAMS)
+#  include <wrap_std/locale> 
+# endif
 
-#endif /* __STLPORT_LOCALE */
+# if (__STL_OUTERMOST_HEADER_ID == 0x1041)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
+
+#endif /* __SGI_STL_LOCALE */
+
 
 // Local Variables:
 // mode:C++

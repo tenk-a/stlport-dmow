@@ -16,40 +16,31 @@
 #ifndef __STLPORT_CERRNO
 # define __STLPORT_CERRNO
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x105
+#  include <stl/_prolog.h>
 # endif
 
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_CERRNO
-#    define __STLPORT_NATIVE_PASS
-#  endif
-
-# if defined (__STL_USE_NEW_C_HEADERS) || defined (__IN_STLPORT_CERRNO)
+# if defined (__STL_USE_NEW_C_HEADERS)
 #  include __STL_NATIVE_CPP_C_HEADER(cerrno)
 # else
 #  include <errno.h>
 # endif
 
-# if defined ( __STL_RESUME_STD_FOR_CERRNO )
-#    undef __STL_RESUME_STD_FOR_CERRNO
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
-# endif
-
+#ifndef errno
 
 # ifdef __STL_IMPORT_VENDOR_CSTD
 __STL_BEGIN_NAMESPACE
-
-// some compilers define this as a macro.
-#ifndef errno
 using __STL_VENDOR_CSTD::errno;
+__STL_END_NAMESPACE
+# endif /* __STL_IMPORT_VENDOR_CSTD */
+
 #endif
 
-__STL_END_NAMESPACE
-
-#endif /* __STL_IMPORT_VENDOR_CSTD */
+# if (__STL_OUTERMOST_HEADER_ID == 0x105 )
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __STLPORT_CERRNO */
 

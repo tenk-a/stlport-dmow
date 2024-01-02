@@ -42,8 +42,6 @@ CXXFLAGS = -Wall -g  -D__STL_USE_NEWALLOC -DNO_FAST_ALLOCATOR -ansi -I${STL_INCL
 LIBS = -lm 
 LIBSTDCXX = 
 
-all:
-
 check: $(TEST)
 
 $(TEST_EXE) : $(OBJECTS)

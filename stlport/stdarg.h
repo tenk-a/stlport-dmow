@@ -13,35 +13,22 @@
  *
  */
 
-#ifndef __STLPORT_CSTD_stdarg
-# define __STLPORT_CSTD_stdarg
-
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
-# endif
-
-
-// GCC has some problems if this is being included 
-// before <stddef.h>
-# ifdef __GNUC__
-#  include <stddef.h>
-# endif
-
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_stdarg
-#    define __STLPORT_NATIVE_PASS
+# if !defined (__STL_OUTERMOST_HEADER_ID)
+#  define __STL_OUTERMOST_HEADER_ID 0x261
+#  include <stl/_prolog.h>
+# elif (__STL_OUTERMOST_HEADER_ID == 0x261) && ! defined (__STL_DONT_POP_0x261)
+#  define __STL_DONT_POP_0x261
 # endif
 
 # include __STL_NATIVE_C_HEADER(stdarg.h)
 
-# if defined ( __STL_RESUME_STD_FOR_stdarg )
-#    undef __STL_RESUME_STD_FOR_stdarg
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# if (__STL_OUTERMOST_HEADER_ID == 0x261)
+#  if ! defined (__STL_DONT_POP_0x261)
+#   include <stl/_epilog.h>
+#   undef  __STL_OUTERMOST_HEADER_ID
+#   endif
+#   undef  __STL_DONT_POP_0x261
 # endif
-
-#endif /* __STLPORT_stdarg */
 
 // Local Variables:
 // mode:C++

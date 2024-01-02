@@ -19,19 +19,29 @@
 #ifndef __SGI_STL_ROPE_H
 #define __SGI_STL_ROPE_H
 
-#include <stl_rope.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa022
+#  include <stl/_prolog.h>
+# endif
+
+#include <stl/_rope.h>
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
-using __STLPORT_STD::char_producer; 
-using __STLPORT_STD::sequence_buffer; 
-using __STLPORT_STD::rope; 
-using __STLPORT_STD::crope; 
-using __STLPORT_STD::wrope; 
+using STLPORT::char_producer; 
+using STLPORT::sequence_buffer; 
+using STLPORT::rope; 
+using STLPORT::crope; 
+using STLPORT::wrope; 
 # endif
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa022)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_ROPE_H */
 

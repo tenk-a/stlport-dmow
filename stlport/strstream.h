@@ -13,29 +13,58 @@
  *
  */
 
-#ifndef __STLPORT_OLDSTD_strstream
-# define __STLPORT_OLDSTD_strstream
+#ifndef __STLPORT_STRSTREAM_H
+# define __STLPORT_STRSTREAM_H
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x2071
+#  include <stl/_prolog.h>
 # endif
 
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_strstream_H
-#    define __STLPORT_NATIVE_PASS
+# if defined ( __STL_USE_NEW_IOSTREAMS )
+
+// fbp - if we are going to use that consistently, let's do it
+# include  <strstream>
+# include  <iostream.h>
+
+
+# ifndef __STL_HAS_NO_NAMESPACES
+
+#  ifdef __STL_BROKEN_USING_DIRECTIVE
+
+using namespace __STLPORT_STD;
+
+#  else
+
+using __STLPORT_STD::strstreambuf;
+using __STLPORT_STD::istrstream;
+using __STLPORT_STD::ostrstream;
+using __STLPORT_STD::strstream;
+
+#  endif /* __STL_BROKEN_USING_DIRECTIVE */
+
+# endif /* __STL_HAS_NO_NAMESPACES */
+
+# else
+
+
+// just include old-style strstream.h
+#  if defined (_MSC_VER) && (_MSC_VER < 1200)
+#   include __STL_NATIVE_OLD_STREAMS_HEADER(strstrea.h)
+#  else
+#   include __STL_NATIVE_OLD_STREAMS_HEADER(strstream.h)
+#  endif
+
 # endif
 
-# include __STL_NATIVE_HEADER(strstream.h)
-
-# if defined ( __STL_RESUME_STD_FOR_strstream_H )
-#    undef __STL_RESUME_STD_FOR_strstream_H
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# if (__STL_OUTERMOST_HEADER_ID == 0x2071)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __STLPORT_OLDSTD_strstream */
+#endif /* __STLPORT_STRSTREAM_H */
 
 // Local Variables:
 // mode:C++
 // End:
+

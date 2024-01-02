@@ -16,37 +16,23 @@
 #ifndef __STLPORT_CFLOAT
 # define __STLPORT_CFLOAT
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x106
+#  include <stl/_prolog.h>
 # endif
 
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_CFLOAT
-#    define __STLPORT_NATIVE_PASS
-#  endif
-
-# if defined  (__STL_USE_NEW_C_HEADERS) || defined (__IN_STLPORT_CFLOAT)
+// Borland defines some implementation constants in std:: namespace,
+// we do not want to import them.
+# if defined  (__STL_USE_NEW_C_HEADERS) && ! defined (__BORLANDC__)
 #  include __STL_NATIVE_CPP_C_HEADER(cfloat)
 # else
-#  include <float.h>
+#  include __STL_NATIVE_C_HEADER(float.h)
 # endif
 
-# if defined ( __STL_RESUME_STD_FOR_CFLOAT )
-#    undef __STL_RESUME_STD_FOR_CFLOAT
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# if (__STL_OUTERMOST_HEADER_ID == 0x106 )
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
 # endif
-
-
-# ifdef __STL_IMPORT_VENDOR_CSTD
-__STL_BEGIN_NAMESPACE
-
-// those are often macros 
-
-__STL_END_NAMESPACE
-
-#endif /* __STL_IMPORT_VENDOR_CSTD */
 
 #endif /* __STLPORT_CFLOAT */
 

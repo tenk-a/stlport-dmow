@@ -1,6 +1,10 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+// Bring in definition of __MSL__ and related items
+#include <mslGlobals.h>
+#include <ansi_parms.h>
+
 //
 //  Compiler features
 //
@@ -11,23 +15,37 @@
 #   define __STL_LONG_LONG	1
 #  endif
 
-#  define __SGI_STL_USE_AUTO_PTR_CONVERSIONS
+#  define __STL_USE_UNIX_EMULATION_IO	1
+#  define __SGI_STL_USE_AUTO_PTR_CONVERSIONS	1
+#  define __STL_STATIC_CONST_INIT_BUG
+
+# ifdef __INTEL__
+#  define __STL_LITTLE_ENDIAN
+# else
+#  define __STL_BIG_ENDIAN
+# endif
 
 // *** CodeWarrior Compiler Common Bugs ***
 #  define __MSL_FIX_ITERATORS__(myType)		// Some MSL headers rely on this
-#  define __STL_NO_TEMPLATE_CONVERSIONS	1
+#  define __STL_NO_FRIEND_TEMPLATES 1	// Bug mysteriously reintroduced in this version.
 #  define __STL_THROW_RETURN_BUG	1
-#  define __STL_MEMBER_SPECIALIZATION_BUG	1
-#  define __STL_NO_MEMBER_TEMPLATE_KEYWORD	1
+
+#  if __MWERKS__ <= 0x2303
+#   define __STL_NO_TEMPLATE_CONVERSIONS	1
+#   define __STL_NO_MEMBER_TEMPLATE_KEYWORD	1
+#  endif
 
 //  *** Version-specific settings ***
+
+#  if __MWERKS__ < 0x2301
+#   define __STL_MEMBER_SPECIALIZATION_BUG	1
+#  endif
 
 #  if __MWERKS__ < 0x2300		// CW Pro5 features
 #   define __STL_INLINE_MEMBER_TEMPLATES 1
 #   define __STL_RELOPS_IN_STD_BUG	 1
 #   define __STL_DEFAULT_CONSTRUCTOR_BUG 1
-#  else
-#   define __STL_TYPENAME_ON_RETURN_TYPE typename
+#   define __STL_NO_TYPENAME_ON_RETURN_TYPE
 #  endif
 
 #  if __MWERKS__ < 0x2200		// CW Pro4 features
@@ -77,16 +95,15 @@
 
 
 // fixes to native inclusion wrappers. 
-// This is for typical MAC installation. You might have to override it.
-
 # if __MWERKS__ >= 0x2300	// CWPro5 changes paths - dwa 2/28/99
 
-#  define __STL_NATIVE_INCLUDE_PATH  Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C++:MSL_Common:Include
-#  define __STL_NATIVE_C_INCLUDE_PATH  Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C:MSL_Common:Include
-#  define __STL_NATIVE_HEADER(header)     <Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C++:MSL_Common:Include:##header>
+#  define __STL_NATIVE_INCLUDE_PATH  ../include
+#  define __STL_NATIVE_C_INCLUDE_PATH  ../include
+#  define __STL_NATIVE_HEADER(header)     <../include/##header>
      // fbp
-#  define __STL_NATIVE_CPP_C_HEADER(header)     <Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C:MSL_Common:Include:##header>
-#  define __STL_NATIVE_C_HEADER(header)     <Macintosh HD:Codewarrior Pro 5:Metrowerks CodeWarrior:MSL:MSL_C:MSL_Common:Include:##header>
+  
+#  define __STL_NATIVE_CPP_C_HEADER(header)     <../include/##header>
+#  define __STL_NATIVE_C_HEADER(header)     <../include/##header>
 
 # else
 
@@ -98,9 +115,12 @@
 
 # endif
 
-# define __STL_MAKE_HEADER(path, header) <path:header>
-
      // fbp
 # if !defined( __MSL_CPP__ ) || __MSL_CPP__ <= 0x4105
 #   define __STL_NO_NATIVE_WIDE_STREAMS 1
 #  endif
+
+# define __STL_LIB_BASENAME stlport_mwerks_x86
+# define __STL_DLLEXPORT_NEEDS_PREDECLARATION 1
+
+// # include <config/vc_select_lib.h>

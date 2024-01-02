@@ -23,34 +23,27 @@
 #ifndef __SGI_STL_VECTOR
 #define __SGI_STL_VECTOR
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x77
+#  include <stl/_prolog.h>
+# endif
+
 # ifndef __SGI_STL_INTERNAL_ALGOBASE_H
-#  include <stl_algobase.h>
+#  include <stl/_algobase.h>
 # endif
 
 #ifndef __SGI_STL_INTERNAL_VECTOR_H
-# include <stl_vector.h>
-#endif
-
-#ifndef __SGI_STL_INTERNAL_BVECTOR_H
-#include <stl_bvector.h>
+# include <stl/_vector.h>
 #endif
 
 #if defined (__STL_IMPORT_VENDOR_STD)
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_VECTOR
-#    define __STLPORT_NATIVE_PASS
-#  endif
-
 # include __STL_NATIVE_HEADER(vector)
-
-# if defined ( __STL_RESUME_STD_FOR_VECTOR )
-#    undef __STL_RESUME_STD_FOR_VECTOR
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
-# endif
-
 #endif
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x77)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_VECTOR */
 

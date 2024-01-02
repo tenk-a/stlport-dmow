@@ -26,23 +26,32 @@
 #ifndef __SGI_STL_PTHREAD_ALLOC_H
 #define __SGI_STL_PTHREAD_ALLOC_H
 
-#include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa021
+#  include <stl/_prolog.h>
+# endif
+
 #if defined  (__STL_DEBUG) || defined (__STL_ASSERTIONS)
-# include <stldebug.h>
+# include <stl/debug/_debug.h>
 #endif
 
 #include <pthread_alloc>
 
 #ifdef __STL_USE_NAMESPACES
 
-using __STLPORT_STD::_Pthread_alloc_template;
-using __STLPORT_STD::pthread_alloc;
+using STLPORT::_Pthread_alloc_template;
+using STLPORT::pthread_alloc;
 
 #endif /* __STL_USE_NAMESPACES */
 
+# if (__STL_OUTERMOST_HEADER_ID == 0xa021)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_PTHREAD_ALLOC_H */
 
 // Local Variables:
 // mode:C++
 // End:
+

@@ -34,7 +34,9 @@ CXX = $(CC)
 
 # -std strict_ansi_errors
 
-CXXFLAGS = ${STL_INCL} -std strict_ansi_errors -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
+CXXFLAGS = ${STL_INCL} -std strict_ansi_errors -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC -gall
+
+# CXXFLAGS = ${STL_INCL} -std strict_ansi_errors -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
 
 # This is to test with native STL
 # CXXFLAGS = +w2 -xildoff -D__STL_USE_NEWALLOC -DEH_NO_SGI_STL -DEH_NEW_HEADERS -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
@@ -44,8 +46,6 @@ LIBS = -lm
 LIBSTDCXX = 
 
 .SUFFIXES: .cpp .i .o .out .res
-
-all:
 
 check: $(TEST)
 

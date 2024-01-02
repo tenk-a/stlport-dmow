@@ -23,15 +23,21 @@
 #ifndef __SGI_STL_NUMERIC
 #define __SGI_STL_NUMERIC
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x49
+#  include <stl/_prolog.h>
 # endif
 
 #ifndef __SGI_STL_INTERNAL_FUNCTION_H
-# include <stl_function.h>
+# include <functional>
 #endif
 
-#include <stl_numeric.h>
+#include <stl/_numeric.h>
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x49)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_NUMERIC */
 

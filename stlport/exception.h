@@ -16,15 +16,11 @@
 #ifndef __STLPORT_OLDSTD_exception
 # define __STLPORT_OLDSTD_exception
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
-# endif
-
-// for Borland, it should not be native inclusion
-# if defined ( __STL_REDEFINE_STD ) && defined (std) && ! defined (__BORLANDC__) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_exception_H
-#    define __STLPORT_NATIVE_PASS
+# if !defined (__STL_OUTERMOST_HEADER_ID)
+#  define __STL_OUTERMOST_HEADER_ID 0x824
+#  include <stl/_prolog.h>
+# elif (__STL_OUTERMOST_HEADER_ID == 0x824) && ! defined (__STL_DONT_POP_0x824)
+#  define __STL_DONT_POP_0x824
 # endif
 
 # if defined (__GNUC__) && (__GNUC_MINOR__ >= 8 )
@@ -35,10 +31,12 @@
 #  include __STL_NATIVE_HEADER(exception.h)
 # endif
 
-# if defined ( __STL_RESUME_STD_FOR_exception_H )
-#    undef __STL_RESUME_STD_FOR_exception_H
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# if (__STL_OUTERMOST_HEADER_ID == 0x824)
+#  if ! defined (__STL_DONT_POP_0x824)
+#   include <stl/_epilog.h>
+#   undef  __STL_OUTERMOST_HEADER_ID
+#   endif
+#   undef  __STL_DONT_POP_0x824
 # endif
 
 #endif /* __STLPORT_OLDSTD_exception */

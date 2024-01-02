@@ -38,8 +38,6 @@ LIBS = -L../../libstlport -lstlport -lm
 
 LIBSTDCXX = 
 
-all:
-
 check: $(TEST)
 
 $(TEST) : $(OBJECTS)

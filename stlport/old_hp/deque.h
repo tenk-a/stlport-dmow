@@ -26,12 +26,17 @@
 #ifndef __SGI_STL_DEQUE_H
 #define __SGI_STL_DEQUE_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa006
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_ALGOBASE_H
 # include <algobase.h>
 #endif
 
 #ifndef __STL_RANGE_ERRORS_H
-# include <stl_range_errors.h>
+# include <stl/_range_errors.h>
 #endif
 
 #ifndef __SGI_STL_ALLOC_H
@@ -39,17 +44,22 @@
 #endif
 
 #ifndef __SGI_STL_INTERNAL_DEQUE_H
-# include <stl_deque.h>
+# include <stl/_deque.h>
 #endif
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
-using __STLPORT_STD::deque;
-using __STLPORT_STD::__deque__;
+using STLPORT::deque;
+using STLPORT::__deque__;
 # endif /*  __STL_BROKEN_USING_DIRECTIVE */
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa006)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_DEQUE_H */
 

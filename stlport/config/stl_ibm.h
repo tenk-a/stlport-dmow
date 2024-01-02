@@ -1,10 +1,46 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+
+# ifdef __IBMCPP__
+#  define __STL_HAS_SPECIFIC_PROLOG_EPILOG
+# endif
+
+// __TEMPINC__ is set when /Ft+ option is used
+#  ifdef __TEMPINC__
+#    define __STL_LINK_TIME_INSTANTIATION 1
+#  endif
+
+# if defined (__MVS__)
+// long long support is buggy - reported by Tinny Ng
+// #  if __EXTENDED__ && __COMPILER_VER__ >= 0x22060000
+// #   define __STL_LONG_LONG 1
+// #  endif
+#  define __STL_NO_TYPEINFO 1
+#  undef __STL_NATIVE_INCLUDE_PATH
+#  define __STL_NATIVE_INCLUDE_PATH /usr/lpp/ioclib/include
+// same for C headers like <string.h>
+#  undef __STL_NATIVE_C_INCLUDE_PATH
+#  define __STL_NATIVE_C_INCLUDE_PATH /usr/include
+
+# elif (defined (__WINDOWS__) || defined (_AIX) || defined (__OS2__) ) && (__IBMCPP__ >= 350)
+
+#  define __STL_LONG_LONG 1
+
+#endif
+
+#  if ( defined (__MULTI__) && defined (__WINDOWS__))
+#   define  __STL_WIN32THREADS 1          // Only Visual Age 3.5 for Windows
+#  endif
+
+#  define __STL_HAS_NO_NEW_C_HEADERS 1
+
+#if !( defined( __xlC__ ) && __xlC__ >= 0x500 )
+
 // AIX xlC 3.1 , 3.0.1 ==0x301
 // Visual Age C++ 3.x
 // OS-390 C++
-// fbp : should be version-specific!
+// fbp : should be more version-specific!
 
 #  define __STL_NO_BOOL 1
 #  define __STL_DONT_USE_BOOL_TYPEDEF 1
@@ -39,17 +75,16 @@
 #  define __STL_NO_EXCEPTION_HEADER 1
 
 #  define __STL_HAS_NO_NEW_IOSTREAMS 1
-#  define __STL_HAS_NO_NEW_C_HEADERS 1
+#  define __STL_NO_NEW_NEW_HEADER 1
+
+#  if defined (__OS2__)
+#   define __STL_NO_TYPEINFO 1
+#  endif
 #  define __STL_NO_NEW_NEW_HEADER 1
 
 #  define __STL_STATIC_CONST_INIT_BUG 1
 // #  define __STL_THROW_RETURN_BUG 1
 
-// I believe this is true for all IBM compilers
-// __TEMPINC__ is set when /Ft+ option is used
-#  ifdef __TEMPINC__
-#    define __STL_LINK_TIME_INSTANTIATION 1
-#  endif
 
 #  define __STL_NO_TEMPLATE_CONVERSIONS 1
 #  define __STL_UNINITIALIZABLE_PRIVATE 1
@@ -57,26 +92,20 @@
 #  define __STL_STATIC_ARRAY_BUG 1
 
 // AIX xlC, Visual Age 3.0 for OS/2 and MS 
-#  define __STL_TRIVIAL_DESTRUCTOR_BUG  1
-
-
-#  if ( defined (__MULTI__) && defined (__WINDOWS__))
-#   define  __STL_WIN32THREADS 1          // Only Visual Age 3.5 for Windows
-#  endif
+#  define __STL_TRIVIAL_DESTRUCTOR_BUG
 
 #  define __STL_NON_TYPE_TMPL_PARAM_BUG 1
 #  define __STL_NONTEMPL_BASE_MATCH_BUG 1
-
-#if __IBMCPP__ < 350
-#  define __STL_LONG_DOUBLE 1
-#endif
 
 #if __IBMCPP__ <= 350
 #  define __STL_NEED_UNREACHABLE_RETURN 1
 #endif
 
-#if __IBMCPP__ >= 350
-#  define __STL_LONG_LONG 1
+#if __IBMCPP__ < 350
+#  define __STL_NO_LONG_DOUBLE 1
 #endif
+
+#endif /* xlC 5 */
+
 
 

@@ -39,24 +39,21 @@
 // to test(), except that it does no range checking.  The non-const version
 // returns a reference to a bit, again without doing any range checking.
 
-# include <stl_bitset.h>
-
-#if defined (__STL_WHOLE_NATIVE_STD)
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_BITSET
-#    define __STLPORT_NATIVE_PASS
-#  endif
-
-# include __STL_NATIVE_HEADER(bitset)
-
-# if defined ( __STL_RESUME_STD_FOR_BITSET )
-#    undef __STL_RESUME_STD_FOR_BITSET
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x2
+#  include <stl/_prolog.h>
 # endif
 
+# include <stl/_bitset.h>
+
+#if defined (__STL_WHOLE_NATIVE_STD)
+# include __STL_NATIVE_HEADER(bitset)
 #endif
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x2 )
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_BITSET */
 

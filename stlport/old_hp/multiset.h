@@ -26,20 +26,30 @@
 #ifndef __SGI_STL_MULTISET_H
 #define __SGI_STL_MULTISET_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa017
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_TREE_H
 # include <tree.h>
 #endif
 
-#include <stl_multiset.h>
+#include <stl/_set.h>
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
-using __STLPORT_STD::multiset;
-using __STLPORT_STD::__multiset__;
+using STLPORT::multiset;
+using STLPORT::__multiset__;
 # endif
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa017)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_MULTISET_H */
 

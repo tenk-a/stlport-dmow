@@ -35,6 +35,7 @@
 
 long alloc_count = 0;
 long object_count = 0;
+long TestController::possible_failure_count = 0;
 const char* TestController::current_test = "<unknown>";
 const char* TestController::current_test_category = "no category";
 const char* TestController::current_container = 0;
@@ -44,8 +45,6 @@ bool  TestController::track_allocations = false;
 bool  TestController::leak_detection_enabled = false;
 TestController gTestController;
 
-EH_USE_STD
-
 //************************************************************************************************
 void TestController::maybe_fail(long)
 {
@@ -53,7 +52,7 @@ void TestController::maybe_fail(long)
         return;
 
     // throw if allocation would satisfy the threshold
-    if ((alloc_count + object_count + 1) >= Failure_threshold() )
+    if ( possible_failure_count++ >= Failure_threshold() )
     {
 
         // what about doing some standard new_handler() behavior here (to test it!) ???
@@ -93,21 +92,15 @@ void TestController::maybe_fail(long)
 # if !defined( EH_HASHED_CONTAINERS_IMPLEMENTED )
 typedef EH_STD::set<void*, EH_STD::less<void*> > allocation_set;
 #else
-#  if defined (EH_USE_NAMESPACES)
-EH_BEGIN_NAMESPACE
-#  endif
+
+USING_CSTD_NAME(size_t)
 
 struct hash_void
 {
   size_t operator()(void* x) const { return (size_t)x; }
 };
 
-#  if defined (EH_USE_NAMESPACES)
-EH_END_NAMESPACE
-using namespace EH_STD;
-#  endif
-
-typedef EH_STD::hash_set<void*, hash_void, EH_STD::equal_to<void*> > allocation_set;
+typedef std::hash_set<void*, ::hash_void, std::equal_to<void*> > allocation_set;
 # endif
 
 static allocation_set& alloc_set()
@@ -191,6 +184,7 @@ FastAllocator::Block *FastAllocator::mBlocks =
 FastAllocator::Block *FastAllocator::mFree;
 size_t FastAllocator::mUsed;
 
+
 static FastAllocator gFastAllocator;
 # endif
 
@@ -201,7 +195,8 @@ inline char* AllocateBlock( size_t s )
     if ( p != 0 )
     	return p;
 # endif    
-    return (char*)malloc(s);
+
+    return (char*)EH_CSTD::malloc(s);
 }
 
 static void* OperatorNew( size_t s )
@@ -227,7 +222,7 @@ static void* OperatorNew( size_t s )
     return p;
 }
 
-void* operator new(size_t s) 
+void* __STL_CALL operator new(size_t s) 
 #ifdef EH_DELETE_HAS_THROW_SPEC
 throw(EH_STD::bad_alloc)
 #endif
@@ -236,7 +231,7 @@ throw(EH_STD::bad_alloc)
 }
 
 #ifdef EH_USE_NOTHROW
-void* operator new(size_t size, const __STD::nothrow_t&) throw()
+void* __STL_CALL operator new(size_t size, const EH_STD::nothrow_t&) throw()
 {
 	try
 	{
@@ -250,13 +245,13 @@ void* operator new(size_t size, const __STD::nothrow_t&) throw()
 #endif
 
 # if defined (EH_VECTOR_OPERATOR_NEW)
-void* operator new[](size_t size ) throw(EH_STD::bad_alloc)
+void* __STL_CALL operator new[](size_t size ) throw(EH_STD::bad_alloc)
 {
 	return OperatorNew( size );
 }
 
 #ifdef EH_USE_NOTHROW
-void* operator new[](size_t size, const __STD::nothrow_t&) throw()
+void* __STL_CALL operator new[](size_t size, const EH_STD::nothrow_t&) throw()
 {
 	try
 	{
@@ -269,16 +264,16 @@ void* operator new[](size_t size, const __STD::nothrow_t&) throw()
 }
 #endif
 
-void operator delete[](void* ptr) throw()
+void __STL_CALL operator delete[](void* ptr) throw()
 {
 	operator delete( ptr );
 }
 # endif
 
 # if defined (EH_DELETE_HAS_THROW_SPEC)
-void operator delete(void* s) throw()
+void __STL_CALL operator delete(void* s) throw()
 # else
-void operator delete(void* s)
+void __STL_CALL operator delete(void* s)
 # endif
 {
 	if ( s != 0 )
@@ -299,9 +294,10 @@ void operator delete(void* s)
 # if ! defined (NO_FAST_ALLOCATOR)	
 		if ( !gFastAllocator.Free( s ) )
 # endif   
-		    free(s);
+		    EH_CSTD::free(s);
 	}
 }
+
 
 /*===================================================================================
 	ClearAllocationSet  (private helper)
@@ -318,26 +314,33 @@ void TestController::ClearAllocationSet()
 	}
 }
 
+
 bool TestController::ReportLeaked()
 {
-	EndLeakDetection();
+
+  EndLeakDetection();
 	
-	if (using_alloc_set)
-	  EH_ASSERT( alloc_count == alloc_set().size() );
-	
+  if (using_alloc_set)
+	  EH_ASSERT( alloc_count == static_cast<int>(alloc_set().size()) );
+
     if ( alloc_count!=0 || object_count!=0 )
     {
         EH_STD::cerr<<"\nEH TEST FAILURE !\n";
         PrintTestName(true);
         if (alloc_count)
-            EH_STD::cerr<<"ERROR : "<<alloc_count<<" outstanding allocations."<<EH_STD::endl;
+            EH_STD::cerr<<"ERROR : "<<alloc_count<<" outstanding allocations.\n";
         if (object_count)
-            EH_STD::cerr<<"ERROR : "<<object_count<<" non-destroyed objects."<<EH_STD::endl;
+          EH_STD::cerr<<"ERROR : "<<object_count<<" non-destroyed objects.\n";
 	alloc_count = object_count = 0;
-        return true;
+
+    return true;
+
     }
-    return false; 
+    return false;
+
 }
+
+
 
 /*===================================================================================
 	PrintTestName
@@ -346,7 +349,9 @@ bool TestController::ReportLeaked()
 		an ellipsis, because the test is ongoing. If err is true an error is being
 		reported, and the output ends with an endl.
 ====================================================================================*/
-void TestController::PrintTestName(bool err) {
+
+void
+TestController::PrintTestName(bool err) {
     if (current_container)
         EH_STD::cerr<<"["<<current_container<<"] :";
     EH_STD::cerr<<"testing "<<current_test <<" (" << current_test_category <<")";
@@ -366,3 +371,4 @@ long& TestController::Failure_threshold()
 	static long failure_threshold = kNotInExceptionTest;
 	return failure_threshold;
 }
+

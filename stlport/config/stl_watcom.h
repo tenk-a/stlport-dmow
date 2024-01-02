@@ -2,6 +2,17 @@
 // It is internal STLport header - DO NOT include it directly
 
 
+// On QNX, headers are supposed to be found in /usr/include,
+// so default "../include" should work.
+# ifndef __QNX__
+#  define __STL_NATIVE_INCLUDE_PATH ../h
+# endif
+
+// boris : is this true or just the header is not in /usr/include ?
+# ifdef __QNX__
+#  define __STL_NO_TYPEINFO 1
+# endif
+
 #  define __STL_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 #  define __STL_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #  define __STL_NO_MEMBER_TEMPLATE_KEYWORD 1
@@ -18,7 +29,7 @@
 #  define __STL_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 
 #  define __STL_STATIC_CONST_INIT_BUG 1
-#  define __STL_THROW_RETURN_BUG 1
+// #  define __STL_THROW_RETURN_BUG 1
 #  define __STL_NO_TEMPLATE_CONVERSIONS 1
 
 #  define __STL_BASE_TYPEDEF_OUTSIDE_BUG 1
@@ -39,8 +50,9 @@
 #   define __STL_NO_BOOL 1
 #   define __STL_NEED_EXPLICIT 1
 #   define __STL_NEED_MUTABLE 1
-#   define __STL_NO_NEW_STYLE_CASTS 1
 #  endif
+// This one is present in 11, but apparently has bugs (with auto_ptr).
+#   define __STL_NO_NEW_STYLE_CASTS 1
 
 // Get rid of Watcom's min and max macros 
 #undef min 
@@ -51,3 +63,8 @@
 #if !(defined (__SW_XS) || defined (__SW_XSS) || defined(__SW_XST))
 #    define __STL_HAS_NO_EXCEPTIONS 1
 # endif
+
+# if defined ( _MT ) && !defined (_NOTHREADS) && !defined (_REENTRANT)
+# define _REENTRANT 1
+# endif
+

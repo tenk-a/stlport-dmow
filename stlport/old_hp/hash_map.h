@@ -26,25 +26,34 @@
 #ifndef __SGI_STL_HASH_MAP_H
 #define __SGI_STL_HASH_MAP_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa009
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_HASHTABLE_H
 #include <hashtable.h>
 #endif 
 
-#include <stl_hash_map.h>
+#include <stl/_hash_map.h>
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
 using __STLPORT_STD::hash;
-using __STLPORT_STD::hashtable;
-using __STLPORT_STD::hash_map;
-using __STLPORT_STD::hash_multimap;
-using __STLPORT_STD::__hash_map__;
-using __STLPORT_STD::__hash_multimap__;
+using STLPORT::hashtable;
+using STLPORT::hash_map;
+using STLPORT::hash_multimap;
+using STLPORT::__hash_map__;
+using STLPORT::__hash_multimap__;
 # endif
 #endif /* __STL_USE_NAMESPACES */
 
+# if (__STL_OUTERMOST_HEADER_ID == 0xa009)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_HASH_MAP_H */
 

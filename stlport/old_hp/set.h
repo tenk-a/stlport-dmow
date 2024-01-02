@@ -26,20 +26,29 @@
 #ifndef __SGI_STL_SET_H
 #define __SGI_STL_SET_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa023
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_TREE_H
 # include <tree.h>
 #endif
 
-#include <stl_set.h>
+#include <stl/_set.h>
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
-using __STLPORT_STD::set;
-using __STLPORT_STD::__set__;
+using STLPORT::set;
+using STLPORT::__set__;
 # endif
 #endif /* __STL_USE_NAMESPACES */
+# if (__STL_OUTERMOST_HEADER_ID == 0xa023)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_SET_H */
 

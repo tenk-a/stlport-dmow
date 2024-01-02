@@ -13,42 +13,35 @@
  *
  */
 
-#ifndef __STLPORT_OLDSTD_fstream
-# define __STLPORT_OLDSTD_fstream
+#ifndef __STLPORT_FSTREAM_H
+# define __STLPORT_FSTREAM_H
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x2026
+#  include <stl/_prolog.h>
 # endif
 
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_fstream_H
-#    define __STLPORT_NATIVE_PASS
+# if defined (__SGI_STL_OWN_IOSTREAMS)
+#  include <fstream>
+// get desired pollution
+#  include <iostream.h>
+
+#  ifndef __STL_HAS_NO_NAMESPACES
+#   include <using/fstream>
+#  endif
+
+# elif ! defined (__STL_USE_NO_IOSTREAMS)
+# include <wrap_std/h/fstream.h>
 # endif
 
-# include __STL_NATIVE_HEADER(fstream.h)
-
-# if defined ( __STL_RESUME_STD_FOR_fstream_H )
-#    undef __STL_RESUME_STD_FOR_fstream_H
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# if (__STL_OUTERMOST_HEADER_ID == 0x2026)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
 # endif
 
-# if defined  (__STL_USE_NAMESPACES) && ! defined (__STL_BROKEN_USING_DIRECTIVE)
-
-__STL_BEGIN_NAMESPACE
-
-using ::streambuf;
-using ::ifstream;
-using ::ofstream;
-using ::fstream;
-
-__STL_END_NAMESPACE
-
-# endif
-
-#endif /* __STLPORT_OLDSTD_fstream */
+#endif /* __STLPORT_FSTREAM_H */
 
 // Local Variables:
 // mode:C++
 // End:
+

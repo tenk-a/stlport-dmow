@@ -26,20 +26,30 @@
 #ifndef __SGI_STL_MULTIMAP_H
 #define __SGI_STL_MULTIMAP_H
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa016
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_TREE_H
 # include <tree.h>
 #endif
 
-#include <stl_multimap.h>
+#include <stl/_map.h>
 
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 # else
-using __STLPORT_STD::multimap;
-using __STLPORT_STD::__multimap__;
+using STLPORT::multimap;
+using STLPORT::__multimap__;
 # endif
 #endif /* __STL_USE_NAMESPACES */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0xa016)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_MULTIMAP_H */
 

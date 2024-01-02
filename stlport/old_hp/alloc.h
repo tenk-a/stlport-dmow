@@ -19,12 +19,13 @@
 #ifndef __SGI_STL_ALLOC_H
 #define __SGI_STL_ALLOC_H
 
-#ifndef __STL_CONFIG_H
-#include <stl_config.h>
-#endif
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0xa003
+#  include <stl/_prolog.h>
+# endif
 
 #if defined  (__STL_DEBUG) || defined (__STL_ASSERTIONS) && !defined (__STLPORT_DEBUG_H)
-# include <stldebug.h>
+# include <stl/debug/_debug.h>
 #endif
 
 # ifndef __STLPORT_CSTDDEF
@@ -44,7 +45,7 @@
 # endif
 
 #ifndef __SGI_STL_INTERNAL_ALLOC_H
-#include <stl_alloc.h>
+#include <stl/_alloc.h>
 #endif
 
 // Old SGI names
@@ -65,7 +66,7 @@ __STL_END_NAMESPACE
 #ifdef __STL_USE_NAMESPACES
 # ifdef __STL_BROKEN_USING_DIRECTIVE
 
-using namespace __STLPORT_STD;
+using namespace STLPORT;
 
 # else
 
@@ -85,8 +86,14 @@ using __STLPORT_STD::allocator;
 # endif /* __STL_BROKEN_USING_DIRECTIVE */
 #endif /* __STL_USE_NAMESPACES */
 
+# if (__STL_OUTERMOST_HEADER_ID == 0xa003)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
+
 #endif /* __SGI_STL_ALLOC_H */
 
 // Local Variables:
 // mode:C++
 // End:
+

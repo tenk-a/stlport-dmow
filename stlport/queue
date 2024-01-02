@@ -26,30 +26,27 @@
 #ifndef __SGI_STL_QUEUE
 #define __SGI_STL_QUEUE
 
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x53
+#  include <stl/_prolog.h>
+# endif
+
 #ifndef __SGI_STL_INTERNAL_QUEUE_H
-# include <stl_queue.h>
+# include <stl/_queue.h>
 #endif
 
 #ifndef __SGI_STL_INTERNAL_FUNCTION_H
-# include <stl_function.h>
+# include <functional>
 #endif
 
 #if defined (__STL_WHOLE_NATIVE_STD)
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_QUEUE
-#    define __STLPORT_NATIVE_PASS
-#  endif
-
 # include __STL_NATIVE_HEADER(queue)
-
-# if defined ( __STL_RESUME_STD_FOR_QUEUE )
-#    undef __STL_RESUME_STD_FOR_QUEUE
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
-# endif
-
 #endif
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x53)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_QUEUE */
 

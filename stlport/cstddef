@@ -16,17 +16,12 @@
 #ifndef __STLPORT_CSTDDEF
 # define __STLPORT_CSTDDEF
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
-# endif
-
 # if ! defined (__STL_WINCE)
 
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_CSTDDEF
-#    define __STLPORT_NATIVE_PASS
-#  endif
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x114
+#  include <stl/_prolog.h>
+# endif
 
 # if defined (__STL_USE_NEW_C_HEADERS)
 #  include __STL_NATIVE_CPP_C_HEADER(cstddef)
@@ -34,21 +29,17 @@
 #  include __STL_NATIVE_C_HEADER(stddef.h)
 # endif
 
-# if defined ( __STL_RESUME_STD_FOR_CSTDDEF )
-#    undef __STL_RESUME_STD_FOR_CSTDDEF
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
-# endif
-
 # ifdef __STL_IMPORT_VENDOR_CSTD
-__STL_BEGIN_NAMESPACE
-  
+__STL_BEGIN_NAMESPACE  
 using __STL_VENDOR_CSTD::ptrdiff_t;
 using __STL_VENDOR_CSTD::size_t;
-
 __STL_END_NAMESPACE
-
 #endif /* __STL_IMPORT_VENDOR_CSTD */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x114 )
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __STL_WINCE */
 

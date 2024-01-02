@@ -16,11 +16,12 @@
 /*
  * Purpose of this file :
  *
- * To hold user-definable portion of STLport settings.
- * If you use STLport in several projects, you may want
- * to place copy of this file modified for each project
- * in project include directory, so that you have different
- * settings for different projects.
+ * To hold user-definable portion of STLport settings which may be overridden
+ * on per-project basis.
+ * Please note that if you use SGI iostreams (compiled STLport) then you have
+ * to use consistent settings when you compile STLport library and your project. 
+ * Those settings are defined in _site_config.h and have to be the same for a given
+ * STLport installation.
  *
  */
 
@@ -30,101 +31,75 @@
 //              Features selection
 //==========================================================
 
-
-/* __STL_USE_NEW_IOSTREAMS: if defined, then the STL will use new,
- *   standard-conforming iostreams (e.g. the <iosfwd> header).  If not
- *   defined, the STL will use old cfront-style iostreams (e.g. the
- *   <iostream.h> header). Normally it is being set automatically.
+/* __STL_NO_SGI_IOSTREAMS: 
+ *
+ *  This is major configuration switch.
+ *  Turn it on to disable use of SGI iostreams and use wrappers 
+ *  around your compiler's iostreams, like before.
+ *  Keep it off if you want to use  SGI iostreams 
+ *  (Note that in this case you have to compile library in ../src
+ *  and supply resulting library at link time).
+ *
  */
-// #define   __STL_USE_NEW_IOSTREAMS	1
+
+// # define   __STL_NO_SGI_IOSTREAMS	1
+
 
 /* 
+ * This macro only works in non-SGI iostreams mode.
+ *
  * Uncomment to suppress using new-style streams even if they are
  * available.
  * Beware - __STL_USE_OWN_NAMESPACE depends on this macro, too.
  * Do that only if you are absolutely sure backwards-compatible 
  * <iostream.h> is not actually a wrapper with <iostream>
- * Hint : In VC++ 5.x, they are not.
+ * Hint : In VC++ 6.x, they are not.
  */
 
 // #define   __STL_NO_NEW_IOSTREAMS	1
 
 /*
- * __STL_STD_REBUILD - define this if you are actually rebuilding
- * vendor's C++ support library with STLport installed.
+ * Use this switch for embedded systems where no iostreams are available
+ * at all. SGI iostreams will get disabled automatically then.
  */
-// # define __STL_STD_REBUILD 1
+// # define __STL_NO_IOSTREAMS 1
 
 /* 
- * __STL_USE_OWN_NAMESPACE/__STL_NO_OWN_NAMESPACE
- * If defined, STLport uses STLport:: namespace, else std::
- * Defining this helps A LOT in resolving problems with 
- * vendor C++ standard library interaction. 
- * The reason you have to use separate namespace is that new-style IO
- * compiled library may have its own idea about STL stuff (string, vector, etc.),
- * so redefining them in the same namespace would break ODR and may cause
- * undefined behaviour. Rule of thumb is - if new-style iostreams are
- * available, there could be a conflict. Otherwise you should be OK.
- * This flag is going to be defined in stl_config.h if __STL_USE_NEW_IOSTREAMS is on.
- * But you may wish to force it anyway.
- * Alternatively, you may want to disable it setting __STL_NO_OWN_NAMESPACE on.
+ * Set __STL_DEBUG to turn the "Debug Mode" on.
+ * That gets you checked iterators/ranges in the manner
+ * of "Safe STL". Very useful for debugging. Thread-safe.
+ * Please do not forget to link proper STLport library flavor
+ * (e.g libstlport_gcc_stldebug.a) when you set this flag in SGI iostreams mode.
  */
-// #  define __STL_USE_OWN_NAMESPACE  1
-// #  define __STL_NO_OWN_NAMESPACE  1
+// #define   __STL_DEBUG 1
 
-
-/* 
- * __STLPORT_NAMESPACE : This is the namespace STLport uses. 
- * Do NOT try to change it to "std".
- * In case you defined __STL_USE_OWN_NAMESPACE, STLport reside there.
- * If you put STLport in std:: (__STL_NO_OWN_NAMESPACE), stlport::
- * namespace is still available and is equivalent to std::
- * STLport also defines user-level macro STLPORT (=__STLPORT_NAMESPACE)
- * which always denotes STLport namespace and is intended to be used in 
- * application's code for portability.
+/*
+ * By default, STLport uses proxy technique to enable operator -> for
+ * iterators even for those compilers that check the return type of
+ * unused instantiations. If this causes problems for you, turn the following
+ * switch on to disable proxy ->() operators. This actually should be done
+ * in compiler-dependant section, not here. 
+ * auto_ptr implements proxy operator even if they are disabled in general,
+ * as it is very unlikely that you instantiate auto_ptr<> on pointers and other builtins.
+ * However, if this is the case, uncomment second line.
  */
 
-#  define __STLPORT_NAMESPACE stlport
+// # define __STL_NO_PROXY_ARROW_OPERATOR 1
+// # define __STL_NO_AUTO_PTR_PROXY_ARROW_OPERATOR 1
+
 
 /*
  * If __STL_USE_OWN_NAMESPACE is in effect, STLport will try to rename std:: for the user
- * to stlport::. If you don't want this feature, or if it does not quite work for your
+ * to _STL::. If you don't want this feature, or if it does not quite work for your
  * compiler, please define the following switch :
  */
 // # define __STL_DONT_REDEFINE_STD 1
 
-
-/*
- * __STL_WHOLE_NATIVE_STD : only meaningful in __STL_USE_OWN_NAMESPACE mode.
- * Normally, STLport only imports necessary components from native std:: namespace -
- * those not yet provided by STLport (<iostream>, <complex>, etc.) 
- * and their dependencies (<string>, <stdexcept>). 
- * You might want everything from std:: being available in std:: namespace when you
- * include corresponding STLport header (like STLport <map> provides std::map as well, etc.),
- * if you are going to use both stlport:: and std:: components in your code.
- * Otherwise this option is not recommended as it increases the size of your object files
- * and slows down compilation.
- */
-// # define __STL_WHOLE_NATIVE_STD
-
-/* 
- * __STL_USE_SGI_STRING : Forces use of SGI string even if
- * native <string> is available. Unless you defined __STL_USE_OWN_NAMESPACE,
- * STLport uses native <string> if new iostreams are being used, 
- * as part of compiled runtime library depends on it.
- * You may force use of SGI string uncommenting this macro.
- * IMPORTANT:
- * DO NOT use SGI <string> with native <iostream> unless you recompile 
- * standard C++ runtime library with STLport installed, or
- * (better) defined __STL_USE_OWN_NAMESPACE
- */
-
-// #define  __STL_USE_SGI_STRING  1
-
-
 /* 
  * Edit relative path below (or put full path) to get native 
  * compiler vendor's headers included. Default is "../include"
+ * Note : this cannot be set the same for different compilers, so
+ * it may make sense to override in local stl_user_config.h only. 
  * Hint : never install STLport in the directory that ends with "include"
  */
 // #  undef __STL_NATIVE_INCLUDE_PATH
@@ -136,108 +111,17 @@
 // #  undef __STL_NATIVE_C_INCLUDE_PATH
 // #  define __STL_NATIVE_C_INCLUDE_PATH ../include
 
-/* 
- * Set __STL_DEBUG to turn the "Debug Mode" on.
- * That gets you checked iterators/ranges in the manner
- * of "Safe STL". Very useful for debugging. Thread-safe.
- */
-// #define   __STL_DEBUG 1
-
-
-/* __STL_ASSERTIONS: if defined, then enable runtime checking through the
- * __stl_assert macro.
- */
-//#define __STL_ASSERTIONS 1
-
-/*
- * Uncomment this to force all debug diagnostic to be directed through a
- * user-defined global function:
- *	void __stl_debug_message(const char * format_str, ...)
- * instead of predefined STLport routine. 
- * This allows you to take control of debug message output.
- * Default routine calls fprintf(stderr,...)
- * Note : If you set this macro, you must supply __stl_debug_message 
- * function definition somewhere.
- */
-//#define __STL_DEBUG_MESSAGE 1
-
-/*
- * Uncomment this to force all failed assertions to be executed through
- * user-defined global function:
- *	void __stl_debug_terminate(void). This allows
- * you to take control of assertion behaviour for debugging purposes.
- * Default routine throws unique exception if __STL_USE_EXCEPTIONS is set,
- * calls abort() otherwise.
- * Note : If you set this macro, you must supply __stl_debug_terminate 
- * function definition somewhere.
- */
-//#define __STL_DEBUG_TERMINATE 1
-
-/*
- * Comment this out to enable throwing exceptions from default __stl_debug_terminate()
- * instead of calling abort().
- */
-#define __STL_NO_DEBUG_EXCEPTIONS 1
-
-/* 
- * Uncomment that to disable exception handling code 
- */
-// #define   __STL_NO_EXCEPTIONS 1
-
-/*
- * __STL_NO_NAMESPACES: if defined, don't put the library in namespace
- * stlport:: or std::, even if the compiler supports namespaces
- */
-
-// #define   __STL_NO_NAMESPACES 1
 
 /* 
  * __STL_NO_RELOPS_NAMESPACE: if defined, don't put the relational
  * operator templates (>, <=. >=, !=) in namespace std::rel_ops, even
- * if the compiler supports namespaces and partial ordering of
- * function templates.
+ * if the compiler supports namespaces.
+ * Note : if the compiler do not support namespaces, those operators
+ * will not be provided by default in future, to simulate hiding them into rel_ops.
+ * For now, to get them not defined, define __STL_USE_SEPARATE_RELOPS_NAMESPACE. 
  */
 
 // #define __STL_NO_RELOPS_NAMESPACE 1
-
-/* _REENTRANT: define this if your project is multithreaded.
- * STLport uses MT-safe allocator support then. 
-*/ 
-// #define _REENTRANT
-
-/* 
- * _NOTHREADS: if defined, STLport don't use any 
- * multithreading support.
- */
-// #define _NOTHREADS
-
-/* _PTHREADS: if defined, use Posix threads for multithreading support. */
-// #define _PTHREADS
-
-/*
- * __STL_NO_NEW_C_HEADERS:  if defined, STLport does not 
- * use new-style headers : <cstdlib>, etc. 
- */
-// #define   __STL_NO_NEW_C_HEADERS 1
-
-/* 
- * Uncomment __STL_USE_NEWALLOC to force allocator<T> to use plain "new"
- * instead of SGI optimized node allocator engine.
- */
-// #define   __STL_USE_NEWALLOC   1
-
-/* 
- * Uncomment __STL_USE_MALLOC to force allocator<T> to use plain "malloc" 
- * instead of SGI optimized node allocator engine.
- */
-// #define   __STL_USE_MALLOC 1
-
-/*
- * Set __STL_DEBUG_ALLOC to use allocators that perform memory debugging,
- * such as padding/checking for memory consistency 
- */
-// #define   __STL_DEBUG_ALLOC 1
-
 
 /*
  * Use this option to catch uninitialized members in your classes.
@@ -255,52 +139,43 @@
  * or otherwise abused. A good value may already be defined for your platform; see
  * stl_config.h
  */
-// #define __STL_SHRED_BYTE 0xFF
-
-/*
- *  This macro prevents instantiation of at() member function
- *  for containers (vector and deque).
- *  We do not instantiate at() that does not throw range errors -
- *  if this macro is defined, at() method is not defined.
- *
- */
-// # define __STL_DONT_THROW_RANGE_ERRORS
+// #define __STL_SHRED_BYTE 0xA3
 
 //==========================================================
 // Compatibility section
 //==========================================================
 
 /*
- * __STL_USE_SGI_ALLOCATORS is a hook so that users can disable use of
- * allocator<T> as default parameter for containers, and use SGI
- * raw allocators as default ones, without having to edit library headers.
- * Use of this macro is discouraged.
+ *  Define this macro to disable anachronistic constructs (like the ones used in HP STL and
+ *  not included in final standard 
  */
-// #define   __STL_USE_SGI_ALLOCATORS 1
+// define __STL_NO_ANACHRONISMS 1
+
+/*
+ *  Define this macro to disable SGI/STLport extensions (for example, to make sure your code will 
+ *  compile with some other implementation )
+ */
+// define __STL_NO_EXTENSIONS   1
+
+/*
+ * Use obsolete overloaded template functions iterator_category(), value_type(), distance_type()
+ * for querying iterator properties. Please note those names are non-standard and are not guaranteed
+ * to be used by every implementation. However, this setting is on by default when partial specialization
+ * is not implemented in the compiler (if __STL_NO_ANACHRONISMS is not set). 
+ * Use of those interfaces for user-defined iterators is strongly discouraged: 
+ * please use public inheritance from iterator<> template to achieve desired effect. 
+ * Second form is to disable old-style queries in any case.
+ */
+// # define __STL_USE_OLD_HP_ITERATOR_QUERIES
+// # define __STL_NO_OLD_HP_ITERATOR_QUERIES
 
 /* 
- * This definition precludes SGI reverse_iterator to be compatible with
- * other parts of MSVC library. (With partial specialization, it just
- * has no effect).
- * Use it _ONLY_ if you use SGI-style reverse_iterator<> template explicitly
- */
-// #    define __STL_NO_MSVC50_COMPATIBILITY 1
-
-
-/* 
- * You should define this macro if compiling with MFC - STLport <stl_config.h>
+ * You should define this macro if compiling with MFC - STLport <stl/_config.h>
  * then include <afx.h> instead of <windows.h> to get synchronisation primitives 
  *
  */
 
 // # define __STL_USE_MFC 1
-
-/* 
- * Use abbreviated class names for linker benefit (don't affect interface).
- * This option is obsolete, but should work in this release.
- *
- */
-// # define __STL_USE_ABBREVS
 
 /*
  * Use minimum set of default arguments on template classes that have more
@@ -315,45 +190,33 @@
 
 // # define __STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS 1
 
-/*
- * By default, STLport uses proxy technique to enable operator -> for
- * iterators even for those compilers that check the return type of
- * unused instantiations. If this causes problems for you, turn the following
- * switch on to disable proxy ->() operators. This actually should be done
- * in compiler-dependant section, not here. 
- * auto_ptr implements proxy operator even if they are disabled in general,
- * as it is very unlikely that you instantiate auto_ptr<> on pointers and other builtins.
- * However, if this is the case, uncomment second line.
+
+/* 
+ * __STL_USE_SGI_STRING : Forces use of SGI string even if
+ * native <string> is available. Unless you defined __STL_USE_OWN_NAMESPACE,
+ * STLport uses native <string> if new iostreams are being used, 
+ * as part of compiled runtime library depends on it.
+ * You may force use of SGI string uncommenting this macro.
+ * IMPORTANT:
+ * DO NOT use SGI <string> with native <iostream> unless you recompile 
+ * standard C++ runtime library with STLport installed, or
+ * (better) defined __STL_USE_OWN_NAMESPACE
  */
 
-// # define __STL_NO_PROXY_ARROW_OPERATOR 1
-// # define __STL_NO_AUTO_PTR_PROXY_ARROW_OPERATOR 1
-
-
+// #define  __STL_USE_SGI_STRING  1
 
 /*
- * Turn __STL_USE_DECLSPEC on if your project includes multiple DLLs and you want to
- * configure one of them to instantiate STLport exports. 
- * Note : you should definitely do that if you use STLport default node allocator
- * and pass STL objects across DLL boundaries.
- *
- * To do so : you should define __STL_USE_DECLSPEC in all compilation units;
- *                       define __STL_DESIGNATED_DLL when compiling DLL which is designated
- *                       to instantiate STLport exports (other components will import symbols
- *                       from there). This designated DLL should include at least <string> header.
- *  
- * Note : that far, it was only tested with Microsoft Visual C++ compiler.
+ * __STL_WHOLE_NATIVE_STD : only meaningful in __STL_USE_OWN_NAMESPACE mode.
+ * Normally, STLport only imports necessary components from native std:: namespace -
+ * those not yet provided by STLport (<iostream>, <complex>, etc.) 
+ * and their dependencies (<string>, <stdexcept>). 
+ * You might want everything from std:: being available in std:: namespace when you
+ * include corresponding STLport header (like STLport <map> provides std::map as well, etc.),
+ * if you are going to use both stlport:: and std:: components in your code.
+ * Otherwise this option is not recommended as it increases the size of your object files
+ * and slows down compilation.
  */
-// # define __STL_USE_DECLSPEC   1
-// # define __STL_DESIGNATED_DLL 1
-
-
-/*
- * Experimental switch for embedded systems where no iostreams are available
- * at all
- */
-
-// # define __STL_NO_IOSTREAMS 1
+// # define __STL_WHOLE_NATIVE_STD
 
 //==========================================================
 

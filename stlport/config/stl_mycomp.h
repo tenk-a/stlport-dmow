@@ -30,9 +30,7 @@
 # ifndef __STLPORT_MYCOMP_H
 #  define  __STLPORT_MYCOMP_H
 
-// Error diagnostic 
-
-# error "Your compiler version is not recognized by STLport. Please edit <config/stl_mycomp.h>
+# error "Your compiler version is not recognized by STLport. Please edit <config/stl_mycomp.h>"
 
 //==========================================================
 

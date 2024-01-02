@@ -16,18 +16,15 @@
 #ifndef __STLPORT_CCTYPE
 # define __STLPORT_CCTYPE
 
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x104
+#  include <stl/_prolog.h>
 # endif
 
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_CCTYPE
-#    define __STLPORT_NATIVE_PASS
-#  endif
+# if defined (__STL_USE_NEW_C_HEADERS)
 
-# if defined (__STL_USE_NEW_C_HEADERS) || defined (__IN_STLPORT_CCTYPE)
 #  include __STL_NATIVE_CPP_C_HEADER(cctype)
+
 # else
 
 #  include <ctype.h>
@@ -49,14 +46,8 @@
 
 # endif /* __STL_USE_NEW_C_HEADERS */
 
-# if defined ( __STL_RESUME_STD_FOR_CCTYPE )
-#    undef __STL_RESUME_STD_FOR_CCTYPE
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
-# endif
-
-
-# ifdef __STL_IMPORT_VENDOR_CSTD
+# if ! defined (__STL_NO_CSTD_FUNCTION_IMPORTS)
+#  if defined ( __STL_IMPORT_VENDOR_CSTD )
 __STL_BEGIN_NAMESPACE
 using __STL_VENDOR_CSTD::isalnum;
 using __STL_VENDOR_CSTD::isalpha;
@@ -71,9 +62,14 @@ using __STL_VENDOR_CSTD::isupper;
 using __STL_VENDOR_CSTD::isxdigit;
 using __STL_VENDOR_CSTD::tolower;
 using __STL_VENDOR_CSTD::toupper;
-
 __STL_END_NAMESPACE
-#  endif /* __STL_IMPORT_VENDOR_CSTD*/
+#   endif /* __STL_IMPORT_VENDOR_CSTD*/
+#  endif /* __STL_NO_CSTD_FUNCTION_IMPORTS */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x104 )
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __STLPORT_CCTYPE */
 

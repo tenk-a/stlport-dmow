@@ -13,28 +13,22 @@
  *
  */
 
-#ifndef __STLPORT_CSTD_signal
-# define __STLPORT_CSTD_signal
-
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
-# endif
-
-# if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_signal
-#    define __STLPORT_NATIVE_PASS
+# if !defined (__STL_OUTERMOST_HEADER_ID)
+#  define __STL_OUTERMOST_HEADER_ID 0x257
+#  include <stl/_prolog.h>
+# elif (__STL_OUTERMOST_HEADER_ID == 0x257) && ! defined (__STL_DONT_POP_0x257)
+#  define __STL_DONT_POP_0x257
 # endif
 
 # include __STL_NATIVE_C_HEADER(signal.h)
 
-# if defined ( __STL_RESUME_STD_FOR_signal )
-#    undef __STL_RESUME_STD_FOR_signal
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# if (__STL_OUTERMOST_HEADER_ID == 0x257)
+#  if ! defined (__STL_DONT_POP_0x257)
+#   include <stl/_epilog.h>
+#   undef  __STL_OUTERMOST_HEADER_ID
+#   endif
+#   undef  __STL_DONT_POP_0x257
 # endif
-
-#endif /* __STLPORT_signal */
 
 // Local Variables:
 // mode:C++

@@ -25,7 +25,7 @@ TESTS = $(LIST:%.cpp=%.out)
 TEST_EXE  = ./eh_test
 TEST  = ./eh_test.out
 
-CC = como
+CC = e:\lang\como\bin\como
 CXX = $(CC) 
 
 # __COMO__ appears not to be defined automatically ;(
@@ -33,8 +33,6 @@ CXXFLAGS = -D__COMO__ -D_MSC_VER=1200 --exceptions --microsoft -D__STL_DEBUG -I$
 
 LIBS = -lm 
 LIBSTDCXX = 
-
-all:
 
 check: $(TEST)
 

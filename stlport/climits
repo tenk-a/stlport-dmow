@@ -16,46 +16,31 @@
 #ifndef __STLPORT_CLIMITS
 # define __STLPORT_CLIMITS
 
-# define __IN_STLPORT_CLIMITS 1
-
-# ifndef __STL_CONFIG_H
-#  include <stl_config.h>
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x107
+#  include <stl/_prolog.h>
 # endif
 
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_CLIMITS
-#    define __STLPORT_NATIVE_PASS
-#  endif
-
-# if defined (__SUNPRO_CC) && (__SUNPRO_CC == 0x500)
+# if defined (__SUNPRO_CC) && ((__SUNPRO_CC == 0x500) && (__SUNPRO_CC_COMPAT > 4))
 #  include </usr/include/limits.h>
 # elif defined (__STL_USE_NEW_C_HEADERS)
 #  include __STL_NATIVE_CPP_C_HEADER(climits)
 # else
-#  include __STL_NATIVE_C_HEADER(limits.h)
+#  ifdef __BORLANDC__
+#   include __STL_NATIVE_C_HEADER(limits.h)
+#  else
+#   include <limits.h>
+#  endif
 # endif
 
-# if defined ( __STL_RESUME_STD_FOR_CLIMITS )
-#    undef __STL_RESUME_STD_FOR_CLIMITS
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
+# if (__STL_OUTERMOST_HEADER_ID ==  0x107 )
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
 # endif
-
-
-# ifdef __STL_IMPORT_VENDOR_CSTD
-__STL_BEGIN_NAMESPACE
-
-// those are often macros 
-
-__STL_END_NAMESPACE
-
-#endif /* __STL_IMPORT_VENDOR_CSTD */
-
-# undef __IN_STLPORT_CLIMITS
 
 #endif /* __STLPORT_CLIMITS */
 
 // Local Variables:
 // mode:C++
 // End:
+

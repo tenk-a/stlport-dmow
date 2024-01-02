@@ -26,36 +26,21 @@
 #ifndef __SGI_STL_SET
 #define __SGI_STL_SET
 
-#ifndef __SGI_STL_INTERNAL_TREE_H
-#include <stl_tree.h>
-#endif
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x55
+#  include <stl/_prolog.h>
+# endif
 
-#include <stl_set.h>
-#include <stl_multiset.h>
+#include <stl/_set.h>
 
 #if defined (__STL_WHOLE_NATIVE_STD)
-#  if defined ( __STL_REDEFINE_STD ) && defined (std) 
-#    undef std
-#    define __STL_RESUME_STD_FOR_SET
-#    define __STLPORT_NATIVE_PASS
-#  endif
-
-# ifdef __MSL__	 // dwa 2/28/99 - help MSL get its own headers and prevent it from including ours
-#  include  __STL_NATIVE_HEADER(tree.h)
-#  ifndef __SGI_STL_TREE_H
-#   define __SGI_STL_TREE_H
-#  endif
-# endif
-
 # include __STL_NATIVE_HEADER(set)
-
-# if defined ( __STL_RESUME_STD_FOR_SET )
-#    undef __STL_RESUME_STD_FOR_SET
-#    define std __STLPORT_NAMESPACE
-#    undef __STLPORT_NATIVE_PASS
-# endif
-
 #endif
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x55)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
 
 #endif /* __SGI_STL_SET */
 
