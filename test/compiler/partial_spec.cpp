@@ -2,11 +2,13 @@
  * It is known that this code not compiled by following compilers:
  *
  *   MSVC 6
+ *   WATCOMC1.9
  *
  * It is known that this code compiled by following compilers:
  *
  *   MSVC 8
  *   gcc 4.1.1
+ *   dmc 8.52
  */
 
 /*

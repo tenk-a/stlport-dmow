@@ -5,6 +5,8 @@
  *
  *   MSVC 6
  *   MSVC 8 Beta
+ *   dmc 8.52
+ *   WATCOMC1.9
  */
 
 /*

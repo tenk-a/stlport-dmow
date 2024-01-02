@@ -6,6 +6,8 @@
  * It is known that this code compiled by following compilers:
  *
  *   MSVC 8 Beta
+ *   dmc 8.52
+ *   WATCOMC1.9
  */
 
 /*

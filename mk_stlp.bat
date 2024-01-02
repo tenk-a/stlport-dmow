@@ -613,6 +613,7 @@ rem COMMON.
   if "%Verbose%"=="1" (
     set O_CC=%O_CC% -D_STLP_VERBOSE
   )
+  rem @echo [O_CC]%O_CC%
 
   set LIB_NAME=%LIB_NAME_BASE%.%LIBEXT%
   rem set DLL_NAME=%LIB_NAME_BASE%.%DLLEXT%

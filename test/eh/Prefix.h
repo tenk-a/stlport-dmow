@@ -23,9 +23,9 @@
 // considerably if your malloc is slow.
 #define TESTCLASS_DEEP_DATA 1
 
-# ifndef NO_FAST_ALLOCATOR
+#ifndef NO_FAST_ALLOCATOR
 // #  define NO_FAST_ALLOCATOR
-# endif
+#endif
 
 // Define this to use the SGI STL. Undefine it to test a different installation
 #ifndef EH_NO_SGI_STL
@@ -52,6 +52,12 @@
 
 // Just include something to get whatever configuration header we're using.
 #include <utility>
+
+#ifdef _STLP_KKKK_DMOW // defined __WATCOMC__ || defined __DMC__
+# ifndef NO_FAST_ALLOCATOR
+#  define NO_FAST_ALLOCATOR
+# endif
+#endif
 
 #ifndef _STLP_CALL
 #  define _STLP_CALL

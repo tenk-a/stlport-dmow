@@ -112,7 +112,7 @@ static bool using_alloc_set = false;
 class FastAllocator {
 public:
   //FastAllocator() : mFree(0), mUsed(0) {}
-# if defined (_STLP_KKKK_DMOW)  // defined(__WATCOMC__)
+# if defined (_STLP_KKKK_DMOW)  // defined (__WATCOMC__) || defined(__DMC__)
   ~FastAllocator() {
     // EH_CSTD::free( mBlocks );
   }
@@ -126,7 +126,7 @@ public:
         result = mFree;
         mFree = mFree->next;
       }
-#    if defined (_STLP_KKKK_DMOW)   // defined(__WATCOMC__)
+#     if defined (_STLP_KKKK_DMOW)  // defined (__WATCOMC__) || defined(__DMC__)
       else if (mUsed < kBlockCount) {
         if (mBlocks == 0) {
           mBlocks = (FastAllocator::Block*)EH_CSTD::calloc( sizeof(FastAllocator::Block), FastAllocator::kBlockCount );
@@ -180,7 +180,7 @@ public:
   static size_t mUsed;
 };
 
-# if defined (_STLP_KKKK_DMOW)  // defined(__WATCOMC__)
+# if defined (_STLP_KKKK_DMOW)  // defined (__WATCOMC__) || defined(__DMC__)
 FastAllocator::Block *FastAllocator::mBlocks = NULL;
 FastAllocator::Block *FastAllocator::mFree   = NULL;
 size_t FastAllocator::mUsed = 0;
